@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+</head>
+<body>
+
+<button id="play">Play</button>
+<button id="playHls">Play HLS</button>
+<button id="playHls2">Play HLS 2</button>
+<button id="stop">Stop</button>
+<button id="mute">Mute</button>
+<input id="volume" type="range" min="0" max="10" step="1" value="7">
+
+<script src="../dist/rplayer.min.js" ></script>
+<script>
+
+	var beat = 'http://beat-lh.akamaihd.net/i/studioaudio_1@393656/master.m3u8';
+	var mfm = 'http://mfm-lh.akamaihd.net/i/studioaudio_1@393667/master.m3u8';
+	var doc = 'http://1069-lh.akamaihd.net/i/studioaudio_1@393637/master.m3u8';
+	var choi = 'http://stream.radiox.com/choi.mp3';
+	var cjec = 'http://158.69.4.238:8000/cjec.mp3';
+	var cjec = 'http://109.200.2.91:8010/high?type=.mp3';
+	var chik = 'http://8283.live.streamtheworld.com:80/CHIKFMAAC_SC';
+	
+	
+	var player = new rPlayer();
+	
+	document.getElementById("volume").value = player.volume;
+	
+
+	document.getElementById("play").addEventListener("click", function () {
+		player.play(chik);
+		
+		log ();
+	});
+	document.getElementById("playHls").addEventListener("click", function () {
+		player.play(mfm);
+		
+		log ();
+	});
+	document.getElementById("playHls2").addEventListener("click", function () {
+		player.play(beat);
+		
+		log ();
+	});
+	document.getElementById("stop").addEventListener("click", function () {
+		player.stop();
+		
+		log ();
+	});
+	document.getElementById("mute").addEventListener("click", function () {
+		player.mute();
+		
+		log ();
+	});
+	document.getElementById("volume").addEventListener("change", function () {
+		player.setVolume(this.value);
+		
+		log ();
+	});
+	
+	function log () {
+		console.log('Playing : ' + player.playing);
+		console.log('Volume : ' + player.volume);
+		console.log('Mute : ' + player.muted);
+	}
+</script>
+</body>
+</html>
