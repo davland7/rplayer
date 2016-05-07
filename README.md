@@ -16,6 +16,12 @@ player.play('URL');
 player.stop();
 ```
 
+##Volume
+
+```
+
+
+
 ##Infos
 
 ```
