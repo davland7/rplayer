@@ -27,7 +27,7 @@ player.mute();
 ##Set Volume
 
 ```
-player.setVolume(7);
+player.setVolume(7); // 7 Default set in local storage
 ```
 
 ##Infos
