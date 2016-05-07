@@ -1,5 +1,7 @@
 # rplayer
 
+Just for my Chrome Extension https://chrome.google.com/webstore/detail/radio-beta/klcjochgjlcecbalpokmcldlfhngcnfh
+
 ```
 var player = new rPlayer();
 ```
