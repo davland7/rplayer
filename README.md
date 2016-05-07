@@ -18,6 +18,12 @@ player.play('URL');
 player.stop();
 ```
 
+##Mute
+
+```
+player.mute();
+```
+
 ##Set Volume
 
 ```
