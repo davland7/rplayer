@@ -30,4 +30,4 @@ player.volume;
 player.muted;
 ```
 
-###based on https://github.com/dailymotion/hls.js(.m3u8)
+-based on https://github.com/dailymotion/hls.js (.m3u8)
