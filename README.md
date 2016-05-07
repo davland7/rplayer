@@ -8,6 +8,7 @@ var player = new rPlayer();
 
 ```
 player.play('URL');
+```
 
 ##Stop
 
@@ -16,6 +17,7 @@ player.stop();
 ```
 
 ##Infos
+
 ```
 player.playing;
 player.volume;
