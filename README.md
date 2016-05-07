@@ -16,7 +16,7 @@ player.play('URL');
 player.stop();
 ```
 
-##Volume
+##Set Volume
 
 ```
 player.setVolume(7);
