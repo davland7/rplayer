@@ -19,8 +19,8 @@ player.stop();
 ##Volume
 
 ```
-
-
+player.setVolume(7);
+```
 
 ##Infos
 
