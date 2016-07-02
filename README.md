@@ -39,3 +39,5 @@ player.muted;
 ```
 
 include https://github.com/dailymotion/hls.js (.m3u8)
+
+npm run serve http://127.0.0.1:8888/demo/
