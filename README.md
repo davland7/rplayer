@@ -6,31 +6,31 @@ Just for my Chrome Extension https://chrome.google.com/webstore/detail/radio-bet
 var player = new rPlayer();
 ```
 
-##Play
+## Play
 
 ```
 player.play('URL');
 ```
 
-##Stop
+## Stop
 
 ```
 player.stop();
 ```
 
-##Mute
+## Mute
 
 ```
 player.mute();
 ```
 
-##Set Volume
+## Set Volume
 
 ```
 player.setVolume(7); // 7 Default set in local storage
 ```
 
-##Infos
+## Infos
 
 ```
 player.playing;
