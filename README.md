@@ -1,6 +1,6 @@
-# rplayer
+# rPlayer
 
-Just for my Chrome Extension https://chrome.google.com/webstore/detail/radio-beta/klcjochgjlcecbalpokmcldlfhngcnfh
+rPlayer is a player play streaming radio, this player, offers the possibility to change different audio format. Example: .m3u8, .mp3, .aac.
 
 ```
 var player = new rPlayer();
@@ -26,18 +26,40 @@ player.mute();
 
 ## Set Volume
 
+You can only set volume between 0 and 10
+
 ```
-player.setVolume(7); // 7 Default set in local storage
+player.volume = 7; // 7 Default set in local storage
 ```
 
 ## Infos
 
 ```
-player.playing;
-player.volume;
-player.muted;
+console.log('Playing:', player.playing);
+console.log('Volume:', player.volume);
+console.log('Muted:', player.muted);
+console.log('Source:', player.src);
+console.log('Time:', player.currentTime);
 ```
 
-include https://github.com/dailymotion/hls.js (.m3u8)
+## Demo
 
-npm run serve http://127.0.0.1:8888/demo/
+```
+npm install
+```
+
+```
+npm run build
+```
+
+```
+npm run serve
+```
+
+http://127.0.0.1:9999
+
+include https://github.com/video-dev/hls.js (.m3u8)
+
+## Used by
+
+https://chrome.google.com/webstore/detail/mini-radio/klcjochgjlcecbalpokmcldlfhngcnfh

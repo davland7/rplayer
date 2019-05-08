@@ -1,0 +1,65 @@
+<!doctype html>
+<html>
+<head>
+<!--
+
+    npm install --save hls.js
+    npm install --save-dev webpack webpack-cli http-server terser-webpack-plugin
+
+-->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+<body>
+
+<label for="basic-url">Streaming url:</label>
+<div class="input-group mb-3">
+    <div class="input-group-prepend">
+        <span class="input-group-text" id="url">https://*.m3u8</span>
+    </div>
+    <input value="https://cogecomedia.leanstream.co/cogecomedia/CKBEFM.stream/playlist.m3u8" type="text" class="form-control" id="basic-url" aria-describedby="basic-addon3">
+</div>
+
+<button type="submit" class="btn btn-primary" id="play">Play</button>
+
+<button onclick="stop()" class="btn btn-primary">Stop</button>
+<button onclick="mute()" class="btn btn-primary">Mute</button>
+<input onchange="volume(this.value)" type="range" max="10" min="0" step="1" class="btn btn-primary">
+<button onclick="info()" class="btn btn-primary">Infos</button>
+<button onclick="time()" class="btn btn-primary">Time 3</button>
+
+<script src="dist/rplayer.js"></script>
+<script>
+    var audio = new rPlayer();
+
+    document.getElementById('play').addEventListener('click', play);
+
+    function play() {
+        audio.play(document.getElementById('basic-url').value);
+    }
+
+    function stop() {
+        audio.stop();
+    }
+
+    function mute() {
+        audio.mute();
+    }
+
+    function volume(value) {
+        audio.volume = value;
+    }
+
+    function info() {
+        console.log('Playing:', audio.playing);
+        console.log('Volume:', audio.volume);
+        console.log('Muted:', audio.muted);
+        console.log('Source:', audio.src);
+        console.log('Time:', audio.currentTime);
+    }
+
+    function time() {
+        audio.currentTime = 3;
+    }
+</script>
+</body>
+</html>

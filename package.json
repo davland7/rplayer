@@ -1,23 +1,28 @@
 {
-  "name": "library",
-  "version": "0.0.1",
+  "name": "rplayer",
+  "version": "1.0.0",
   "description": "",
-  "main": "src/index.js",
+  "main": "dist/rplayer.js",
+  "module": "src/index.js",
   "scripts": {
-    "build": "browserify -s rPlayer src/index.js --debug | exorcist dist/rplayer.js.map > dist/rplayer.js",
-    "minify": "uglifyjs dist/rplayer.js -c sequences=true,dead_code=true,conditionals=true,booleans=true,unused=true,if_return=true,join_vars=true,drop_console=true -m sort --screw-ie8 > dist/rplayer.min.js",
-    "serve": "http-server -p 8888 ."
+    "build": "webpack",
+    "serve": "http-server -p 9999 ."
   },
-  "keywords": [],
-  "author": "",
+  "keywords": [
+    "radio",
+    "audio",
+    "mp3",
+    "hls"
+  ],
+  "author": "David Landry",
   "license": "ISC",
-  "devDependencies": {
-    "browserify": "^13.0.0",
-    "exorcist": "^0.4.0",
-    "http-server": "^0.9.0",
-    "uglify-js": "^2.6.2"
-  },
   "dependencies": {
-    "hls.js": "^0.5.29"
+    "hls.js": "^0.12.4"
+  },
+  "devDependencies": {
+    "http-server": "^0.11.1",
+    "terser-webpack-plugin": "^1.2.3",
+    "webpack": "^4.30.0",
+    "webpack-cli": "^3.3.2"
   }
 }

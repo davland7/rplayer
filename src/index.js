@@ -1,75 +1,86 @@
-var Hls = require('hls.js');
+import Hls from 'hls.js/dist/hls.light.js';
 
-function rPlayer() {
-	var audio = new Audio();
-	var hls;
+class rPlayer {
+    constructor() {
+        this._audio = new Audio();
+        this._hls = null;
 
-	this.playing = false;
-	this.muted = false;
+        if (localStorage.hasOwnProperty('r-player-volume')) {
+            this._audio.volume = localStorage.getItem('r-player-volume') / 10;
+        } else {
+            this._audio.volume = .7;
+        }
+    }
 
-	// Set default volume
-	if (localStorage.getItem('r-player-volume')) {
-		this.volume = localStorage.getItem('r-player-volume');
-	} else {
-		this.volume = 7;
-		localStorage.setItem('r-player-volume', this.volume);
-	}
+    play(src) {
+        if (this.playing) this.stop();
 
-	setVolume(this.volume);
+        if (Hls.isSupported() && (src.indexOf('.m3u8') > 0)) {
+            this._hls = new Hls();
+            this._hls.loadSource(src);
+            this._hls.attachMedia(this._audio);
+            this._hls.on(Hls.Events.MANIFEST_PARSED, () => {
+                this._audio.play();
+            });
+        } else if (this._audio.canPlayType('application/vnd.apple.mpegurl')) {
+            this._audio.src = src;
+            this._audio.addEventListener('loadedmetadata',() => {
+                this._audio.play();
+            });
+        } else {
+            this._audio.src = src;
+            this._audio.load();
+            this._audio.play();
+        }
+    }
 
-	function setVolume(volume) {
-		
-		audio.volume = volume / 10;
-		localStorage.setItem('r-player-volume', volume);
-	}
+    stop() {
+        this._audio.pause();
+        this._audio.currentTime = 0;
+        this._audio.src = '';
 
-	function stop () {
-		audio.pause();
-		audio.currentTime = 0;
+        if (this._hls) {
+            this._hls.destroy();
+            this._hls = null;
+        }
+    }
 
-		if (typeof(hls) === 'object') {
-			hls.destroy();
-		}
-	}
+    mute() {
+        this._audio.muted = !this._audio.muted;
+    }
 
-	this.play = function (url) {
-		stop();
+    get playing() {
+        return this._audio.currentTime > 0 && !this._audio.paused && !this._audio.ended && this._audio.readyState > 2;
+    }
 
-		if (Hls.isSupported() && (url.indexOf('.m3u8') > 0)) {
-			hls = new Hls();
-			hls.loadSource(url);
-			hls.attachMedia(audio);
-			hls.on(Hls.Events.MANIFEST_PARSED, function () {
-				audio.play();
-			});
-		} else {
-			audio.src = url;
-			audio.play();
-		}
+    get src() {
+        if (this._hls) {
+            return this._hls.url;
+        } else {
+            return this._audio.src;
+        }
+    }
 
-		this.playing = true;
-	};
+    get muted() {
+        return this._audio.muted;
+    }
 
-	this.stop = function () {
-		stop();
+    get volume() {
+        return this._audio.volume * 10;
+    }
 
-		this.playing = false;
-	};
+    set volume(value) {
+        this._audio.volume = value / 10;
+        localStorage.setItem('r-player-volume', value);
+    }
 
-	this.setVolume = function (value) {
-		setVolume(value);
+    get currentTime() {
+        return this._audio.currentTime;
+    }
 
-		this.volume = value;
-	};
+    set currentTime(value) {
+        return this._audio.currentTime = value;
+    }
+}
 
-	this.mute = function () {
-		var result = false;
-		if (audio.muted == result) {
-			result = true;
-		}
-
-		this.muted = audio.muted = result;
-	};
-};
-
-module.exports = rPlayer;
+export default rPlayer;
