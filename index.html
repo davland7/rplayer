@@ -1,65 +1,128 @@
 <!doctype html>
-<html>
+<html lang="en">
 <head>
-<!--
-
-    npm install --save hls.js
-    npm install --save-dev webpack webpack-cli http-server terser-webpack-plugin
-
--->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <title>rPlayer in action</title>
+    <meta name="description" content="rPlayer is a player play streaming radio, this player, offers the possibility to change different audio format. Example: .m3u8, .mp3, .aac.">
 </head>
 <body>
-
-<label for="basic-url">Streaming url:</label>
-<div class="input-group mb-3">
-    <div class="input-group-prepend">
-        <span class="input-group-text" id="url">https://*.m3u8</span>
+    <div class="w3-container w3-blue">
+      <h1>rPlayer</h1>
+      <p>rPlayer is a player play streaming radio, this player, offers the possibility to change different audio format. Example: .m3u8, .mp3, .aac.</p>
     </div>
-    <input value="https://cogecomedia.leanstream.co/cogecomedia/CKBEFM.stream/playlist.m3u8" type="text" class="form-control" id="basic-url" aria-describedby="basic-addon3">
-</div>
+    <div class="w3-container"> 
+        <h1>rPlayer in action</h1>
+        <p>      
+            <label class="w3-text-grey">Streaming url:</label>
+            <input id="url" class="w3-input w3-border" type="text" value="https://cogecomedia.leanstream.co/cogecomedia/CKBEFM.stream/playlist.m3u8">
+        </p>
+        <div class="w3-row">
+            <div class="w3-half">
+                <h2>Try</h2>
+                <p>
+                    <button id="play" class="w3-button w3-green">Play</button>
+                    <button id="stop" class="w3-button w3-red">Stop</button>
+                    <button id="mute" class="w3-button w3-yellow">Mute</button>
+                    <button id="time3" class="w3-button w3-blue">Time -3</button>
+                </p>
+            </div>
+            <div class="w3-half">
+                <h2>Volume</h2>
+                <p>
+                    <button id="volumeUp" class="w3-button w3-purple">Up</button>
+                    <button id="volumeDown" class="w3-button w3-deep-purple">Down</button>
+                </p>
+            </div>
+        </div>
+        <div class="w3-row">
+            <div class="w3-panel w3-pale-yellow w3-border">
+                <h3>Infos</h3>
+                <p>
+                    Playing: <span id="playing"></span><br>
+                    Volume: <span id="volume"></span>%<br>
+                    Muted: <span id="muted"></span><br>
+                    Source: <span id="src"></span><br>
+                    Time: <span id="time"></span> seconds
+                </p>
+            </div>
+        </div>
+    </div>
+    <div class="w3-container">
+        <h5><a href="https://github.com/davland7/rplayer" target="_blank">GitHub</a></h5>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="dist/rplayer.js"></script>
+    <script>
+        var audio = new rPlayer();
 
-<button type="submit" class="btn btn-primary" id="play">Play</button>
+        info();
 
-<button onclick="stop()" class="btn btn-primary">Stop</button>
-<button onclick="mute()" class="btn btn-primary">Mute</button>
-<input onchange="volume(this.value)" type="range" max="10" min="0" step="1" class="btn btn-primary">
-<button onclick="info()" class="btn btn-primary">Infos</button>
-<button onclick="time()" class="btn btn-primary">Time 3</button>
+        $('#play').on('click', play);
+        $('#stop').on('click', stop);
+        $('#mute').on('click', mute);
+        $('#time3').on('click', time3);
+        $('#volumeUp').on('click', volumeUp);
+        $('#volumeDown').on('click', volumeDown);
 
-<script src="dist/rplayer.js"></script>
-<script>
-    var audio = new rPlayer();
+        function play() {
+            audio.play($('#url').val());
 
-    document.getElementById('play').addEventListener('click', play);
+            setInterval(info, 1000);
+        }
 
-    function play() {
-        audio.play(document.getElementById('basic-url').value);
-    }
+        function stop() {
+            audio.stop();
 
-    function stop() {
-        audio.stop();
-    }
+            info();
+        }
 
-    function mute() {
-        audio.mute();
-    }
+        function mute() {
+            audio.mute();
 
-    function volume(value) {
-        audio.volume = value;
-    }
+            info();
+        }
 
-    function info() {
-        console.log('Playing:', audio.playing);
-        console.log('Volume:', audio.volume);
-        console.log('Muted:', audio.muted);
-        console.log('Source:', audio.src);
-        console.log('Time:', audio.currentTime);
-    }
+        function time3() {
+            audio.currentTime = audio.currentTime - 3;
+        }
 
-    function time() {
-        audio.currentTime = 3;
-    }
-</script>
+        function volumeUp() {
+            if (audio.volume < 10) {
+                audio.volume = audio.volume + 1;
+            }
+
+            info();
+        }
+
+        function volumeDown() {
+            if (audio.volume > 0) {
+                audio.volume = audio.volume - 1;
+            }
+
+            info();
+        }
+
+        function info() {
+            var playing = false;
+            var volume = audio.volume * 10;
+            var muted = audio.muted;
+            var src = null;
+            var time = 0;
+
+            if (audio.playing) {
+                playing = true;
+                src = audio.src;
+                time = audio.currentTime;
+            }
+
+            $('#playing').html(String(playing));
+            $('#volume').html(volume);
+            $('#muted').html(String(muted));
+            $('#src').html(String(src));
+            $('#time').html(time);
+        }
+    </script>
 </body>
 </html>
