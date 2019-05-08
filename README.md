@@ -46,13 +46,6 @@ console.log('Time:', player.currentTime);
 
 ```
 npm install
-```
-
-```
-npm run build
-```
-
-```
 npm run serve
 ```
 
