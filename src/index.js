@@ -70,8 +70,10 @@ class rPlayer {
     }
 
     set volume(value) {
-        this._audio.volume = value / 10;
-        localStorage.setItem('r-player-volume', value);
+        if (value >= 0 && value <= 10) {
+            this._audio.volume = value / 10;
+            localStorage.setItem('r-player-volume', value);
+        }
     }
 
     get currentTime() {
@@ -80,6 +82,14 @@ class rPlayer {
 
     set currentTime(value) {
         return this._audio.currentTime = value;
+    }
+
+    get audio() {
+        return this._audio;
+    }
+
+    get hls() {
+        return this._hls;
     }
 }
 

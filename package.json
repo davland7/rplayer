@@ -1,6 +1,6 @@
 {
   "name": "rplayer",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "",
   "main": "dist/rplayer.js",
   "module": "src/index.js",
