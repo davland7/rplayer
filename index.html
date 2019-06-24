@@ -1,128 +1,175 @@
 <!doctype html>
 <html lang="en">
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
-    <title>rPlayer in action</title>
-    <meta name="description" content="rPlayer is a player play streaming radio, this player, offers the possibility to change different audio format. Example: .m3u8, .mp3, .aac.">
-    <style>
-        body {background-color: #2196F3;}
-        .w3-container {background-color: #ffffff;}
-    </style>
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-139934361-1"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'UA-139934361-1');
+  </script>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+  <title>rPlayer in action</title>
+  <meta name="description" content="rPlayer is a player play streaming radio, this player, offers the possibility to change different audio format. Example: .m3u8, .mp3, .aac.">
+  <meta name="theme-color" content="#2196F3">
+  <link rel="icon" href="favicon.png">
+  <!-- You can use Open Graph tags to customize link previews.
+  Learn more: https://developers.facebook.com/docs/sharing/webmasters -->
+  <meta property="og:url" content="https://rplayer.js.org/" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="rPlayer in action" />
+  <meta property="og:description" content="rPlayer is a player play streaming radio, this player, offers the possibility to change different audio format. Example: .m3u8, .mp3, .aac." />
+  <meta property="og:image" content="https://rplayer.js.org/rplayer-in-action.jpg" />
+  <meta property="og:image:secure_url" content="https://rplayer.js.org/rplayer-in-action.jpg" />
+  <meta property="og:image:type" content="image/jpeg" />
+  <meta property="og:image:width" content="1080" />
+  <meta property="og:image:height" content="1080" />
+  <meta property="fb:app_id" content="401821003744476"/>
+  <style>
+    body {background-color: #2196F3;}
+    .w3-container {background-color: #ffffff;}
+  </style>
 </head>
 <body>
-    <div class="w3-container"> 
-        <h1>rPlayer in action</h1>
-        <p>      
-            <label class="w3-text-grey">Streaming url:</label>
-            <input id="url" class="w3-input w3-border" type="text" value="https://cogecomedia.leanstream.co/cogecomedia/CKBEFM.stream/playlist.m3u8">
+  <div class="w3-container"> 
+    <h1>rPlayer in action</h1>
+    <label class="w3-text-grey">Streaming url:</label>
+
+    <div class="w3-row">
+      <div class="w3-container w3-twothird">
+        <input id="url" class="w3-input w3-border" type="text" value="https://cogecomedia.leanstream.co/cogecomedia/CKBEFM.stream/playlist.m3u8">
+      </div>
+      <div class="w3-container w3-third">
+        <button id="mp3" class="w3-button w3-teal">MP3</button>
+      <button id="hls" class="w3-button w3-dark-grey">HLS</button>
+      </div>
+    </div>
+    <div class="w3-row">
+      <div class="w3-half">
+        <h2>Try</h2>
+        <p>
+          <button id="play" class="w3-button w3-green">Play</button>
+          <button id="stop" class="w3-button w3-red">Stop</button>
+          <button id="mute" class="w3-button w3-yellow">Mute</button>
+          <button id="time10" class="w3-button w3-blue">Time -10</button>
         </p>
-        <div class="w3-row">
-            <div class="w3-half">
-                <h2>Try</h2>
-                <p>
-                    <button id="play" class="w3-button w3-green">Play</button>
-                    <button id="stop" class="w3-button w3-red">Stop</button>
-                    <button id="mute" class="w3-button w3-yellow">Mute</button>
-                    <button id="time10" class="w3-button w3-blue">Time -10</button>
-                </p>
-            </div>
-            <div class="w3-half">
-                <h2>Volume</h2>
-                <p>
-                    <button id="volumeUp" class="w3-button w3-purple">Up</button>
-                    <button id="volumeDown" class="w3-button w3-deep-purple">Down</button>
-                </p>
-            </div>
-        </div>
-        <div class="w3-row">
-            <div class="w3-panel w3-pale-yellow w3-border">
-                <h3>Infos</h3>
-                <p>
-                    Playing: <span id="playing"></span><br>
-                    Volume: <span id="volume"></span>%<br>
-                    Muted: <span id="muted"></span><br>
-                    Source: <span id="src"></span><br>
-                    Time: <span id="time"></span> seconds
-                </p>
-            </div>
-        </div>
+      </div>
+      <div class="w3-half">
+        <h2>Volume</h2>
+        <p>
+          <button id="volumeUp" class="w3-button w3-purple">Up</button>
+          <button id="volumeDown" class="w3-button w3-deep-purple">Down</button>
+        </p>
+      </div>
     </div>
-    <div class="w3-container">
-        <h5><a href="https://github.com/davland7/rplayer" target="_blank">GitHub</a></h5>
+    <div class="w3-row">
+      <div class="w3-panel w3-pale-yellow w3-border">
+        <h3>Infos</h3>
+        <p>
+          Playing: <span id="playing"></span><br>
+          Volume: <span id="volume"></span>%<br>
+          Muted: <span id="muted"></span><br>
+          Source: <span id="src"></span><br>
+          Time: <span id="time"></span> seconds
+        </p>
+      </div>
     </div>
-    <div class="w3-container w3-blue">
-        <h1>rPlayer</h1>
-        <p>rPlayer is a player play streaming radio, this player, offers the possibility to change different audio format. Example: .m3u8, .mp3, .aac.</p>
-    </div>
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-    <script src="dist/rplayer.js"></script>
-    <script>
-        var rplayer = new rPlayer();
+  </div>
+  <div class="w3-container">
+    <h5><a href="https://github.com/davland7/rplayer" target="_blank">GitHub</a></h5>
+  </div>
+  <div class="w3-container w3-blue">
+    <h1>rPlayer</h1>
+    <p>rPlayer is a player play streaming radio, this player, offers the possibility to change different audio format. Example: .m3u8, .mp3, .aac.</p>
+  </div>
+  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+  <script src="dist/rplayer.js"></script>
+  <script>
+    var rplayer = new rPlayer();
 
-        info();
+    info();
 
-        $('#play').on('click', play);
-        $('#stop').on('click', stop);
-        $('#mute').on('click', mute);
-        $('#time10').on('click', time10);
-        $('#volumeUp').on('click', volumeUp);
-        $('#volumeDown').on('click', volumeDown);
+    rplayer.audio.ontimeupdate = function () {
+      info();
+    };
 
-        function play() {
-            rplayer.play($('#url').val());
+    $('#mp3').on('click', mp3);
+    $('#hls').on('click', hls);
 
-            setInterval(info, 1000);
-        }
+    $('#play').on('click', play);
+    $('#stop').on('click', stop);
+    $('#mute').on('click', mute);
+    $('#time10').on('click', time10);
+    $('#volumeUp').on('click', volumeUp);
+    $('#volumeDown').on('click', volumeDown);
 
-        function stop() {
-            rplayer.stop();
+    function mp3() {
+      $('#url').val('https://cogecomedia.leanstream.co/CKBEFM-MP3');
 
-            info();
-        }
+      play();
+    }
 
-        function mute() {
-            rplayer.mute();
+    function hls() {
+      $('#url').val('https://cogecomedia.leanstream.co/cogecomedia/CKBEFM.stream/playlist.m3u8');;
 
-            info();
-        }
+      play();
+    }
 
-        function time10() {
-            rplayer.currentTime = rplayer.currentTime - 10;
-        }
+    function play() {
+      rplayer.play($('#url').val());
+    }
 
-        function volumeUp() {
-            rplayer.volume += 1;
+    function stop() {
+      rplayer.stop();
 
-            info();
-        }
+      info();
+    }
 
-        function volumeDown() {
-            rplayer.volume -= 1;
+    function mute() {
+      rplayer.mute();
 
-            info();
-        }
+      info();
+    }
 
-        function info() {
-            var playing = false;
-            var volume = rplayer.volume * 10;
-            var muted = rplayer.muted;
-            var src = null;
-            var time = 0;
+    function time10() {
+      rplayer.currentTime = rplayer.currentTime - 10;
+    }
 
-            if (rplayer.playing) {
-                playing = true;
-                src = rplayer.src;
-                time = rplayer.currentTime;
-            }
+    function volumeUp() {
+      rplayer.volume += 1;
 
-            $('#playing').html(String(playing));
-            $('#volume').html(volume);
-            $('#muted').html(String(muted));
-            $('#src').html(String(src));
-            $('#time').html(time);
-        }
-    </script>
+      info();
+    }
+
+    function volumeDown() {
+      rplayer.volume -= 1;
+
+      info();
+    }
+
+    function info() {
+      var playing = false;
+      var volume = rplayer.volume * 10;
+      var muted = rplayer.muted;
+      var src = null;
+      var time = 0;
+
+      if (rplayer.playing) {
+          playing = true;
+          src = rplayer.src;
+          time = rplayer.currentTime;
+      }
+
+      $('#playing').html(String(playing));
+      $('#volume').html(volume);
+      $('#muted').html(String(muted));
+      $('#src').html(String(src));
+      $('#time').html(time);
+    }
+  </script>
 </body>
 </html>

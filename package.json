@@ -5,8 +5,7 @@
   "main": "dist/rplayer.js",
   "module": "src/index.js",
   "scripts": {
-    "build": "webpack",
-    "serve": "http-server -p 9999 ."
+    "serve": "http-server -S -C cert.pem -o  -p 9999"
   },
   "keywords": [
     "radio",
