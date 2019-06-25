@@ -55,7 +55,7 @@ npm install
 npm run serve
 ```
 
-http://127.0.0.1:9999
+https://127.0.0.1:9999
 
 include https://github.com/video-dev/hls.js (.m3u8)
 
