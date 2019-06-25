@@ -41,11 +41,15 @@
 
     <div class="w3-row">
       <div class="w3-twothird">
-        <input id="url" class="w3-input w3-border" type="text" value="https://cogecomedia.leanstream.co/cogecomedia/CKBEFM.stream/playlist.m3u8">
+        <p>
+          <input id="url" class="w3-input w3-border" type="text">
+        </p>
       </div>
-      <div class="w3-container w3-third">
-        <button id="mp3" class="w3-button w3-teal">MP3</button>
-      <button id="hls" class="w3-button w3-dark-grey">HLS</button>
+      <div class="w3-third">
+        <p>
+          <button id="mp3" class="w3-button w3-teal">MP3</button>
+          <button id="hls" class="w3-button w3-dark-grey">HLS</button>
+        </p>
       </div>
     </div>
     <div class="w3-row">
@@ -89,7 +93,11 @@
   <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
   <script src="dist/rplayer.js"></script>
   <script>
-    var rplayer = new rPlayer();
+    var rplayer = new rPlayer(),
+        mp3Url = 'https://cogecomedia.leanstream.co/CKBEFM-MP3',
+        hlsUrl = 'https://cogecomedia.leanstream.co/cogecomedia/CKBEFM.stream/playlist.m3u8';
+
+    $('#url').val(hlsUrl);
 
     info();
 
@@ -108,13 +116,13 @@
     $('#volumeDown').on('click', volumeDown);
 
     function mp3() {
-      $('#url').val('https://cogecomedia.leanstream.co/CKBEFM-MP3');
+      $('#url').val(mp3Url);
 
       play();
     }
 
     function hls() {
-      $('#url').val('https://cogecomedia.leanstream.co/cogecomedia/CKBEFM.stream/playlist.m3u8');;
+      $('#url').val(hlsUrl);
 
       play();
     }
