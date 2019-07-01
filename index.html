@@ -2,17 +2,11 @@
 <html lang="en">
 <head>
   <script async src="https://www.googletagmanager.com/gtag/js?id=UA-139934361-1"></script>
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
     gtag('js', new Date());
     gtag('config', 'UA-139934361-1');
-
-   (adsbygoogle = window.adsbygoogle || []).push({
-      google_ad_client: "ca-pub-9160095348088680",
-      enable_page_level_ads: true
-   });
   </script>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -21,8 +15,6 @@
   <meta name="description" content="rPlayer is a player play streaming radio, this player, offers the possibility to change different audio format. Example: .m3u8, .mp3, .aac.">
   <meta name="theme-color" content="#2196F3">
   <link rel="icon" href="favicon.png">
-  <!-- You can use Open Graph tags to customize link previews.
-  Learn more: https://developers.facebook.com/docs/sharing/webmasters -->
   <meta property="og:url" content="https://rplayer.js.org/" />
   <meta property="og:type" content="website" />
   <meta property="og:title" content="rPlayer in action" />
@@ -56,7 +48,6 @@
           <button id="hls" class="w3-button w3-margin-bottom w3-dark-grey">HLS</button>
           <button id="mute" class="w3-button w3-margin-bottom w3-yellow">Mute</button>
           <button id="time10" class="w3-button w3-margin-bottom w3-blue">Time -10</button>
-        </p>
       </div>
       <div class="w3-quarter">
         <h2>Volume</h2>
@@ -135,6 +126,8 @@
     <h1>rPlayer</h1>
     <p>rPlayer is a player play streaming radio, this player, offers the possibility to change different audio format. Example: .m3u8, .mp3, .aac.</p>
   </div>
+  <script async defer src="https://buttons.github.io/buttons.js"></script>
+  <script src="https://www.w3schools.com/lib/w3codecolor.js"></script>
   <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
   <script src="dist/rplayer.js"></script>
   <script>
@@ -142,14 +135,13 @@
         mp3Url = 'https://cogecomedia.leanstream.co/CKBEFM-MP3',
         hlsUrl = 'https://cogecomedia.leanstream.co/cogecomedia/CKBEFM.stream/playlist.m3u8';
 
-    $('#url').val(hlsUrl);
-
     info();
 
     rplayer.audio.ontimeupdate = function () {
       info();
     };
 
+    $('#url').val(hlsUrl);
     $('#mp3').on('click', mp3);
     $('#hls').on('click', hls);
 
@@ -223,7 +215,8 @@
       $('#src').html(String(src));
       $('#time').html(time);
     }
+
+    w3CodeColor();
   </script>
-  <script async defer src="https://buttons.github.io/buttons.js"></script>
 </body>
 </html>
