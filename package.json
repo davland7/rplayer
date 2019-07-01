@@ -5,7 +5,8 @@
   "main": "dist/rplayer.js",
   "module": "src/index.js",
   "scripts": {
-    "serve": "http-server -S -C cert.pem -o  -p 9999"
+    "build": "webpack",
+    "dev": "webpack-dev-server"
   },
   "keywords": [
     "radio",
@@ -19,9 +20,9 @@
     "hls.js": "^0.12.4"
   },
   "devDependencies": {
-    "http-server": "^0.11.1",
-    "terser-webpack-plugin": "^1.2.3",
-    "webpack": "^4.30.0",
-    "webpack-cli": "^3.3.2"
+    "terser-webpack-plugin": "^1.3.0",
+    "webpack": "^4.35.2",
+    "webpack-cli": "^3.3.5",
+    "webpack-dev-server": "^3.7.2"
   }
 }

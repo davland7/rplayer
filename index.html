@@ -29,48 +29,39 @@
   <meta property="og:image:width" content="1080" />
   <meta property="og:image:height" content="1080" />
   <meta property="fb:app_id" content="401821003744476"/>
-  <style>
-    body {background-color: #2196F3;}
-    .w3-container {background-color: #ffffff;}
+  <style type="text/css">
+    @media only screen and (max-width: 768px) {
+      #info {overflow-x: scroll; overflow-y: hidden;}
+      #src {padding-right: 16px;}
+    }
   </style>
 </head>
-<body>
-  <div class="w3-container"> 
+<body class="w3-blue">
+  <div class="w3-container w3-white"> 
     <h1>rPlayer in action</h1>
     <div class="w3-row">
-      <div class="w3-twothird">
-        <p>
-          <label class="w3-text-grey">Streaming url:</label>
-          <input id="url" class="w3-input w3-border" type="text">
-        </p>
-      </div>
-      <div class="w3-third">
-        <p>
-          <button id="mp3" class="w3-button w3-teal">MP3</button>
-          <button id="hls" class="w3-button w3-dark-grey">HLS</button>
-        </p>
-      </div>
+      <label class="w3-text-grey">Streaming url:</label>
+      <input id="url" class="w3-input w3-border" type="text">
     </div>
     <div class="w3-row">
-      <div class="w3-half">
+      <div class="w3-threequarter">
         <h2>Try</h2>
-        <p>
-          <button id="play" class="w3-button w3-green">Play</button>
-          <button id="stop" class="w3-button w3-red">Stop</button>
-          <button id="mute" class="w3-button w3-yellow">Mute</button>
-          <button id="time10" class="w3-button w3-blue">Time -10</button>
+          <button id="play" class="w3-button w3-margin-bottom w3-green">Play</button>
+          <button id="stop" class="w3-button w3-margin-bottom w3-red">Stop</button>
+          <button id="mp3" class="w3-button w3-margin-bottom w3-teal">MP3</button>
+          <button id="hls" class="w3-button w3-margin-bottom w3-dark-grey">HLS</button>
+          <button id="mute" class="w3-button w3-margin-bottom w3-yellow">Mute</button>
+          <button id="time10" class="w3-button w3-margin-bottom w3-blue">Time -10</button>
         </p>
       </div>
-      <div class="w3-half">
+      <div class="w3-quarter">
         <h2>Volume</h2>
-        <p>
-          <button id="volumeUp" class="w3-button w3-purple">Up</button>
-          <button id="volumeDown" class="w3-button w3-deep-purple">Down</button>
-        </p>
+          <button id="volumeUp" class="w3-button w3-margin-bottom w3-purple">Up</button>
+          <button id="volumeDown" class="w3-button w3-margin-bottom w3-deep-purple">Down</button>
       </div>
     </div>
     <div class="w3-row">
-      <div class="w3-panel w3-pale-yellow w3-border">
+      <div id="info" class="w3-panel w3-pale-yellow w3-border">
         <h3>Infos</h3>
         <p>
           Playing: <span id="playing"></span><br>
@@ -82,10 +73,61 @@
       </div>
     </div>
   </div>
-  <div class="w3-container">
-    <h5><a href="https://github.com/davland7/rplayer" target="_blank">GitHub</a></h5>
+  <div class="w3-container w3-white">
+    <h2>Easy to use</h2>
+    <div class="w3-code jsHigh">
+      var player = new rPlayer();
+    </div>
+
+    <h2>Play</h2>
+    <div class="w3-code jsHigh">
+      player.play('URL');
+    </div>
+
+    <h2>Stop</h2>
+    <div class="w3-code jsHigh">
+    player.stop();
+    </div>
+
+    <h2>Mute</h2>
+    <div class="w3-code jsHigh">
+      player.mute();
+    </div>
+
+    <h2>Set Volume</h2>
+    <p>You can only set volume between 0 and 10</p>
+    <div class="w3-code jsHigh notranslate">
+      player.volume = 7; // 7 Default set in local storage
+    </div>
+
+    <h2>Infos</h2>
+
+    <div class="w3-code jsHigh">
+      console.log('Playing:', player.playing);<br>
+      console.log('Volume:', player.volume);<br>
+      console.log('Muted:', player.muted);<br>
+      console.log('Source:', player.src);<br>
+      console.log('Time:', player.currentTime);
+    </div>
+
+    <h3>Use Audio & hls.js</h3>
+    <div class="w3-code jsHigh">
+      rplayer.audio<br>
+      rplayer.hls
+    </div>
+    <ul>
+      <li><a href="https://developer.mozilla.org/fr/docs/Web/HTML/Element/audio" target="_blank">Audio</a></li>
+      <li><a href="https://github.com/video-dev/hls.js" target="_blank">hls.js</a></li>
+    </ul>
+
+    <br>
+    <a class="github-button" href="https://github.com/davland7/rplayer" data-icon="octicon-star" data-size="large" aria-label="Star davland7/rplayer on GitHub">Star</a>
+
+    <a class="github-button" href="https://github.com/davland7/rplayer/archive/master.zip" data-icon="octicon-cloud-download" data-size="large" aria-label="Download davland7/rplayer on GitHub">Download</a>
+
+    <br><br>
   </div>
-  <div class="w3-container w3-blue">
+  <div class="w3-container">
     <h1>rPlayer</h1>
     <p>rPlayer is a player play streaming radio, this player, offers the possibility to change different audio format. Example: .m3u8, .mp3, .aac.</p>
   </div>
@@ -178,5 +220,6 @@
       $('#time').html(time);
     }
   </script>
+  <script async defer src="https://buttons.github.io/buttons.js"></script>
 </body>
 </html>

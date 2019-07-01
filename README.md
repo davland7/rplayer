@@ -48,17 +48,32 @@ console.log('Source:', player.src);
 console.log('Time:', player.currentTime);
 ```
 
+## Use Audio & hls.js
+
+```
+rplayer.audio
+rplayer.hls
+```
+* [Audio](https://developer.mozilla.org/fr/docs/Web/HTML/Element/audio)
+* [hls.js](https://github.com/video-dev/hls.js)
+
 ## Demo
 
 ```
 npm install
-npm run serve
+npm run build
+npm run dev
 ```
 
 https://127.0.0.1:9999
 
-include https://github.com/video-dev/hls.js (.m3u8)
+## npm dependencies
+
+```
+npm install hls.js --save
+npm install terser-webpack-plugin webpack webpack-cli webpack-dev-server --save-dev
+```
 
 ## Used by
 
-https://chrome.google.com/webstore/detail/mini-radio/klcjochgjlcecbalpokmcldlfhngcnfh
+[Mini Radio (Chrome extention)](https://chrome.google.com/webstore/detail/mini-radio/klcjochgjlcecbalpokmcldlfhngcnfh)

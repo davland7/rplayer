@@ -3,6 +3,12 @@ const TerserPlugin = require('terser-webpack-plugin');
 const path = require('path');
 
 module.exports = {
+    devServer: {
+      contentBase: path.join(__dirname, ''),
+      compress: true,
+      port: 9999,
+      lazy: true
+    },
     entry: './src/index.js',
     mode: 'production',
     output: {
