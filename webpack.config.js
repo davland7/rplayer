@@ -12,9 +12,9 @@ module.exports = {
     entry: './src/index.js',
     mode: 'production',
     output: {
-        path: path.resolve(__dirname, 'cdn'),
+        path: path.resolve(__dirname, 'dist'),
         filename: 'rplayer.js',
-        publicPath: '/cdn/',
+        publicPath: '/dist/',
         library: 'rPlayer',
         libraryTarget: 'umd',
         libraryExport: 'default'
