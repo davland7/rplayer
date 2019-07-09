@@ -224,6 +224,10 @@
       $('#time').html(time);
     }
 
+    if (!("ontouchstart" in document.documentElement)) {
+      document.documentElement.className += "no-touch";
+    }
+
     w3CodeColor();
   </script>
 </body>
