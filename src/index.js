@@ -84,12 +84,8 @@ class rPlayer {
         return this._audio.currentTime = value;
     }
 
-    get audio() {
-        return this._audio;
-    }
-
-    get hls() {
-        return this._hls;
+    set onTimeUpdate(callback) {
+        return this._audio.ontimeupdate = callback;
     }
 }
 

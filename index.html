@@ -1,13 +1,15 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-  <script>
-   (adsbygoogle = window.adsbygoogle || []).push({
+  <!--
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <script>
+     (adsbygoogle = window.adsbygoogle || []).push({
         google_ad_client: "ca-pub-9160095348088680",
         enable_page_level_ads: true
-   });
-  </script>
+     });
+    </script>
+  -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=UA-139934361-1"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
@@ -78,56 +80,48 @@
   </div>
   <div class="w3-container w3-white">
     <h2>Easy to use</h2>
-    <div class="w3-code jsHigh">
-      var player = new rPlayer();
-    </div>
+<pre class="w3-code jsHigh">
+var player = new rPlayer();
+</pre>
 
     <h2>Play</h2>
-    <div class="w3-code jsHigh">
-      player.play('URL');
-    </div>
+<pre class="w3-code jsHigh">
+player.play('URL');
+</pre>
 
     <h2>Stop</h2>
-    <div class="w3-code jsHigh">
-    player.stop();
-    </div>
+<pre class="w3-code jsHigh">
+player.stop();
+</pre>
 
     <h2>Mute</h2>
-    <div class="w3-code jsHigh">
-      player.mute();
-    </div>
+<pre class="w3-code jsHigh">
+player.mute();
+</pre>
 
     <h2>Set Volume</h2>
     <p>You can only set volume between 0 and 10</p>
-    <div class="w3-code jsHigh notranslate">
-      player.volume = 7; // 7 Default set in local storage
-    </div>
+<pre class="w3-code jsHigh notranslate">
+player.volume = 7; // 7 Default set in local storage
+</pre>
+
+    <h2>timeupdate event</h2>
+    <p>The <a href="//developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/timeupdate_event" target="_blank">timeupdate event</a> is fired when the time indicated by the currentTime attribute has been updated.</p>
+<pre class="w3-code jsHigh notranslate">
+rplayer.onTimeUpdate = function() {
+  console.log('Time:', player.currentTime);
+};
+</pre>
 
     <h2>Infos</h2>
 
-    <div class="w3-code jsHigh">
-      console.log('Playing:', player.playing);<br>
-      console.log('Volume:', player.volume);<br>
-      console.log('Muted:', player.muted);<br>
-      console.log('Source:', player.src);<br>
-      console.log('Time:', player.currentTime);
-    </div>
-
-    <h3>Use Audio & hls.js</h3>
-    <div class="w3-code jsHigh">
-      rplayer.audio<br>
-      rplayer.hls
-    </div>
-    <ul>
-      <li><a href="https://developer.mozilla.org/fr/docs/Web/HTML/Element/audio" target="_blank">Audio</a></li>
-      <li><a href="https://github.com/video-dev/hls.js" target="_blank">hls.js</a></li>
-    </ul>
-
-    <br>
-    <a class="github-button" href="https://github.com/davland7/rplayer" data-icon="octicon-star" data-size="large" aria-label="Star davland7/rplayer on GitHub">Star</a>
-
-    <a class="github-button" href="https://github.com/davland7/rplayer/archive/master.zip" data-icon="octicon-cloud-download" data-size="large" aria-label="Download davland7/rplayer on GitHub">Download</a>
-
+<pre class="w3-code jsHigh">
+console.log('Playing:', player.playing);
+console.log('Volume:', player.volume);
+console.log('Muted:', player.muted);
+console.log('Source:', player.src);
+console.log('Time:', player.currentTime);
+</pre>
     <br><br>
   </div>
   <div class="w3-container">
@@ -145,7 +139,7 @@
 
     info();
 
-    rplayer.audio.ontimeupdate = function () {
+    rplayer.onTimeUpdate = function() {
       info();
     };
 
@@ -224,8 +218,8 @@
       $('#time').html(time);
     }
 
-    if (!("ontouchstart" in document.documentElement)) {
-      document.documentElement.className += "no-touch";
+    if (!('ontouchstart' in document.documentElement)) {
+      document.documentElement.className += 'no-touch';
     }
 
     w3CodeColor();

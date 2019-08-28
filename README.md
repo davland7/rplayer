@@ -38,6 +38,16 @@ You can only set volume between 0 and 10
 player.volume = 7; // 7 Default set in local storage
 ```
 
+## timeupdate event
+
+The [timeupdate event](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/timeupdate_event) is fired when the time indicated by the currentTime attribute has been updated.
+
+```
+rplayer.onTimeUpdate = function() {
+  console.log('Time:', player.currentTime);
+};
+```
+
 ## Infos
 
 ```
@@ -48,13 +58,8 @@ console.log('Source:', player.src);
 console.log('Time:', player.currentTime);
 ```
 
-## Use Audio & hls.js
+## Include hls.js
 
-```
-rplayer.audio
-rplayer.hls
-```
-* [Audio](https://developer.mozilla.org/fr/docs/Web/HTML/Element/audio)
 * [hls.js](https://github.com/video-dev/hls.js)
 
 ## Demo
@@ -62,10 +67,10 @@ rplayer.hls
 ```
 npm install
 npm run build
-npm run dev
+npm run start
 ```
 
-https://127.0.0.1:9999
+[http://127.0.0.1:9999](http://127.0.0.1:9999)
 
 ## npm dependencies
 
