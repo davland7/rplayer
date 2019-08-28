@@ -7,7 +7,8 @@ module.exports = {
       contentBase: path.join(__dirname, ''),
       compress: true,
       port: 9999,
-      lazy: true
+      lazy: true,
+      https: true
     },
     entry: './src/index.js',
     mode: 'production',
