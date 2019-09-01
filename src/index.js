@@ -24,7 +24,7 @@ class rPlayer {
             });
         } else if (this._audio.canPlayType('application/vnd.apple.mpegurl')) {
             this._audio.src = src;
-            this._audio.addEventListener('loadedmetadata',() => {
+            this._audio.addEventListener('loadedmetadata', () => {
                 this._audio.play();
             });
         } else {
