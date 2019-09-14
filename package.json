@@ -6,7 +6,7 @@
   "module": "src/index.js",
   "scripts": {
     "build": "webpack",
-    "start": "webpack-dev-server"
+    "start": "webpack-dev-server --host 192.168.1.64"
   },
   "keywords": [
     "radio",

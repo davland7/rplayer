@@ -1,6 +1,7 @@
 <!doctype html>
 <html lang="en">
 <head>
+  <!--
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
   <script>
    (adsbygoogle = window.adsbygoogle || []).push({
@@ -9,13 +10,14 @@
    });
   </script>
   <script async src="https://www.googletagmanager.com/gtag/js?id=UA-139934361-1"></script>
+  -->
   <script>
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
     gtag('js', new Date());
     gtag('config', 'UA-139934361-1');
   </script>
-  <meta charset="utf-8">
+  <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
   <title>rPlayer in action</title>
@@ -33,36 +35,61 @@
   <meta property="og:image:width" content="1080" />
   <meta property="og:image:height" content="1080" />
   <meta property="fb:app_id" content="401821003744476"/>
-  <style type="text/css">
-    @media only screen and (max-width: 768px) {
-      #info, pre {overflow-x: scroll; overflow-y: hidden;}
-      #src {padding-right: 16px;}
-    }
-  </style>
+  <link rel="stylesheet" type="text/css" href="app/app.css">
+  <link rel="stylesheet" type="text/css" href="index.css">
 </head>
-<body class="w3-blue">
+<body>
+  <div class="demo">
+    <div class="app">
+      <div class="wrap">
+        <div class="top">
+          <div class="wrap">
+            <div class="top">
+              <div>
+                <button id="time10" class="w3-button w3-border w3-xlarge w3-blue">Time -10</button>
+              </div>
+
+              <div>
+                <button id="mute" class="w3-button w3-border w3-xlarge w3-yellow">Mute</button>
+              </div>
+
+              <div>
+                <button id="volumeUp" class="w3-button w3-border w3-xlarge w3-purple">Up</button>
+              </div>
+
+              <div>
+                <button id="volumeDown" class="w3-button w3-border w3-xlarge w3-deep-purple">Down</button>
+              </div>
+            </div>
+            <div class="bottom">
+              <div></div>
+            </div>
+          </div>
+        </div>
+        <div class="bottom">
+          <div>
+            <button id="play" class="w3-button w3-border w3-xlarge w3-green">Play</button>
+          </div>
+          <div>
+            <button id="stop" class="w3-button w3-border w3-xlarge w3-red">Stop</button>
+          </div>
+          <div>
+            <button id="hls" class="w3-button w3-border w3-xlarge w3-dark-grey">HLS</button>
+          </div>
+          <div>
+            <button id="mp3" class="w3-button w3-border w3-xlarge w3-teal">MP3</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="info">
   <div class="w3-container w3-white"> 
     <h1>rPlayer in action</h1>
     <div class="w3-row">
       <label class="w3-text-grey">Streaming url:</label>
       <input id="url" class="w3-input w3-border" type="text">
       <small>Listen <a href="//www.thebeat925.ca/" rel="noreferrer" target="_blank">The Beat 92.5 Montreal</a></small>
-    </div>
-    <div class="w3-row">
-      <div class="w3-threequarter">
-        <h2>Try</h2>
-          <button id="play" class="w3-button w3-margin-bottom w3-green">Play</button>
-          <button id="stop" class="w3-button w3-margin-bottom w3-red">Stop</button>
-          <button id="mp3" class="w3-button w3-margin-bottom w3-teal">MP3</button>
-          <button id="hls" class="w3-button w3-margin-bottom w3-dark-grey">HLS</button>
-          <button id="mute" class="w3-button w3-margin-bottom w3-yellow">Mute</button>
-          <button id="time10" class="w3-button w3-margin-bottom w3-blue">Time -10</button>
-      </div>
-      <div class="w3-quarter">
-        <h2>Volume</h2>
-          <button id="volumeUp" class="w3-button w3-margin-bottom w3-purple">Up</button>
-          <button id="volumeDown" class="w3-button w3-margin-bottom w3-deep-purple">Down</button>
-      </div>
     </div>
     <div class="w3-row">
       <div id="info" class="w3-panel w3-pale-yellow w3-border">
@@ -122,105 +149,21 @@ console.log('Source:', player.src);
 console.log('Time:', player.currentTime);
 </pre>
     <br><br>
+    </div>
+    <div class="w3-container">
+      <h1>rPlayer</h1>
+      <p>rPlayer is a player play streaming radio, this player, offers the possibility to change different audio format. Example: .m3u8, .mp3, .aac.</p>
+    </div>
   </div>
-  <div class="w3-container">
-    <h1>rPlayer</h1>
-    <p>rPlayer is a player play streaming radio, this player, offers the possibility to change different audio format. Example: .m3u8, .mp3, .aac.</p>
-  </div>
-  <script async defer src="https://buttons.github.io/buttons.js"></script>
-  <script src="https://www.w3schools.com/lib/w3codecolor.js"></script>
-  <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha256-pasqAKBDmFT4eHoN2ndd6lN370kFiGUFyTiUHWhU7k8=" crossorigin="anonymous"></script>
-  <script src="/dist/rplayer.js"></script>
+
+
+  <script async defer src="//buttons.github.io/buttons.js"></script>
+  <script src="//www.w3schools.com/lib/w3codecolor.js"></script>
+  <script src="//code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha256-pasqAKBDmFT4eHoN2ndd6lN370kFiGUFyTiUHWhU7k8=" crossorigin="anonymous"></script>
+  <script type="text/javascript" src="dist/rplayer.js"></script>
+  <script type="text/javascript" src="app/app.js"></script>
+  <script type="text/javascript" src="index.js"></script>
   <script>
-    var rplayer = new rPlayer(),
-        mp3Url = 'https://cogecomedia.leanstream.co/CKBEFM-MP3',
-        hlsUrl = 'https://cogecomedia.leanstream.co/cogecomedia/CKBEFM.stream/playlist.m3u8';
-
-    info();
-
-    rplayer.onTimeUpdate = function() {
-      info();
-    };
-
-    $('#url').val(hlsUrl);
-    $('#mp3').on('click', mp3);
-    $('#hls').on('click', hls);
-
-    $('#play').on('click', play);
-    $('#stop').on('click', stop);
-    $('#mute').on('click', mute);
-    $('#time10').on('click', time10);
-    $('#volumeUp').on('click', volumeUp);
-    $('#volumeDown').on('click', volumeDown);
-
-    function mp3() {
-      $('#url').val(mp3Url);
-
-      play();
-    }
-
-    function hls() {
-      $('#url').val(hlsUrl);
-
-      play();
-    }
-
-    function play() {
-      rplayer.play($('#url').val());
-    }
-
-    function stop() {
-      rplayer.stop();
-
-      info();
-    }
-
-    function mute() {
-      rplayer.mute();
-
-      info();
-    }
-
-    function time10() {
-      rplayer.currentTime = rplayer.currentTime - 10;
-    }
-
-    function volumeUp() {
-      rplayer.volume += 1;
-
-      info();
-    }
-
-    function volumeDown() {
-      rplayer.volume -= 1;
-
-      info();
-    }
-
-    function info() {
-      var playing = false;
-      var volume = rplayer.volume * 10;
-      var muted = rplayer.muted;
-      var src = null;
-      var time = 0;
-
-      if (rplayer.playing) {
-          playing = true;
-          src = rplayer.src;
-          time = rplayer.currentTime;
-      }
-
-      $('#playing').html(String(playing));
-      $('#volume').html(volume);
-      $('#muted').html(String(muted));
-      $('#src').html(String(src));
-      $('#time').html(time);
-    }
-
-    if (!('ontouchstart' in document.documentElement)) {
-      document.documentElement.className += 'no-touch';
-    }
-
     w3CodeColor();
   </script>
 </body>
