@@ -8,25 +8,20 @@
 }
 
 .top {
-	height: 61.8vh;
 	width: 100%;
+	height: 61.8%;
 }
 
 .top .top {
 	display: grid;
   grid-template-columns: repeat(2, 50%);
-  height: 61.8%;
 }
 
 .bottom {
-	height: 38.2vh;
 	width: 100%;
+	height: 38.2%;
   display: grid;
   grid-template-columns: repeat(2, 50%);
-}
-
-.bottom .bottom {
-	height: 38.2%;
 }
 
 .w3-button {
