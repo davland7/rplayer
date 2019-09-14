@@ -65,6 +65,10 @@ html.no-touch .bottom {
 	height: 38.2%;
 }
 
+.demo {
+	height: 100%;
+}
+
 .info {
 	display: none;
   -webkit-flex: 0 1 66.67%;
