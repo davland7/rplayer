@@ -9,13 +9,12 @@ window['__onGCastApiAvailable'] = function(isAvailable) {
 };
 
 initializeCastApi = function() {
-  cast.framework.CastContext.getInstance().setOptions({
+  var context = cast.framework.CastContext.getInstance().setOptions({
     receiverApplicationId: '8DF59165',
     autoJoinPolicy: chrome.cast.AutoJoinPolicy.ORIGIN_SCOPED
   });
+  
+  const playerManager = context.getPlayerManager();
+
+  context.start();
 };
-
-const context = cast.framework.CastReceiverContext.getInstance();
-const playerManager = context.getPlayerManager();
-
-context.start();
