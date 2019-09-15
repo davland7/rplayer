@@ -15,15 +15,7 @@ initializeCastApi = function() {
   });
 };
 
-var castSession = cast.framework.CastContext.getInstance().getCurrentSession();
+const context = cast.framework.CastReceiverContext.getInstance();
+const playerManager = context.getPlayerManager();
 
-var mediaInfo = new chrome.cast.media.MediaInfo(currentMediaURL, contentType);
-var request = new chrome.cast.media.LoadRequest(mediaInfo);
-castSession.loadMedia(request).then(
-  function() { console.log('Load succeed'); },
-  function(errorCode) { console.log('Error code: ' + errorCode); });
-
-var playerCast = new cast.framework.RemotePlayer();
-var playerController = new cast.framework.RemotePlayerController(playerCast);
-
-playerController.playOrPause();
+context.start();
