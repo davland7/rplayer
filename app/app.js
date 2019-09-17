@@ -9,14 +9,14 @@ rplayer.onTimeUpdate = function() {
 };
 
 $('#url').val(hlsUrl);
-$('#mp3').on('click', mp3);
-$('#hls').on('click', hls);
-$('#play').on('click', play);
-$('#stop').on('click', stop);
-$('#mute').on('click', mute);
-$('#time10').on('click', time10);
-$('#volumeUp').on('click', volumeUp);
-$('#volumeDown').on('click', volumeDown);
+$('#mp3').on('touchstart click', mp3);
+$('#hls').on('touchstart click', hls);
+$('#play').on('touchstart click', play);
+$('#stop').on('touchstart click', stop);
+$('#mute').on('touchstart click', mute);
+$('#time10').on('touchstart click', time10);
+$('#volumeUp').on('touchstart click', volumeUp);
+$('#volumeDown').on('touchstart click', volumeDown);
 
 function mp3() {
   $('#url').val(mp3Url);
