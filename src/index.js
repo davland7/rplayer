@@ -41,8 +41,10 @@ class rPlayer {
     }
 
     pause() {
-        this._audio.pause();
-        this._pause = true;
+        if (!this._audio.paused) {
+            this._audio.pause();
+            this._pause = true;
+        }
     }
 
     stop() {
