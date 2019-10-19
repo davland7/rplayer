@@ -12,6 +12,7 @@ $('#url').val(hlsUrl);
 $('#mp3').on('touchstart click', mp3);
 $('#hls').on('touchstart click', hls);
 $('#play').on('touchstart click', play);
+$('#pause').on('touchstart click', pause);
 $('#stop').on('touchstart click', stop);
 $('#mute').on('touchstart click', mute);
 $('#time10').on('touchstart click', time10);
@@ -32,6 +33,10 @@ function hls() {
 
 function play() {
   rplayer.play($('#url').val());
+}
+
+function pause() {
+  rplayer.pause();
 }
 
 function stop() {
@@ -63,21 +68,10 @@ function volumeDown() {
 }
 
 function info() {
-  var playing = false;
-  var volume = rplayer.volume * 10;
-  var muted = rplayer.muted;
-  var src = null;
-  var time = 0;
-
-  if (rplayer.playing) {
-      playing = true;
-      src = rplayer.src;
-      time = rplayer.currentTime;
-  }
-
-  $('#playing').html(String(playing));
-  $('#volume').html(volume);
-  $('#muted').html(String(muted));
-  $('#src').html(String(src));
-  $('#time').html(time);
+  $('#playing').html(String(rplayer.playing));
+  $('#volume').html(rplayer.volume * 10);
+  $('#paused').html(String(rplayer.paused));
+  $('#muted').html(String(rplayer.muted));
+  $('#src').html(String(rplayer.src));
+  $('#time').html(rplayer.currentTime);
 }

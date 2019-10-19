@@ -1,6 +1,7 @@
 <!doctype html>
 <html lang="en">
 <head>
+  <!--
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
   <script>
    (adsbygoogle = window.adsbygoogle || []).push({
@@ -9,6 +10,7 @@
    });
   </script>
   <script async src="https://www.googletagmanager.com/gtag/js?id=UA-139934361-1"></script>
+  -->
   <script>
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
@@ -39,48 +41,35 @@
 <body>
   <div class="demo">
     <div class="app">
-      <div class="wrap">
-        <div class="top">
-          <div class="wrap">
-            <div class="top">
-              <div>
-                <button id="time10" class="w3-button w3-border w3-xlarge w3-blue">Time -10</button>
-              </div>
+      <div>
+        <button id="time10" class="w3-button w3-border w3-xlarge w3-blue">Time -10</button>
+      </div>
 
-              <div>
-                <button id="mute" class="w3-button w3-border w3-xlarge w3-yellow">Mute</button>
-              </div>
+      <div>
+        <button id="mute" class="w3-button w3-border w3-xlarge w3-yellow">Mute</button>
+      </div>
 
-              <div>
-                <button id="volumeUp" class="w3-button w3-border w3-xlarge w3-purple">Up</button>
-              </div>
+      <div>
+        <button id="volumeUp" class="w3-button w3-border w3-xlarge w3-purple">Up</button>
+      </div>
 
-              <div>
-                <button id="volumeDown" class="w3-button w3-border w3-xlarge w3-deep-purple">Down</button>
-              </div>
-            </div>
-            <div class="bottom">
-              <div>
-                <cast-media-player></cast-media-player>
-                <!--<google-cast-launcher></google-cast-launcher>-->
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="bottom">
-          <div>
-            <button id="play" class="w3-button w3-border w3-xlarge w3-green">Play</button>
-          </div>
-          <div>
-            <button id="stop" class="w3-button w3-border w3-xlarge w3-red">Stop</button>
-          </div>
-          <div>
-            <button id="hls" class="w3-button w3-border w3-xlarge w3-dark-grey">HLS</button>
-          </div>
-          <div>
-            <button id="mp3" class="w3-button w3-border w3-xlarge w3-teal">MP3</button>
-          </div>
-        </div>
+      <div>
+        <button id="volumeDown" class="w3-button w3-border w3-xlarge w3-deep-purple">Down</button>
+      </div>
+      <div>
+        <button id="play" class="w3-button w3-border w3-xlarge w3-green">Play</button>
+      </div>
+      <div>
+        <button id="stop" class="w3-button w3-border w3-xlarge w3-red">Stop</button>
+      </div>
+      <div>
+        <button id="pause" class="w3-button w3-border w3-xlarge w3-brown">Pause</button>
+      </div>
+      <div>
+        <button id="hls" class="w3-button w3-border w3-xlarge w3-dark-grey">HLS</button>
+      </div>
+      <div>
+        <button id="mp3" class="w3-button w3-border w3-xlarge w3-teal">MP3</button>
       </div>
     </div>
   </div>
@@ -98,6 +87,7 @@
         <p>
           Playing: <span id="playing"></span><br>
           Volume: <span id="volume"></span>%<br>
+          Paused: <span id="paused"></span><br>
           Muted: <span id="muted"></span><br>
           Source: <span id="src"></span><br>
           Time: <span id="time"></span> seconds
@@ -119,6 +109,11 @@ player.play('URL');
     <h2>Stop</h2>
 <pre class="w3-code jsHigh">
 player.stop();
+</pre>
+
+    <h2>Pause</h2>
+<pre class="w3-code jsHigh">
+player.pause();
 </pre>
 
     <h2>Mute</h2>
@@ -145,12 +140,11 @@ rplayer.onTimeUpdate = function() {
 <pre class="w3-code jsHigh">
 console.log('Playing:', player.playing);
 console.log('Volume:', player.volume);
+console.log('Paused:', player.paused);
 console.log('Muted:', player.muted);
 console.log('Source:', player.src);
 console.log('Time:', player.currentTime);
 </pre>
-    <br><br>
-    <a class="github-button" href="https://github.com/davland7/rplayer" data-size="large" data-show-count="true" aria-label="Star davland7/rplayer on GitHub">Star</a>
     <br><br>
     </div>
     <div class="w3-container">
@@ -165,7 +159,6 @@ console.log('Time:', player.currentTime);
   <script type="text/javascript" src="dist/rplayer.js"></script>
   <script type="text/javascript" src="app/app.js"></script>
   <script type="text/javascript" src="index.js"></script>
-  <script async defer src="https://buttons.github.io/buttons.js"></script>
   <script>
     w3CodeColor();
   </script>

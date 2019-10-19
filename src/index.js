@@ -4,6 +4,7 @@ class rPlayer {
     constructor() {
         this._audio = new Audio();
         this._hls = null;
+        this._pause = false;
 
         if (localStorage.hasOwnProperty('r-player-volume')) {
             this._audio.volume = localStorage.getItem('r-player-volume') / 10;
@@ -13,25 +14,35 @@ class rPlayer {
     }
 
     play(src) {
-        if (this.playing) this.stop();
+        if (!this._pause)  {
+            if (this.playing) this.stop();
 
-        if (Hls.isSupported() && (src.indexOf('.m3u8') > 0)) {
-            this._hls = new Hls();
-            this._hls.loadSource(src);
-            this._hls.attachMedia(this._audio);
-            this._hls.on(Hls.Events.MANIFEST_PARSED, () => {
+            if (Hls.isSupported() && (src.indexOf('.m3u8') > 0)) {
+                this._hls = new Hls();
+                this._hls.loadSource(src);
+                this._hls.attachMedia(this._audio);
+                this._hls.on(Hls.Events.MANIFEST_PARSED, () => {
+                    this._audio.play();
+                });
+            } else if (this._audio.canPlayType('application/vnd.apple.mpegurl')) {
+                this._audio.src = src;
+                this._audio.addEventListener('loadedmetadata', () => {
+                    this._audio.play();
+                });
+            } else {
+                this._audio.src = src;
+                this._audio.load();
                 this._audio.play();
-            });
-        } else if (this._audio.canPlayType('application/vnd.apple.mpegurl')) {
-            this._audio.src = src;
-            this._audio.addEventListener('loadedmetadata', () => {
-                this._audio.play();
-            });
+            }
         } else {
-            this._audio.src = src;
-            this._audio.load();
             this._audio.play();
+            this._pause = false;
         }
+    }
+
+    pause() {
+        this._audio.pause();
+        this._pause = true;
     }
 
     stop() {
@@ -54,7 +65,9 @@ class rPlayer {
     }
 
     get src() {
-        if (this._hls) {
+        if (!this._audio.currentTime) {
+            return null;
+        } else if (this._hls) {
             return this._hls.url;
         } else {
             return this._audio.src;
@@ -63,6 +76,10 @@ class rPlayer {
 
     get muted() {
         return this._audio.muted;
+    }
+
+    get paused() {
+        return this._audio.paused;
     }
 
     get volume() {

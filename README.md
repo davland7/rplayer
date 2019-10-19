@@ -24,6 +24,13 @@ player.play('URL');
 player.stop();
 ```
 
+## Pause
+
+```
+player.pause();
+```
+
+
 ## Mute
 
 ```
@@ -53,6 +60,7 @@ rplayer.onTimeUpdate = function() {
 ```
 console.log('Playing:', player.playing);
 console.log('Volume:', player.volume);
+console.log('Paused:', player.paused);
 console.log('Muted:', player.muted);
 console.log('Source:', player.src);
 console.log('Time:', player.currentTime);
