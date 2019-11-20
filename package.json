@@ -1,12 +1,12 @@
 {
   "name": "rplayer",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "",
   "main": "dist/rplayer.js",
   "module": "src/index.js",
   "scripts": {
     "build": "webpack",
-    "start": "webpack-dev-server --host 192.168.1.64"
+    "start": "webpack-dev-server"
   },
   "keywords": [
     "radio",

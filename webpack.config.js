@@ -6,10 +6,8 @@ module.exports = {
     devServer: {
       contentBase: path.join(__dirname, ''),
       compress: true,
-      host: '192.168.1.64',
       port: 9999,
-      lazy: true,
-      https: true
+      lazy: true
     },
     entry: './src/index.js',
     mode: 'production',

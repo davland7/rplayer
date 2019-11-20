@@ -62,6 +62,12 @@ class rPlayer {
         this._audio.muted = !this._audio.muted;
     }
 
+    get isHls() {
+        if (this._hls) return true;
+
+        return false;
+    }
+
     get playing() {
         return this._audio.currentTime > 0 && !this._audio.paused && !this._audio.ended && this._audio.readyState > 2;
     }
