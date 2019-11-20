@@ -1,0 +1,9 @@
+{
+	"name" : "rPlayer on Action",
+	"short_name" : "rPlayer",
+	"start_url" : "https://rplayer.js.org/",
+	"description" : "rPlayer is a player play streaming radio, this player, offers the possibility to change different audio format. Example: .m3u8, .mp3, .aac.",
+	"display" : "standalone",
+	"orientation" : "portrait",
+	"lang" : "English"
+}
