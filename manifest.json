@@ -1,0 +1,24 @@
+{
+	"name" : "rPlayer on Action",
+	"short_name" : "rPlayer",
+	"icons": [
+	  {
+	    "src": "/images/icons-192.png",
+	    "type": "image/png",
+	    "sizes": "192x192"
+	  },
+	  {
+	    "src": "/images/icons-512.png",
+	    "type": "image/png",
+	    "sizes": "512x512"
+	  }
+	]
+	"start_url" : "https://rplayer.js.org/?source=pwa",
+	"background_color": "#ffe70b",
+	"scope": "/",
+  	"theme_color": "#ffe70b"
+	"description" : "rPlayer is a player play streaming radio, this player, offers the possibility to change different audio format. Example: .m3u8, .mp3, .aac.",
+	"display" : "standalone",
+	"orientation" : "portrait",
+	"lang" : "English"
+}
