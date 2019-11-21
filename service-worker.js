@@ -1,6 +1,6 @@
 self.addEventListener('install', function(e) {
  e.waitUntil(
-   caches.open('rp-20191121').then(function(cache) {
+   caches.open('rp-20191122').then(function(cache) {
      return cache.addAll([
        '/',
        '/?source=pwa',
@@ -9,8 +9,4 @@ self.addEventListener('install', function(e) {
      ]);
    })
  );
-});
-
-self.addEventListener('fetch', function(event) {
-  console.log(event.request.url);
 });
