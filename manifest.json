@@ -20,6 +20,5 @@
 	"description": "rPlayer is a player play streaming radio, this player, offers the possibility to change different audio format. Example: .m3u8, .mp3, .aac.",
 	"display": "standalone",
 	"orientation": "portrait",
-	"lang": "English",
-	"prefer_related_applications": false
+	"lang": "English"
 }
