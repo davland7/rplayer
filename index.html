@@ -1,6 +1,7 @@
 <!doctype html>
 <html lang="en">
 <head>
+  <!--
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
   <script>
    (adsbygoogle = window.adsbygoogle || []).push({
@@ -8,6 +9,7 @@
       enable_page_level_ads: true
    });
   </script>
+  -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=UA-139934361-1"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
@@ -21,21 +23,21 @@
   <title>rPlayer on Action</title>
   <meta name="description" content="rPlayer is a player play streaming radio, this player, offers the possibility to change different audio format. Example: .m3u8, .mp3, .aac." />
   <meta name="theme-color" content="#ffffff" />
-  <link rel="icon" href="images/icons-192.png" />
+  <link rel="icon" href="images/favicon.png" />
   <link rel="apple-touch-icon" href="images/icons-192.png" />
   <meta property="og:url" content="https://rplayer.js.org/" />
   <meta property="og:type" content="website" />
   <meta property="og:title" content="rPlayer in action" />
   <meta property="og:description" content="rPlayer is a player play streaming radio, this player, offers the possibility to change different audio format. Example: .m3u8, .mp3, .aac." />
   <meta property="og:image" content="https://rplayer.js.org/rplayer-in-action.jpg" />
-  <meta property="og:image:secure_url" content="https://rplayer.js.org/rplayer-in-action.jpg" />
+  <meta property="og:image:secure_url" content="https://rplayer.js.org/images/rplayer-in-action.jpg" />
   <meta property="og:image:type" content="image/jpeg" />
   <meta property="og:image:width" content="1080" />
   <meta property="og:image:height" content="1080" />
   <meta property="fb:app_id" content="401821003744476"/>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/w3--css@1.0.0/w3.css" integrity="sha256-Fu+tXj10rCX9//ELpE4eawJbwzshqhWQTV6b2Attp3o=" crossorigin="anonymous" media="screen and (min-width: 1024px)" />
   <style type="text/css">
-    .w3-container { display: none; }
+    .blog-container { display: none; }
 
     * { box-sizing: border-box; }
 
@@ -44,13 +46,13 @@
       --clr-black: #000000;
       --clr-flame: #f2552c;
       --clr-blue: #00477e;
-      --clr-navy-peony: #223a5e;
+      --clr-js-org: #ffe70b;
       --clr-red: #a6001a;
       --clr-green: #004d33;
       --clr-neutral-gray: #898e8c;
       --clr-marina: #4f84c4;
       --clr-yellow: #ffab00;
-      --clr-tawny-port: #672e3b;
+      --clr-tawny-port: #FF1493;
       --clr-greenery: #92B558;
     }
 
@@ -63,8 +65,8 @@
     #app button:focus:nth-of-type(1) { outline: none; box-shadow: 0 0 0 2px var(--clr-white), 0 0 0 5px var(--clr-flame); }
     #app button:nth-of-type(2) { background-color: var(--clr-blue); }
     #app button:focus:nth-of-type(2) { outline: none; box-shadow: 0 0 0 2px var(--clr-white), 0 0 0 5px var(--clr-blue); }
-    #app button:nth-of-type(3) { background-color: var(--clr-navy-peony); }
-    #app button:focus:nth-of-type(3) { outline: none; box-shadow: 0 0 0 2px var(--clr-white), 0 0 0 5px var(--clr-navy-peony); }
+    #app button:nth-of-type(3) { background-color: var(--clr-js-org); color: var(--clr-black); }
+    #app button:focus:nth-of-type(3) { outline: none; box-shadow: 0 0 0 2px var(--clr-white), 0 0 0 5px var(--clr-js-org); }
     #app button:nth-of-type(4) { background-color: var(--clr-marina); }
     #app button:focus:nth-of-type(4) { outline: none; box-shadow: 0 0 0 2px var(--clr-white), 0 0 0 5px var(--clr-marina); }
     #app button:nth-of-type(5) { background-color: var(--clr-yellow); color: var(--clr-black); }
@@ -84,8 +86,18 @@
       .app-container { position: fixed; display: flex; justify-content: flex-end; align-items: center; width: 33%; height: 100%; }
       .app-container #app { width: 250px; height: 500px; }
       .app-container #app button { font-size: 20px; }
+      .app-container #app button:hover:nth-of-type(1) { outline: none; box-shadow: 0 0 0 2px var(--clr-white), 0 0 0 5px var(--clr-flame); }
+      .app-container #app button:hover:nth-of-type(2) { outline: none; box-shadow: 0 0 0 2px var(--clr-white), 0 0 0 5px var(--clr-blue); }
+      .app-container #app button:hover:nth-of-type(3) { outline: none; box-shadow: 0 0 0 2px var(--clr-white), 0 0 0 5px var(--clr-js-org); }
+      .app-container #app button:hover:nth-of-type(4) { outline: none; box-shadow: 0 0 0 2px var(--clr-white), 0 0 0 5px var(--clr-marina); }
+      .app-container #app button:hover:nth-of-type(5) { outline: none; box-shadow: 0 0 0 2px var(--clr-white), 0 0 0 5px var(--clr-yellow); }
+      .app-container #app button:hover:nth-of-type(6) { outline: none; box-shadow: 0 0 0 2px var(--clr-white), 0 0 0 5px var(--clr-neutral-gray); }
+      .app-container #app button:hover:nth-of-type(7) { outline: none; box-shadow: 0 0 0 2px var(--clr-white), 0 0 0 5px var(--clr-green); }
+      .app-container #app button:hover:nth-of-type(8) { outline: none; box-shadow: 0 0 0 2px var(--clr-white), 0 0 0 5px var(--clr-red); }
+      .app-container #app button:hover:nth-of-type(9) { outline: none; box-shadow: 0 0 0 2px var(--clr-white), 0 0 0 5px var(--clr-tawny-port); }
+      .app-container #app button:hover:nth-of-type(10) { outline: none; box-shadow: 0 0 0 2px var(--clr-white), 0 0 0 5px var(--clr-greenery); }
 
-      .w3-container { position: absolute; display: inline; width: 67%; margin-left: 33%; }
+      .blog-container { position: absolute; display: inline; width: 67%; margin-left: 33%; padding: 20px; }
     }
   </style>
 </head>
@@ -104,21 +116,23 @@
       <button @click="mp3">MP3</button>
     </div>
   </div>
-  <div class="w3-container">
-    <div class="w3-panel">
-      <h1>rPlayer on Action</h1>
-      <p>rPlayer is a player play streaming radio, this player, offers the possibility to change different audio format. Example: .m3u8, .mp3, .aac.</p>
-    </div>
+  <div class="blog-container">
+    <div class="w3-container" style="max-width: 760px;">
 
-    <div id="info" class="w3-panel w3-pale-yellow w3-border">
-      <div>Playing: {{ playing }}</div>
-      <div>Paused: {{ paused }}</div>
-      <div>Muted: {{ muted }}</div>
-      <div>Volume: {{ volume }}%</div>
-      <div>Source: {{ src }}</div>
-      <div>HLS: {{ isHls }}</div>
-      <div>Time: {{ time }}</div>
-    </div>
+      <div class="w3-panel">
+        <h1>rPlayer on Action</h1>
+        <p>rPlayer is a player play streaming radio, this player, offers the possibility to change different audio format. Example: .m3u8, .mp3, .aac.</p>
+      </div>
+
+      <div id="info" class="w3-panel w3-pale-yellow w3-border">
+        <div>Playing: {{ playing }}</div>
+        <div>Paused: {{ paused }}</div>
+        <div>Muted: {{ muted }}</div>
+        <div>Volume: {{ volume }}%</div>
+        <div>Source: {{ src }}</div>
+        <div>HLS: {{ isHls }}</div>
+        <div>Time: {{ time }}</div>
+      </div>
 
   <div class="w3-panel w3-white">
     <h2>Easy to use</h2>
@@ -155,7 +169,7 @@ player.volume = 7; // 7 Default set in local storage
     <h2>timeupdate event</h2>
     <p>The <a href="//developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/timeupdate_event" rel="noreferrer" target="_blank">timeupdate event</a> is fired when the time indicated by the currentTime attribute has been updated.</p>
 <pre class="w3-code jsHigh notranslate">
-rplayer.onTimeUpdate = function() {
+player.onTimeUpdate = function() {
   console.log('Time:', player.currentTime);
 };
 </pre>
@@ -172,7 +186,8 @@ console.log('Is HLS:', player.isHls);
 console.log('Time:', player.currentTime);
 </pre>
     <br><br>
-    </div>
+      </div>
+    <div>
   </div>
   <script src="https://cdn.jsdelivr.net/npm/vue@2.6.10/dist/vue.min.js" integrity="sha256-chlNFSVx3TdcQ2Xlw7SvnbLAavAQLO0Y/LBiWX04viY=" crossorigin="anonymous"></script>
   <script type="text/javascript" src="dist/rplayer.js"></script>
