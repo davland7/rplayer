@@ -56,7 +56,7 @@
       --clr-greenery: #92B558;
     }
 
-    html, body, .app-container, #app { margin: 0; width: 100%; height: 100%; }
+    html, body, .app-container, #app, .info-container, #info { margin: 0; width: 100%; height: 100%; }
     #app { display: grid; grid-template-columns: repeat(2, 50%); padding: 5px 10px; }
     #app button { color: var(--clr-white); margin: 5px 0; border: 0; font-size: 30px; cursor: pointer; }
     #app button:nth-child(even) { margin-left: 5px; }
@@ -82,6 +82,11 @@
     #app button:nth-of-type(10) { background-color: var(--clr-greenery); color: var(--clr-black); }
     #app button:focus:nth-of-type(10) { outline: none; box-shadow: 0 0 0 2px var(--clr-white), 0 0 0 5px var(--clr-greenery); }
 
+    #info { background-color: var(--clr-black); color: var(--clr-white); padding: 20px; font-family: "Courier New", Courier, monospace; line-height: 1.5; }
+
+    @media screen and (orientation: portrait) { .info-container { display: none; } }
+    @media screen and (orientation: landscape) { .app-container { display: none; } }
+
     @media screen and (min-width: 1024px) {
       .app-container { position: fixed; display: flex; justify-content: flex-end; align-items: center; width: 33%; height: 100%; }
       .app-container #app { width: 250px; height: 500px; }
@@ -97,7 +102,10 @@
       .app-container #app button:hover:nth-of-type(9) { outline: none; box-shadow: 0 0 0 2px var(--clr-white), 0 0 0 5px var(--clr-tawny-port); }
       .app-container #app button:hover:nth-of-type(10) { outline: none; box-shadow: 0 0 0 2px var(--clr-white), 0 0 0 5px var(--clr-greenery); }
 
-      .blog-container { position: absolute; display: inline; width: 67%; margin-left: 33%; padding: 20px; }
+      .info-container { position: fixed; bottom: 0; left: 33%; height: 200px; z-index: 1; }
+      .info-container #info { margin-left: 30px; }
+
+      .blog-container { position: absolute; display: inline; width: 67%; margin-left: 33%; padding: 20px; margin-bottom: 200px; }
     }
   </style>
 </head>
@@ -116,15 +124,8 @@
       <button @click="mp3">MP3</button>
     </div>
   </div>
-  <div class="blog-container">
-    <div class="w3-container" style="max-width: 760px;">
-
-      <div class="w3-panel">
-        <h1>rPlayer on Action</h1>
-        <p>rPlayer is a player play streaming radio, this player, offers the possibility to change different audio format. Example: .m3u8, .mp3, .aac.</p>
-      </div>
-
-      <div id="info" class="w3-panel w3-pale-yellow w3-border">
+  <div class="info-container">
+    <div id="info">
         <div>Playing: {{ playing }}</div>
         <div>Paused: {{ paused }}</div>
         <div>Muted: {{ muted }}</div>
@@ -132,6 +133,14 @@
         <div>Source: {{ src }}</div>
         <div>HLS: {{ isHls }}</div>
         <div>Time: {{ time }}</div>
+      </div>
+  </div>
+  <div class="blog-container">
+    <div class="w3-container" style="max-width: 760px;">
+
+      <div class="w3-panel">
+        <h1>rPlayer on Action</h1>
+        <p>rPlayer is a player play streaming radio, this player, offers the possibility to change different audio format. Example: .m3u8, .mp3, .aac.</p>
       </div>
 
   <div class="w3-panel w3-white">
@@ -185,7 +194,6 @@ console.log('Source:', player.src);
 console.log('Is HLS:', player.isHls);
 console.log('Time:', player.currentTime);
 </pre>
-    <br><br>
       </div>
     <div>
   </div>
