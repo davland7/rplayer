@@ -19,18 +19,17 @@
   </script>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <link rel="manifest" href="manifest.json" />
   <title>rPlayer on Action</title>
   <meta name="description" content="rPlayer is a player play streaming radio, this player, offers the possibility to change different audio format. Example: .m3u8, .mp3, .aac." />
   <meta name="theme-color" content="#ffffff" />
-  <link rel="icon" href="images/favicon.png" />
-  <link rel="apple-touch-icon" href="images/icons-192.png" />
+  <link rel="icon" href="favicon.png" />
+  <link rel="apple-touch-icon" href="icons-192.png" />
   <meta property="og:url" content="https://rplayer.js.org/" />
   <meta property="og:type" content="website" />
   <meta property="og:title" content="rPlayer in action" />
   <meta property="og:description" content="rPlayer is a player play streaming radio, this player, offers the possibility to change different audio format. Example: .m3u8, .mp3, .aac." />
   <meta property="og:image" content="https://rplayer.js.org/rplayer-in-action.jpg" />
-  <meta property="og:image:secure_url" content="https://rplayer.js.org/images/rplayer-in-action.jpg" />
+  <meta property="og:image:secure_url" content="https://rplayer.js.org/rplayer-in-action.jpg" />
   <meta property="og:image:type" content="image/jpeg" />
   <meta property="og:image:width" content="1080" />
   <meta property="og:image:height" content="1080" />
@@ -316,10 +315,6 @@ console.log('Time:', player.currentTime);
       };
 
       document.body.appendChild(script);
-    }
-
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('service-worker.js');
     }
   </script>
 </body>
