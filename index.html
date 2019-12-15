@@ -108,6 +108,7 @@
       .app-container #app button:hover:nth-of-type(8) { outline: none; box-shadow: 0 0 0 2px var(--clr-white), 0 0 0 5px var(--clr-red); }
       .app-container #app button:hover:nth-of-type(9) { outline: none; box-shadow: 0 0 0 2px var(--clr-white), 0 0 0 5px var(--clr-tawny-port); }
       .app-container #app button:hover:nth-of-type(10) { outline: none; box-shadow: 0 0 0 2px var(--clr-white), 0 0 0 5px var(--clr-greenery); }
+      .app-container #app header { background-color: var(--clr-white); color: var(--clr-black); }
 
       .info-container { position: fixed; bottom: 0; left: 33%; height: 200px; z-index: 1; }
       .info-container #info { margin-left: 30px; }
@@ -201,9 +202,9 @@ player.onTimeUpdate = function() {
 
 <pre class="w3-code jsHigh">
 console.log('Playing:', player.playing);
-console.log('Volume:', player.volume);
 console.log('Paused:', player.paused);
 console.log('Muted:', player.muted);
+console.log('Volume:', player.volume);
 console.log('Source:', player.src);
 console.log('Is HLS:', player.isHls);
 console.log('Time:', player.currentTime);
@@ -211,8 +212,6 @@ console.log('Time:', player.currentTime);
       </div>
     <div>
   </div>
-  <script src="https://www.gstatic.com/cv/js/sender/v1/cast_sender.js?loadCastFramework=1"></script>
-  <script src="https://cdn.jsdelivr.net/gh/fenny/castjs@3.0.1/cast.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/vue@2.6.10/dist/vue.min.js" integrity="sha256-chlNFSVx3TdcQ2Xlw7SvnbLAavAQLO0Y/LBiWX04viY=" crossorigin="anonymous"></script>
   <script type="text/javascript" src="dist/rplayer.js"></script>
   <script type="text/javascript">
@@ -245,8 +244,6 @@ console.log('Time:', player.currentTime);
       methods: {
         init: function () {
           this.player = new rPlayer();
-          this.device = new Castjs('7C08L5R6RJ');
-
           this.url = this.urls.hls;
 
           this.log();
@@ -283,11 +280,7 @@ console.log('Time:', player.currentTime);
           this.log();
         },
         mute: function () {
-          if (this.device.available) {
-            this.device.cast(this.url);
-          }
-
-          // this.player.mute();
+          this.player.mute();
 
           this.log();
         },
@@ -297,11 +290,7 @@ console.log('Time:', player.currentTime);
           this.log();
         },
         play: function () {
-          if (this.device.session) {
-            this.device.play();
-          } else {
-            this.player.play(this.url);
-          }
+          this.player.play(this.url);
 
           this.log();
         },
