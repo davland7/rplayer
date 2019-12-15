@@ -245,7 +245,7 @@ console.log('Time:', player.currentTime);
       methods: {
         init: function () {
           this.player = new rPlayer();
-          this.device = new Castjs('8DF59165');
+          this.device = new Castjs('7C08L5R6RJ');
 
           this.url = this.urls.hls;
 
@@ -285,9 +285,6 @@ console.log('Time:', player.currentTime);
         mute: function () {
           if (this.device.available) {
             this.device.cast(this.url);
-            this.device.play();
-
-            alert(this.device.source);
           }
 
           // this.player.mute();
@@ -300,7 +297,11 @@ console.log('Time:', player.currentTime);
           this.log();
         },
         play: function () {
-          this.player.play(this.url);
+          if (this.device.session) {
+            this.device.play();
+          } else {
+            this.player.play(this.url);
+          }
 
           this.log();
         },
