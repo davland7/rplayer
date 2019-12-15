@@ -211,6 +211,8 @@ console.log('Time:', player.currentTime);
       </div>
     <div>
   </div>
+  <script src="https://www.gstatic.com/cv/js/sender/v1/cast_sender.js?loadCastFramework=1"></script>
+  <script src="https://cdn.jsdelivr.net/gh/fenny/castjs@3.0.1/cast.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/vue@2.6.10/dist/vue.min.js" integrity="sha256-chlNFSVx3TdcQ2Xlw7SvnbLAavAQLO0Y/LBiWX04viY=" crossorigin="anonymous"></script>
   <script type="text/javascript" src="dist/rplayer.js"></script>
   <script type="text/javascript">
@@ -243,6 +245,8 @@ console.log('Time:', player.currentTime);
       methods: {
         init: function () {
           this.player = new rPlayer();
+          this.device = new Castjs('8DF59165');
+
           this.url = this.urls.hls;
 
           this.log();
@@ -279,7 +283,14 @@ console.log('Time:', player.currentTime);
           this.log();
         },
         mute: function () {
-          this.player.mute();
+          if (this.device.available) {
+            this.device.cast(this.url);
+            this.device.play();
+
+            alert(this.device.source);
+          }
+
+          // this.player.mute();
 
           this.log();
         },
