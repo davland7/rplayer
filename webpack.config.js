@@ -4,10 +4,14 @@ const path = require('path');
 
 module.exports = {
     devServer: {
-      contentBase: path.join(__dirname, ''),
+      static: {
+        directory: path.join(__dirname, ''),
+      },
       compress: true,
-      port: 9999,
-      lazy: true
+      port: 9999
+    },
+    performance : {
+        hints : false
     },
     entry: './src/index.js',
     mode: 'production',
@@ -20,8 +24,8 @@ module.exports = {
         libraryExport: 'default'
     },
     optimization: {
+        minimize: true,
         minimizer: [new TerserPlugin({
-            cache: true,
             parallel: true,
             terserOptions: {
                 output: {
