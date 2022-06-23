@@ -1,15 +1,16 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <!--
-  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-139934361-1"></script>
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-KZE9X7TPJC"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
     gtag('js', new Date());
-    gtag('config', 'UA-139934361-1');
+
+    gtag('config', 'G-KZE9X7TPJC');
   </script>
-  -->
+
   <meta http-equiv="last-modified" content="Sun, 17 Feb 2021 19:08:00 GMT " />
   <meta http-equiv="cache-control" content="Private" />
   <meta http-equiv="Expires" content="31536000" />
@@ -134,7 +135,7 @@
         <button @click="mp3">MP3</button>
       </section>
       <footer>
-        You listening <a href="https://www.thebeat925.ca/music/recently-played" target="_blank" rel="noreferrer noopener">The Beat 92.5</a>
+        You listening <a @click="listening" href="https://www.thebeat925.ca/music/recently-played" target="_blank" rel="noreferrer noopener">The Beat 92.5</a>
       </footer>
     </div>
   </div>
@@ -210,12 +211,11 @@ console.log('Time:', player.currentTime);
       </div>
     <div>
   </div>
-  <script src="https://cdn.jsdelivr.net/npm/vue@2.6.10/dist/vue.min.js" integrity="sha256-chlNFSVx3TdcQ2Xlw7SvnbLAavAQLO0Y/LBiWX04viY=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/3.2.37/vue.global.prod.min.js" integrity="sha512-8GokEWxcB/NrPU4O8BHTgd9dkLouAsvqCnk6BSa2CZw7QXh0QM8GHfS53xYW1QJJVyJWctlcdRQwu5UxeLVsNA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
   <script type="text/javascript" src="dist/rplayer.js"></script>
   <script type="text/javascript">
-    var info  = new Vue({
-      el: '#info',
-      data: {
+    const info = Vue.createApp({
+      data: () => ({
         playing: false,
         volume: null,
         paused: false,
@@ -223,19 +223,18 @@ console.log('Time:', player.currentTime);
         isHls: false,
         src: null,
         time: 0
-      }
-    });
+      })
+    }).mount('#info');
 
-    var app = new Vue({
-      el: '#app',
-      data: {
+    Vue.createApp({
+      data: () => ({
         player: null,
         url: null,
         urls: {
           mp3: 'https://18213.live.streamtheworld.com/CKBEFMAAC.aac',
           hls: 'https://17653.live.streamtheworld.com/CKBEFMAAC/HLS/playlist.m3u8'
         }
-      },
+      }),
       created: function () {
         this.init();
       },
@@ -258,54 +257,59 @@ console.log('Time:', player.currentTime);
             this.url = url;
 
             this.play();
+            gtag('event', 'click', {'event_category': 'button', 'event_label': 'Add'});
+            gtag('event', 'click', {'event_category': 'url', 'event_label': url});
           } else {
             alert('Your url is not valid!');
           }
         },
         rewind: function () {
           this.player.currentTime = this.player.currentTime - 10;
-
+          gtag('event', 'click', {'event_category': 'button', 'event_label': 'Rewind'});
           this.log();
         },
         up: function () {
           this.player.volume += 1;
-
+          gtag('event', 'click', {'event_category': 'button', 'event_label': 'Up'});
           this.log();
         },
         down: function () {
           this.player.volume -= 1;
-
+          gtag('event', 'click', {'event_category': 'button', 'event_label': 'Down'});
           this.log();
         },
         mute: function () {
           this.player.mute();
-
+          gtag('event', 'click', {'event_category': 'button', 'event_label': 'Mute'});
           this.log();
         },
         pause: function () {
           this.player.pause();
-
+          gtag('event', 'click', {'event_category': 'button', 'event_label': 'Pause'});
           this.log();
         },
         play: function () {
           this.player.play(this.url);
-
+          gtag('event', 'click', {'event_category': 'button', 'event_label': 'Play'});
           this.log();
         },
         stop: function () {
           this.player.stop();
-
+          gtag('event', 'click', {'event_category': 'button', 'event_label': 'Stop'});
           this.log();
         },
         hls: function () {
           this.url = this.urls.hls;
-
+          gtag('event', 'click', {'event_category': 'button', 'event_label': 'Hls'});
           this.play();
         },
         mp3: function () {
           this.url = this.urls.mp3;
-
+          gtag('event', 'click', {'event_category': 'button', 'event_label': 'Mp3'});
           this.play();
+        },
+        listening: function () {
+          gtag('event', 'click', {'event_category': 'button', 'event_label': 'Listening'});
         },
         log: function () {
           info.playing = this.player.playing;
@@ -317,7 +321,7 @@ console.log('Time:', player.currentTime);
           info.time = this.player.currentTime;
         }
       }
-    });
+    }).mount('#app');
 
     // W3 code color
     if (window.matchMedia("(min-width:1024px)").matches) {
