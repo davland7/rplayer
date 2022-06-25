@@ -162,21 +162,24 @@ var audio = new rPlayer();
 <p>rPlayer is extending <a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/audio" rel="noreferrer" target="_blank">Audio</a> HTMLMediaElement</p>
 
 <h2>Play</h2>
-
+<strong>Works with HLS. &#128170;</strong>
 <pre class="w3-code jsHigh">
 var audio = new rPlayer('URL.m3u8');
+audio.play();
 </pre>
-<p>Works with HLS. &#128170;</p>
 <p>Play also works, but it is impossible to use with HLS format. &#128577;</p>
 <pre class="w3-code jsHigh">
-audio.src = 'URL';
+audio.src = 'URL.m3u8';
 audio.play();
 </pre>
 <p>Use</p>
 <pre class="w3-code jsHigh">
-audio.playHls('URL');
+audio.playHls('URL.m3u8');
 </pre>
 <p>In addition to .m3u8, you can also use .mp3, .aac, .ogg and others. &#128558;</p>
+<pre class="w3-code jsHigh">
+audio.playHls('URL.aac');
+</pre>
 
 <h2>Stop</h2>
 <pre class="w3-code jsHigh">
@@ -195,7 +198,7 @@ audio.mute();
 
 <h2>Rewind</h2>
 <pre class="w3-code jsHigh">
-audio.rewind(10); // Secondes
+audio.rewind(10); // seconds
 </pre>
 
 <h2>Set Volume</h2>
@@ -203,7 +206,7 @@ audio.rewind(10); // Secondes
 <pre class="w3-code jsHigh notranslate">
 audio.volume = 0.7; // 0.7 Default set in local storage
 </pre>
-  <p>The localStorage is very cool. &#128526;</p>
+<p>The localStorage is very cool. &#128526;</p>
 
 <h2>Volume Up</h2>
 <pre class="w3-code jsHigh notranslate">
@@ -225,8 +228,7 @@ audio.ontimeupdate = function() {
 };
 </pre>
 
-    <h2>Infos</h2>
-
+<h2>Infos</h2>
 <pre class="w3-code jsHigh">
 console.log('Playing:', audio.playing);
 console.log('Paused:', audio.paused);
@@ -236,6 +238,7 @@ console.log('Source:', audio.src);
 console.log('HLS:', audio.isHls);
 console.log('Time:', audio.currentTime);
 </pre>
+
       </div>
     <div>
   </div>
