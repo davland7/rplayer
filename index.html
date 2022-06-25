@@ -85,7 +85,7 @@
     #app footer a { background-color: #8a2e83; color: var(--clr-white); display: inline-block; margin-left: 10px; padding: 10px; text-decoration: none;}
     #app footer a:focus { outline: none; box-shadow: 0 0 0 2px var(--clr-white), 0 0 0 5px #8a2e83; }
 
-    #info { background-color: var(--clr-black); color: var(--clr-white); padding: 20px; font-family: "Courier New", Courier, monospace; line-height: 1.5; }
+    #info { background-color: var(--clr-black); color: var(--clr-white); margin-left: calc(33% + 20px); padding: 20px; font-family: "Courier New", Courier, monospace; line-height: 1.5; }
 
     @media screen and (orientation: portrait) { .info-container { display: none; } }
     @media screen and (orientation: landscape) { .app-container { display: none; } }
@@ -177,6 +177,7 @@ audio.play();
 audio.playHls('URL.m3u8');
 </pre>
 <p>In addition to .m3u8, you can also use .mp3, .aac, .ogg and others. &#128558;</p>
+<p>Details w3schools <a href="https://www.w3schools.com/html/html5_audio.asp">https://www.w3schools.com/html/html5_audio.asp</a></p>
 <pre class="w3-code jsHigh">
 audio.playHls('URL.aac');
 </pre>
@@ -212,7 +213,7 @@ audio.volume = 0.7; // 0.7 Default set in local storage
 <pre class="w3-code jsHigh notranslate">
 audio.upVolume();
 </pre>
-<p>A way not to make a mistake if you exceed. &#128521;</p>
+<p>A way not to make a mistake if is not good range. &#128521;</p>
 
 <h2>Volume Down</h2>
 <p>10 level up and down and blocks both ends. &#128513;</p>
