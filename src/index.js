@@ -1,117 +1,106 @@
-import Hls from 'hls.js/dist/hls.light.js';
+import Hls from '../node_modules/hls.js/dist/hls.light.min.js';
 
-class rPlayer {
-    constructor() {
-        this._audio = new Audio();
-        this._hls = null;
-        this._pause = false;
+export default class rPlayer extends Audio {
+    constructor(src = null) {
+        super();
+
+        this.hls = null;
+
+        if (src) {
+            this.src = src;
+        }
 
         if (localStorage.hasOwnProperty('r-player-volume')) {
-            this._audio.volume = localStorage.getItem('r-player-volume') / 10;
+            this.volume = localStorage.getItem('r-player-volume');
         } else {
-            this._audio.volume = .7;
+            this.volume = .7;
         }
     }
 
-    play(src) {
-        if (!this._pause)  {
-            if (this.playing) this.stop();
+    /**
+     * 
+     * @param {int} secondes 
+     */
+    rewind(secondes) {
+        this.currentTime = this.currentTime - secondes;
+    };
 
-            if (Hls.isSupported() && (src.indexOf('.m3u8') > 0)) {
-                this._hls = new Hls();
-                this._hls.loadSource(src);
-                this._hls.attachMedia(this._audio);
-                this._hls.on(Hls.Events.MANIFEST_PARSED, () => {
-                    this._audio.play();
-                });
-            } else if (this._audio.canPlayType('application/vnd.apple.mpegurl')) {
-                this._audio.src = src;
-                this._audio.addEventListener('loadedmetadata', () => {
-                    this._audio.play();
-                });
-            } else {
-                this._audio.src = src;
-                this._audio.load();
-                this._audio.play();
-            }
-        } else {
-            this._audio.play();
-            this._pause = false;
-        }
-    }
+    /**
+     * 
+     * @param {string} src 
+     */
+    playHls(src) {
+        const isHls = src.indexOf('.m3u8') > 0;
 
-    pause() {
-        if (!this._audio.paused) {
-            this._audio.pause();
-            this._pause = true;
-        }
-    }
+        this.stop();
 
-    stop() {
-        this._audio.pause();
-        this._audio.currentTime = 0;
-        this._audio.src = '';
-
-        if (this._hls) {
-            this._hls.destroy();
-            this._hls = null;
+        if (Hls.isSupported() && isHls) {
+            this.hls = new Hls();
+            this.hls.loadSource(src);
+            this.hls.attachMedia(this);
+            this.hls.on(Hls.Events.MANIFEST_PARSED, () => {
+                this.play();
+            });
+        } else if (this.canPlayType('application/vnd.apple.mpegurl') || (Hls.isSupported() && !isHls)) {
+            this.src = src;
+            this.addEventListener('loadedmetadata', () => {
+                this.play();
+            });
         }
     }
 
     mute() {
-        this._audio.muted = !this._audio.muted;
+        this.muted = !this.muted;
+    }
+
+    stop() {
+        this.pause();
+        this.currentTime = 0;
+
+        if (this.hls) {
+            this.hls.destroy();
+            this.hls = null;
+        }
+    }
+
+    upVolume() {
+        const value = this.volume;
+
+        this.#setVolume(value + 0.1);
+    }
+
+    downVolume() {
+        const value = this.volume;
+
+        this.#setVolume(value - 0.1);
+    }
+
+    /**
+     * 
+     * @param {decimal} value 
+     */
+    #setVolume(value) {
+        if (value >= 0.0 && value <= 1.0) {
+            this.volume = Number(value).toFixed(1);
+            localStorage.setItem('r-player-volume', Number(value).toFixed(1));
+        }
     }
 
     get isHls() {
-        if (this._hls) return true;
+        if (this.hls instanceof Hls) return true;
 
         return false;
     }
 
-    get playing() {
-        return this._audio.currentTime > 0 && !this._audio.paused && !this._audio.ended && this._audio.readyState > 2;
-    }
-
-    get src() {
-        if (!this._audio.currentTime) {
-            return null;
-        } else if (this._hls) {
-            return this._hls.url;
+    get url() {
+        if (this.isHls) {
+            return this.hls.url;
         } else {
-            return this._audio.src;
+            return this.src;
         }
     }
 
-    get muted() {
-        return this._audio.muted;
-    }
-
-    get paused() {
-        return this._audio.paused;
-    }
-
-    get volume() {
-        return this._audio.volume * 10;
-    }
-
-    set volume(value) {
-        if (value >= 0 && value <= 10) {
-            this._audio.volume = value / 10;
-            localStorage.setItem('r-player-volume', value);
-        }
-    }
-
-    get currentTime() {
-        return this._audio.currentTime;
-    }
-
-    set currentTime(value) {
-        return this._audio.currentTime = value;
-    }
-
-    set onTimeUpdate(callback) {
-        return this._audio.ontimeupdate = callback;
+    get playing() {
+        return this.currentTime > 0 && !this.paused && !this.ended && this.readyState > 2;
     }
 }
-
-export default rPlayer;

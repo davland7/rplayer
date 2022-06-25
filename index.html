@@ -11,9 +11,6 @@
     gtag('config', 'G-KZE9X7TPJC');
   </script>
 
-  <meta http-equiv="last-modified" content="Sun, 17 Feb 2021 19:08:00 GMT " />
-  <meta http-equiv="cache-control" content="Private" />
-  <meta http-equiv="Expires" content="31536000" />
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>rPlayer - JavaScript library</title>
@@ -56,6 +53,7 @@
     }
 
     html, body, .app-container, #app, .info-container, #info { margin: 0; width: 100%; height: 100%; }
+    
     #app { display: flex; flex-direction: column; font-family: 'Poppins', sans-serif; }
     #app header { padding: 5px 10px; background-color: var(--clr-black); color: var(--clr-yellow); text-align: center; }
     #app header h1 { margin: 0; font-size: 20px; line-height: 40px; font-weight: 600; }
@@ -87,7 +85,6 @@
     #app footer a { background-color: #8a2e83; color: var(--clr-white); display: inline-block; margin-left: 10px; padding: 10px; text-decoration: none;}
     #app footer a:focus { outline: none; box-shadow: 0 0 0 2px var(--clr-white), 0 0 0 5px #8a2e83; }
 
-
     #info { background-color: var(--clr-black); color: var(--clr-white); padding: 20px; font-family: "Courier New", Courier, monospace; line-height: 1.5; }
 
     @media screen and (orientation: portrait) { .info-container { display: none; } }
@@ -109,8 +106,7 @@
       .app-container #app button:hover:nth-of-type(10) { outline: none; box-shadow: 0 0 0 2px var(--clr-white), 0 0 0 5px var(--clr-greenery); }
       .app-container #app header { background-color: var(--clr-white); color: var(--clr-black); }
 
-      .info-container { position: fixed; bottom: 0; left: 33%; height: 200px; z-index: 1; }
-      .info-container #info { margin-left: 30px; }
+      .info-container { position: fixed; bottom: 0; height: 200px; z-index: 1; }
 
       .blog-container { position: absolute; display: inline; width: 67%; margin-left: 33%; padding: 20px; padding-bottom: 200px; }
     }
@@ -135,7 +131,7 @@
         <button @click="mp3">MP3</button>
       </section>
       <footer>
-        You listening <a @click="listening" href="https://www.thebeat925.ca/music/recently-played" target="_blank" rel="noreferrer noopener">The Beat 92.5</a>
+        You listening <a @click="trackEvent('button', 'Listening')" href="https://www.thebeat925.ca/music/recently-played" target="_blank" rel="noreferrer noopener">The Beat 92.5</a>
       </footer>
     </div>
   </div>
@@ -155,58 +151,90 @@
 
       <div class="w3-panel">
         <p>rPlayer is a player play streaming radio, this player, offers the possibility to change different audio format. Example: .m3u8, .mp3, .aac.</p>
+        <p><a href="https://www.npmjs.com/package/@davland7/rplayer" target="_blank" rel="noreferrer noopener">npm</a>, <a href="https://github.com/davland7/rplayer" target="_blank" rel="noreferrer noopener">GitHub</a></p>
       </div>
 
   <div class="w3-panel w3-white">
-    <h2>Easy to use</h2>
+<h2>Easy to use</h2>
 <pre class="w3-code jsHigh">
-var player = new rPlayer();
+var audio = new rPlayer();
+</pre>
+<p>rPlayer is extending <a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/audio" rel="noreferrer" target="_blank">Audio</a> HTMLMediaElement</p>
+
+<h2>Play</h2>
+
+<pre class="w3-code jsHigh">
+var audio = new rPlayer('URL.m3u8');
+</pre>
+<p>Works with HLS. &#128170;</p>
+<p>Play also works, but it is impossible to use with HLS format. &#128577;</p>
+<pre class="w3-code jsHigh">
+audio.src = 'URL';
+audio.play();
+</pre>
+<p>Use</p>
+<pre class="w3-code jsHigh">
+audio.playHls('URL');
+</pre>
+<p>In addition to .m3u8, you can also use .mp3, .aac, .ogg and others. &#128558;</p>
+
+<h2>Stop</h2>
+<pre class="w3-code jsHigh">
+audio.stop();
 </pre>
 
-    <h2>Play</h2>
+<h2>Pause</h2>
 <pre class="w3-code jsHigh">
-player.play('URL');
+audio.pause();
 </pre>
 
-    <h2>Stop</h2>
+<h2>Mute</h2>
 <pre class="w3-code jsHigh">
-player.stop();
+audio.mute();
 </pre>
 
-    <h2>Pause</h2>
+<h2>Rewind</h2>
 <pre class="w3-code jsHigh">
-player.pause();
+audio.rewind(10); // Secondes
 </pre>
 
-    <h2>Mute</h2>
-<pre class="w3-code jsHigh">
-player.mute();
-</pre>
-
-    <h2>Set Volume</h2>
-    <p>You can only set volume between 0 and 10</p>
+<h2>Set Volume</h2>
+<p>The volume must not outside the range [0, 1].</p>
 <pre class="w3-code jsHigh notranslate">
-player.volume = 7; // 7 Default set in local storage
+audio.volume = 0.7; // 0.7 Default set in local storage
+</pre>
+  <p>The localStorage is very cool. &#128526;</p>
+
+<h2>Volume Up</h2>
+<pre class="w3-code jsHigh notranslate">
+audio.upVolume();
+</pre>
+<p>A way not to make a mistake if you exceed. &#128521;</p>
+
+<h2>Volume Down</h2>
+<p>10 level up and down and blocks both ends. &#128513;</p>
+<pre class="w3-code jsHigh notranslate">
+audio.downVolume();
 </pre>
 
-    <h2>timeupdate event</h2>
-    <p>The <a href="//developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/timeupdate_event" rel="noreferrer" target="_blank">timeupdate event</a> is fired when the time indicated by the currentTime attribute has been updated.</p>
+<h2>timeupdate event</h2>
+<p>The <a href="//developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/timeupdate_event" rel="noreferrer" target="_blank">timeupdate event</a> is fired when the time indicated by the currentTime attribute has been updated.</p>
 <pre class="w3-code jsHigh notranslate">
-player.onTimeUpdate = function() {
-  console.log('Time:', player.currentTime);
+audio.ontimeupdate = function() {
+  console.log('Time:', audio.currentTime);
 };
 </pre>
 
     <h2>Infos</h2>
 
 <pre class="w3-code jsHigh">
-console.log('Playing:', player.playing);
-console.log('Paused:', player.paused);
-console.log('Muted:', player.muted);
-console.log('Volume:', player.volume);
-console.log('Source:', player.src);
-console.log('HLS:', player.isHls);
-console.log('Time:', player.currentTime);
+console.log('Playing:', audio.playing);
+console.log('Paused:', audio.paused);
+console.log('Muted:', audio.muted);
+console.log('Volume:', audio.volume * 100);
+console.log('Source:', audio.src);
+console.log('HLS:', audio.isHls);
+console.log('Time:', audio.currentTime);
 </pre>
       </div>
     <div>
@@ -228,7 +256,7 @@ console.log('Time:', player.currentTime);
 
     Vue.createApp({
       data: () => ({
-        player: null,
+        audio: null,
         url: null,
         urls: {
           mp3: 'https://18213.live.streamtheworld.com/CKBEFMAAC.aac',
@@ -240,13 +268,13 @@ console.log('Time:', player.currentTime);
       },
       methods: {
         init: function () {
-          this.player = new rPlayer();
+          this.audio = new rPlayer();
           this.url = this.urls.hls;
 
           this.log();
 
           var self = this;
-            this.player.onTimeUpdate = function() {
+          this.audio.ontimeupdate = function() {
             self.log();
           };
         },
@@ -255,70 +283,79 @@ console.log('Time:', player.currentTime);
 
           if (Boolean(url)) {
             this.url = url;
-
             this.play();
-            gtag('event', 'click', {'event_category': 'button', 'event_label': 'Add'});
-            gtag('event', 'click', {'event_category': 'url', 'event_label': url});
+
+            this.trackEvent('button', 'Add');
+            this.trackEvent('url', url);
           } else {
             alert('Your url is not valid!');
           }
         },
         rewind: function () {
-          this.player.currentTime = this.player.currentTime - 10;
-          gtag('event', 'click', {'event_category': 'button', 'event_label': 'Rewind'});
+          this.audio.rewind(10);
           this.log();
+
+          this.trackEvent('button', 'Rewind');
         },
         up: function () {
-          this.player.volume += 1;
-          gtag('event', 'click', {'event_category': 'button', 'event_label': 'Up'});
+          this.audio.upVolume();
           this.log();
+          
+          this.trackEvent('button', 'Up');
         },
         down: function () {
-          this.player.volume -= 1;
-          gtag('event', 'click', {'event_category': 'button', 'event_label': 'Down'});
+          this.audio.downVolume();
           this.log();
+
+          this.trackEvent('button', 'Down');
         },
         mute: function () {
-          this.player.mute();
-          gtag('event', 'click', {'event_category': 'button', 'event_label': 'Mute'});
+          this.audio.mute();
           this.log();
+
+          this.trackEvent('button', 'Mute');
         },
         pause: function () {
-          this.player.pause();
-          gtag('event', 'click', {'event_category': 'button', 'event_label': 'Pause'});
+          this.audio.pause();
           this.log();
+
+          this.trackEvent('button', 'Pause');
         },
         play: function () {
-          this.player.play(this.url);
-          gtag('event', 'click', {'event_category': 'button', 'event_label': 'Play'});
+          this.audio.playHls(this.url);
           this.log();
+          
+          this.trackEvent('button', 'Play');
         },
         stop: function () {
-          this.player.stop();
-          gtag('event', 'click', {'event_category': 'button', 'event_label': 'Stop'});
+          this.audio.stop();
           this.log();
+
+          this.trackEvent('button', 'Stop');
         },
         hls: function () {
           this.url = this.urls.hls;
-          gtag('event', 'click', {'event_category': 'button', 'event_label': 'Hls'});
           this.play();
+
+          this.trackEvent('button', 'Hls');
         },
         mp3: function () {
           this.url = this.urls.mp3;
-          gtag('event', 'click', {'event_category': 'button', 'event_label': 'Mp3'});
           this.play();
+
+          this.trackEvent('button', 'Mp3');
         },
-        listening: function () {
-          gtag('event', 'click', {'event_category': 'button', 'event_label': 'Listening'});
+        trackEvent: function (category, label) {
+          gtag('event', 'click', {'event_category': category, 'event_label': label});
         },
         log: function () {
-          info.playing = this.player.playing;
-          info.volume = this.player.volume * 10;
-          info.paused = this.player.paused;
-          info.muted = this.player.muted;
-          info.src = this.player.src;
-          info.isHls = this.player.isHls;
-          info.time = this.player.currentTime;
+          info.playing = this.audio.playing;
+          info.volume = this.audio.volume * 100;
+          info.paused = this.audio.paused;
+          info.muted = this.audio.muted;
+          info.src = this.audio.url;
+          info.isHls = this.audio.isHls;
+          info.time = this.audio.currentTime;
         }
       }
     }).mount('#app');

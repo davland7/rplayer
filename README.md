@@ -9,40 +9,57 @@ https://rplayer.js.org/
 ## Easy to use
 
 ```
-var player = new rPlayer();
+var audio = new rPlayer();
 ```
 
 ## Play
 
 ```
-player.play('URL');
+audio.playHls('URL');
 ```
 
 ## Stop
 
 ```
-player.stop();
+audio.stop();
 ```
 
 ## Pause
 
 ```
-player.pause();
+audio.pause();
 ```
-
 
 ## Mute
 
 ```
-player.mute();
+audio.mute();
+```
+
+## Rewind
+
+```
+audio.rewind(10); // Secondes
 ```
 
 ## Set Volume
 
-You can only set volume between 0 and 10
+The volume must not outside the range [0, 1].
 
 ```
-player.volume = 7; // 7 Default set in local storage
+audio.volume = 0.7; // 0.7 Default set in local storage
+```
+
+## Volume Up
+
+```
+audio.upVolume();
+```
+
+## Volume Down
+
+```
+audio.downVolume();
 ```
 
 ## timeupdate event
@@ -50,20 +67,20 @@ player.volume = 7; // 7 Default set in local storage
 The [timeupdate event](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/timeupdate_event) is fired when the time indicated by the currentTime attribute has been updated.
 
 ```
-rplayer.onTimeUpdate = function() {
-  console.log('Time:', player.currentTime);
+audio.ontimeupdate = function() {
+  console.log('Time:', audio.currentTime);
 };
 ```
 
 ## Infos
 
 ```
-console.log('Playing:', player.playing);
-console.log('Volume:', player.volume);
-console.log('Paused:', player.paused);
-console.log('Muted:', player.muted);
-console.log('Source:', player.src);
-console.log('Time:', player.currentTime);
+console.log('Playing:', audio.playing);
+console.log('Volume:', audio.volume * 100);
+console.log('Paused:', audio.paused);
+console.log('Muted:', audio.muted);
+console.log('Source:', audio.src);
+console.log('Time:', audio.currentTime);
 ```
 
 ## Include hls.js
@@ -78,13 +95,13 @@ npm run build
 npm run start
 ```
 
-[http://127.0.0.1:9999](http://127.0.0.1:9999)
+[http://localhost:9999/](http://localhost:9999/)
 
 ## npm dependencies
 
 ```
 npm install hls.js --save
-npm install terser-webpack-plugin webpack webpack-cli webpack-dev-server --save-dev
+npm install @babel/core babel-loader webpack webpack-cli webpack-dev-server --save-dev
 ```
 
 ## Used by

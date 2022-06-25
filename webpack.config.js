@@ -1,37 +1,32 @@
-const TerserPlugin = require('terser-webpack-plugin');
-
 const path = require('path');
 
 module.exports = {
     devServer: {
-      static: {
-        directory: path.join(__dirname, ''),
-      },
-      compress: true,
-      port: 9999
+        static: {
+            directory: path.join(__dirname, '')
+        },
+        compress: true,
+        port: 9999
     },
-    performance : {
-        hints : false
-    },
-    entry: './src/index.js',
     mode: 'production',
+    entry: './src/index.js',
     output: {
-        path: path.resolve(__dirname, 'dist'),
-        filename: 'rplayer.js',
-        publicPath: '/dist/',
-        library: 'rPlayer',
-        libraryTarget: 'umd',
-        libraryExport: 'default'
+        library: {
+            name: 'rPlayer',
+            type: 'umd',
+            export: 'default'
+        },
+        path: path.resolve('dist'),
+        filename: 'rplayer.js'
     },
-    optimization: {
-        minimize: true,
-        minimizer: [new TerserPlugin({
-            parallel: true,
-            terserOptions: {
-                output: {
-                    comments: false
-                }
-            }
-        })]
+    module: {
+        rules: [{
+            test: /\.js?$/,
+            exclude: /(node_modules)/,
+            use: 'babel-loader'
+        }],
+    },
+    resolve: {
+        extensions: ['.js']
     }
 };
