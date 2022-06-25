@@ -10,8 +10,8 @@ export default class rPlayer extends Audio {
             this.src = src;
         }
 
-        if (localStorage.hasOwnProperty('r-player-volume')) {
-            this.volume = localStorage.getItem('r-player-volume');
+        if (localStorage.hasOwnProperty('r-player2-volume')) {
+            this.volume = localStorage.getItem('r-player2-volume');
         } else {
             this.volume = .7;
         }
@@ -82,7 +82,7 @@ export default class rPlayer extends Audio {
     #setVolume(value) {
         if (value >= 0.0 && value <= 1.0) {
             this.volume = Number(value).toFixed(1);
-            localStorage.setItem('r-player-volume', Number(value).toFixed(1));
+            localStorage.setItem('r-player2-volume', Number(value).toFixed(1));
         }
     }
 
