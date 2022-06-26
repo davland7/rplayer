@@ -279,9 +279,16 @@ console.log('Time:', audio.currentTime);
           };
         },
         add: function () {
-          const url = prompt('Add your url');
+          let url;
+
+          if (localStorage.hasOwnProperty('add')) {
+            url = prompt('Add your url', localStorage.getItem('add'));
+          } else {
+            url = prompt('Add your url');
+          }
 
           if (Boolean(url)) {
+            localStorage.setItem('add', url);
             this.url = url;
             this.play();
 
