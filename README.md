@@ -2,7 +2,7 @@
 
 Radio player is a player play streaming radio, this player, offers the possibility to change different audio format. Example: .m3u8, .mp3, .aac.
 
-## rPlayer2 in action
+## rPlayer in action
 
 https://rplayer.js.org/
 
