@@ -1,35 +1,35 @@
 import Hls from '../node_modules/hls.js/dist/hls.light.min.js';
 
 export default class rPlayer extends Audio {
-    constructor(src = null) {
+    constructor() {
         super();
 
         this.hls = null;
 
-        if (src) {
-            this.src = src;
-        }
-
         if (localStorage.hasOwnProperty('r-player2-volume')) {
             this.volume = localStorage.getItem('r-player2-volume');
         } else {
-            this.volume = .7;
+            this.volume = .2;
         }
+
+        this.onvolumechange = function() {
+            localStorage.setItem('r-player2-volume', Number(this.volume)).toFixed(1);
+        };
     }
 
     /**
      * 
-     * @param {int} secondes 
+     * @param {number} seconds 
      */
-    rewind(secondes) {
-        this.currentTime = this.currentTime - secondes;
+    rewind(seconds) {
+        this.currentTime = this.currentTime - seconds;
     };
 
     /**
      * 
      * @param {string} src 
      */
-    playHls(src) {
+    playSrc(src) {
         const isHls = src.indexOf('.m3u8') > 0;
 
         this.stop();
@@ -63,6 +63,8 @@ export default class rPlayer extends Audio {
         }
     }
 
+    // event volume
+
     upVolume() {
         const value = this.volume;
 
@@ -82,6 +84,7 @@ export default class rPlayer extends Audio {
     #setVolume(value) {
         if (value >= 0.0 && value <= 1.0) {
             this.volume = Number(value).toFixed(1);
+            // probleme localStorage
             localStorage.setItem('r-player2-volume', Number(value).toFixed(1));
         }
     }
@@ -99,7 +102,7 @@ export default class rPlayer extends Audio {
             return this.src;
         }
     }
-
+    // true|false
     get playing() {
         return this.currentTime > 0 && !this.paused && !this.ended && this.readyState > 2;
     }

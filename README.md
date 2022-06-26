@@ -1,8 +1,8 @@
 # rPlayer
 
-rPlayer is a player play streaming radio, this player, offers the possibility to change different audio format. Example: .m3u8, .mp3, .aac.
+Radio player is a player play streaming radio, this player, offers the possibility to change different audio format. Example: .m3u8, .mp3, .aac.
 
-## rPlayer in action
+## rPlayer2 in action
 
 https://rplayer.js.org/
 
@@ -15,7 +15,7 @@ var audio = new rPlayer();
 ## Play
 
 ```
-audio.playHls('URL');
+audio.playSrc('URL');
 ```
 
 ## Stop

@@ -13,7 +13,7 @@
 
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>rPlayer - JavaScript library</title>
+  <title>rPlayer2 - JavaScript library</title>
   <meta name="description" content="rPlayer is a player play streaming radio, this player, offers the possibility to change different audio format. Example: .m3u8, .mp3, .aac." />
   <meta name="theme-color" content="#000000" />
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -116,7 +116,7 @@
   <div class="app-container">
     <div id="app">
       <header>
-        <h1>rPlayer in Action</h1>
+        <h1>rPlayer2 in Action</h1>
       </header>
       <section>
         <button @click="add">Add</button>
@@ -150,7 +150,7 @@
     <div class="w3-container" style="max-width: 760px;">
 
       <div class="w3-panel">
-        <p>rPlayer is a player play streaming radio, this player, offers the possibility to change different audio format. Example: .m3u8, .mp3, .aac.</p>
+        <p>Radio player is a player play streaming radio, this player, offers the possibility to change different audio format. Example: .m3u8, .mp3, .aac.</p>
         <p><a href="https://www.npmjs.com/package/@davland7/rplayer" target="_blank" rel="noreferrer noopener">npm</a>, <a href="https://github.com/davland7/rplayer" target="_blank" rel="noreferrer noopener">GitHub</a></p>
       </div>
 
@@ -162,9 +162,9 @@ var audio = new rPlayer();
 <p>rPlayer is extending <a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/audio" rel="noreferrer" target="_blank">Audio</a> HTMLMediaElement</p>
 
 <h2>Play</h2>
-<p>Play also works, but it is impossible to use with HLS format. &#128577;</p>
+<p>Play don't Works with HLS. &#128577;</p>
 <pre class="w3-code jsHigh">
-var audio = new rPlayer('URL.m3u8');
+var audio = new Audio('URL.m3u8');
 audio.play();
 </pre>
 <p>Or</p>
@@ -172,49 +172,46 @@ audio.play();
 audio.src = 'URL.m3u8';
 audio.play();
 </pre>
-<p>Works with HLS. &#128170;</p>
+<p>Works with HLS. It's Magic &#128170;</p>
 <pre class="w3-code jsHigh">
-audio.playHls('URL.m3u8');
+audio.playSrc('URL.m3u8');
 </pre>
 <p>In addition to .m3u8, you can also use .mp3, .aac, .ogg and others. &#128558;</p>
 <pre class="w3-code jsHigh">
-audio.playHls('URL.aac');
-</pre>
-
-<h2>Stop</h2>
-<pre class="w3-code jsHigh">
-audio.stop();
-</pre>
-
-<h2>Pause</h2>
-<pre class="w3-code jsHigh">
-audio.pause();
-</pre>
-
-<h2>Mute</h2>
-<pre class="w3-code jsHigh">
-audio.mute();
-</pre>
-
-<h2>Rewind</h2>
-<pre class="w3-code jsHigh">
-audio.rewind(10); // seconds
+audio.playSrc('URL.aac');
 </pre>
 
 <h2>Set Volume</h2>
 <p>The volume must not outside the range [0, 1].</p>
 <pre class="w3-code jsHigh notranslate">
-audio.volume = 0.7; // 0.7 Default set in local storage
+audio.volume = 0.2; // 0.2 Default set in local storage
 </pre>
 <p>The localStorage is very cool. &#128526;</p>
 
-<h2>Volume Up</h2>
+<h2>Extras</h2>
+
+<h3>Stop</h3>
+<pre class="w3-code jsHigh">
+audio.stop();
+</pre>
+
+<h3>Mute</h3>
+<pre class="w3-code jsHigh">
+audio.mute();
+</pre>
+
+<h3>Rewind</h3>
+<pre class="w3-code jsHigh">
+audio.rewind(10); // seconds
+</pre>
+
+<h3>Volume Up</h3>
 <pre class="w3-code jsHigh notranslate">
 audio.upVolume();
 </pre>
 <p>A way not to make a mistake if is not good range. &#128521;</p>
 
-<h2>Volume Down</h2>
+<h3>Volume Down</h3>
 <p>10 level up and down and blocks both ends. &#128513;</p>
 <pre class="w3-code jsHigh notranslate">
 audio.downVolume();
@@ -234,7 +231,7 @@ console.log('Playing:', audio.playing);
 console.log('Paused:', audio.paused);
 console.log('Muted:', audio.muted);
 console.log('Volume:', audio.volume * 100);
-console.log('Source:', audio.src);
+console.log('Source:', audio.url);
 console.log('HLS:', audio.isHls);
 console.log('Time:', audio.currentTime);
 </pre>
