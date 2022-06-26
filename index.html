@@ -13,7 +13,7 @@
 
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>rPlayer2 - JavaScript library</title>
+  <title>rPlayer - JavaScript library</title>
   <meta name="description" content="rPlayer is a player play streaming radio, this player, offers the possibility to change different audio format. Example: .m3u8, .mp3, .aac." />
   <meta name="theme-color" content="#000000" />
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -116,7 +116,7 @@
   <div class="app-container">
     <div id="app">
       <header>
-        <h1>rPlayer2 in Action</h1>
+        <h1>rPlayer in Action</h1>
       </header>
       <section>
         <button @click="add">Add</button>
@@ -162,7 +162,7 @@ var audio = new rPlayer();
 <p>rPlayer is extending <a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/audio" rel="noreferrer" target="_blank">Audio</a> HTMLMediaElement</p>
 
 <h2>Play</h2>
-<p>Play don't Works with HLS. &#128577;</p>
+<p>Play don't works with HLS. &#128577;</p>
 <pre class="w3-code jsHigh">
 var audio = new Audio('URL.m3u8');
 audio.play();
@@ -322,7 +322,7 @@ console.log('Time:', audio.currentTime);
           this.trackEvent('button', 'Pause');
         },
         play: function () {
-          this.audio.playHls(this.url);
+          this.audio.playSrc(this.url);
           this.log();
           
           this.trackEvent('button', 'Play');
@@ -366,7 +366,7 @@ console.log('Time:', audio.currentTime);
       script.setAttribute('type', 'text/javascript');
       script.setAttribute('src', 'https://www.w3schools.com/lib/w3codecolor.js');
       script.onload = function () {
-        w3CodeColor();;
+        w3CodeColor();
       };
 
       document.body.appendChild(script);
