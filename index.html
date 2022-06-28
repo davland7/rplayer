@@ -85,9 +85,9 @@
     #app footer a { background-color: #8a2e83; color: var(--clr-white); display: inline-block; margin-left: 10px; padding: 10px; text-decoration: none;}
     #app footer a:focus { outline: none; box-shadow: 0 0 0 2px var(--clr-white), 0 0 0 5px #8a2e83; }
 
-    #info { background-color: var(--clr-black); color: var(--clr-white); margin-left: calc(33% + 20px); padding: 20px; font-family: "Courier New", Courier, monospace; line-height: 1.5; }
+    #info { background-color: var(--clr-black); color: var(--clr-white); padding: 20px; font-family: "Courier New", Courier, monospace; line-height: 1.5; }
 
-    @media screen and (orientation: portrait) { .info-container { display: none; } }
+    @media screen and (orientation: portrait) and (max-width: 1024px) { .info-container { display: none; } }
     @media screen and (orientation: landscape) { .app-container { display: none; } }
 
     @media screen and (min-width: 1024px) {
@@ -106,7 +106,8 @@
       .app-container #app button:hover:nth-of-type(10) { outline: none; box-shadow: 0 0 0 2px var(--clr-white), 0 0 0 5px var(--clr-greenery); }
       .app-container #app header { background-color: var(--clr-white); color: var(--clr-black); }
 
-      .info-container { position: fixed; bottom: 0; height: 200px; z-index: 1; }
+      .info-container { position: fixed; bottom: 0; left: 33%; height: 200px; z-index: 1; }
+      .info-container #info { margin-left: 30px; }
 
       .blog-container { position: absolute; display: inline; width: 67%; margin-left: 33%; padding: 20px; padding-bottom: 200px; }
     }
@@ -260,7 +261,7 @@ console.log('Time:', audio.currentTime);
         url: null,
         urls: {
           mp3: 'https://18213.live.streamtheworld.com/CKBEFMAAC.aac',
-          hls: 'https://17653.live.streamtheworld.com/CKBEFMAAC/HLS/playlist.m3u8'
+          hls: 'https://playerservices.streamtheworld.com/api/livestream-redirect/CKBEFMAAC.m3u8'
         }
       }),
       created: function () {
@@ -280,15 +281,9 @@ console.log('Time:', audio.currentTime);
         },
         add: function () {
           let url;
-
-          if (localStorage.hasOwnProperty('add')) {
-            url = prompt('Add your url', localStorage.getItem('add'));
-          } else {
-            url = prompt('Add your url');
-          }
+          url = prompt('Add your url');
 
           if (Boolean(url)) {
-            localStorage.setItem('add', url);
             this.url = url;
             this.play();
 
