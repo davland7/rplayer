@@ -158,14 +158,14 @@
   <div class="w3-panel w3-white">
 <h2>Easy to use</h2>
 <pre class="w3-code jsHigh">
-var audio = new rPlayer();
+const audio = new rPlayer();
 </pre>
 <p>rPlayer is extending <a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/audio" rel="noreferrer" target="_blank">Audio</a> HTMLMediaElement</p>
 
 <h2>Play</h2>
 <p>Play don't works with HLS. &#128577;</p>
 <pre class="w3-code jsHigh">
-var audio = new Audio('URL.m3u8');
+const audio = new Audio('URL.m3u8');
 audio.play();
 </pre>
 <p>Or</p>
@@ -274,7 +274,7 @@ console.log('Time:', audio.currentTime);
 
           this.log();
 
-          var self = this;
+          const self = this;
           this.audio.ontimeupdate = function() {
             self.log();
           };
@@ -364,7 +364,7 @@ console.log('Time:', audio.currentTime);
 
     // W3 code color
     if (window.matchMedia("(min-width:1024px)").matches) {
-      var script = document.createElement('script');
+      const script = document.createElement('script');
       script.setAttribute('type', 'text/javascript');
       script.setAttribute('src', 'https://www.w3schools.com/lib/w3codecolor.js');
       script.onload = function () {
