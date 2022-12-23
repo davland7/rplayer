@@ -15,8 +15,7 @@
     "hls"
   ],
   "repository": {
-    "type": "git",
-    "url": "git+https://github.com/davland7/rplayer.git"
+    "url": "git://github.com/davland7/rplayer.git"
   },
   "author": "David Landry",
   "license": "MIT",

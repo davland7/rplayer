@@ -106,4 +106,4 @@ npm install @babel/core babel-loader webpack webpack-cli webpack-dev-server --sa
 
 ## Used by
 
-[Mini Radio (Chrome extention)](https://chrome.google.com/webstore/detail/mini-radio/klcjochgjlcecbalpokmcldlfhngcnfh)
+[Mini Radio (Chrome extension)](https://chrome.google.com/webstore/detail/mini-radio/klcjochgjlcecbalpokmcldlfhngcnfh)
