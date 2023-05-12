@@ -1,6 +1,6 @@
 {
   "name": "@davland7/rplayer",
-  "version": "2.0.5",
+  "version": "2.0.6",
   "description": "rPlayer is a player play streaming radio, this player, offers the possibility to change different audio format. Example: .m3u8, .mp3, .aac.",
   "main": "dist/rplayer.js",
   "scripts": {
@@ -23,14 +23,14 @@
     "url": "https://github.com/davland7/rplayer/issues"
   },
   "homepage": "https://rplayer.js.org",
-  "dependencies": {
-    "hls.js": "^1.1.5"
-  },
   "devDependencies": {
     "@babel/core": "^7.18.5",
     "babel-loader": "^8.2.5",
     "webpack": "^5.73.0",
     "webpack-cli": "^4.10.0",
     "webpack-dev-server": "^4.9.2"
+  },
+  "dependencies": {
+    "hls.js": "^1.4.5"
   }
 }
