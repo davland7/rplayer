@@ -1,5 +1,5 @@
 import e from "hls.js";
-class a extends Audio {
+class o extends Audio {
   constructor() {
     super();
     const t = "rplayer-volume";
@@ -45,6 +45,12 @@ class a extends Audio {
     this.setVolume(this.volume - 0.1);
   }
   /**
+   * @param {number} secondes
+   */
+  rewind(t) {
+    this.currentTime = this.currentTime - t;
+  }
+  /**
    * @param {number} value
    */
   setVolume(t) {
@@ -78,5 +84,5 @@ class a extends Audio {
   }
 }
 export {
-  a as default
+  o as default
 };
