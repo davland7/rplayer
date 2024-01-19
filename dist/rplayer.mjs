@@ -1,27 +1,27 @@
 import i from "hls.js";
 class o extends Audio {
   constructor() {
-    super(), this.key = "rplayer-volume", this.volume = parseFloat(localStorage.getItem(this.key) ?? "0.2");
+    super(), this.key = "rplayer-volume", this.volume = parseFloat(localStorage.getItem(this.key) || "0.2");
   }
   async playSrc(t) {
-    const s = t.indexOf(".m3u8") > 0;
+    const e = t.indexOf(".m3u8") > 0;
     if (this.isPaused(t))
       this.play();
     else {
-      this.stop(), s ? i.isSupported() && (this.hls = new i(), this instanceof HTMLAudioElement && this.hls.attachMedia(this), this.hls.loadSource(t), await new Promise((e) => {
+      this.stop(), e ? i.isSupported() && (this.hls = new i(), this instanceof HTMLAudioElement && this.hls.attachMedia(this), this.hls.loadSource(t), await new Promise((s) => {
         var h;
         (h = this.hls) == null || h.on(i.Events.MANIFEST_PARSED, () => {
-          e();
+          s();
         });
-      })) : (this.src = t, await new Promise((e) => {
+      })) : (this.src = t, await new Promise((s) => {
         this.addEventListener("loadedmetadata", () => {
-          e();
+          s();
         });
       }));
       try {
         await this.play();
-      } catch (e) {
-        console.error("Error on play", e);
+      } catch (s) {
+        console.error("Error on play", s);
       }
     }
   }
@@ -48,12 +48,10 @@ class o extends Audio {
    */
   setVolume(t) {
     if (t >= 0 && t <= 1) {
-      const s = Math.round(t * 10) / 10;
-      if (s !== this.volume) {
-        this.volume = s;
-        const e = new Event("volumechange");
-        this.dispatchEvent(e), localStorage.setItem(this.key, s.toFixed(1));
-      }
+      const e = Math.round(t * 10) / 10;
+      this.volume = e;
+      const s = new Event("volumechange");
+      this.dispatchEvent(s), localStorage.setItem(this.key, e.toString());
     }
   }
   /**
