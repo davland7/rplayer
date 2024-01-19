@@ -18,7 +18,7 @@ export default class rPlayer extends Audio {
     } else {
       this.stop();
 
-      if (isM3u8 && !this.canPlayType("application/vnd.apple.mpegurl")) {
+      if (Hls instanceof Object && isM3u8 && !this.canPlayType("application/vnd.apple.mpegurl")) {
         if (Hls.isSupported()) {
           this.hls = new Hls();
 

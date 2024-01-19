@@ -8,7 +8,7 @@ class o extends Audio {
     if (this.isPaused(e))
       this.play();
     else {
-      this.stop(), l && !this.canPlayType("application/vnd.apple.mpegurl") ? s.isSupported() && (this.hls = new s(), this instanceof HTMLAudioElement && this.hls.attachMedia(this), this.hls.loadSource(e), await new Promise((t) => {
+      this.stop(), s instanceof Object && l && !this.canPlayType("application/vnd.apple.mpegurl") ? s.isSupported() && (this.hls = new s(), this instanceof HTMLAudioElement && this.hls.attachMedia(this), this.hls.loadSource(e), await new Promise((t) => {
         var i;
         (i = this.hls) == null || i.on(s.Events.MANIFEST_PARSED, () => {
           t();
