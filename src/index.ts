@@ -10,7 +10,7 @@ export default class rPlayer extends Audio {
     this.hls = null;
 
     if (localStorage.hasOwnProperty(key)) {
-      this.volume = parseFloat(localStorage.getItem(key)!);
+      this.volume = +localStorage.getItem(key);
     } else {
       this.volume = 0.2;
     }
@@ -20,9 +20,6 @@ export default class rPlayer extends Audio {
     };
   }
 
-  /**
-   * @param src
-   */
   async playSrc(src: string) {
     const isM3u8 = src.indexOf('.m3u8') > 0;
 
@@ -31,21 +28,23 @@ export default class rPlayer extends Audio {
     } else {
       this.stop();
 
-      if (Hls instanceof Object && isM3u8) {
-        this.hls = new Hls();
+      if (isM3u8) {
+        if (Hls.isSupported()) {
+          this.hls = new Hls();
 
-        if (this instanceof HTMLAudioElement) {
-          this.hls.attachMedia(this as HTMLAudioElement as HTMLVideoElement);
-        }
+          if (this instanceof HTMLAudioElement) {
+            this.hls.attachMedia(this as HTMLAudioElement as HTMLVideoElement);
+          }
 
-        this.hls.loadSource(src);
+          this.hls.loadSource(src);
 
-        await new Promise<void>((resolve) => {
-          this.hls?.on(Hls.Events.MANIFEST_PARSED, () => {
-            resolve();
+          await new Promise<void>((resolve) => {
+            this.hls?.on(Hls.Events.MANIFEST_PARSED, () => {
+              resolve();
+            });
           });
-        });
-      } else if (!this.hls || (this.canPlayType('application/vnd.apple.mpegurl') && isM3u8)) {
+        }
+      } else {
         this.src = src;
 
         await new Promise<void>((resolve) => {

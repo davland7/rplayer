@@ -3,24 +3,21 @@ class o extends Audio {
   constructor() {
     super();
     const t = "rplayer-volume";
-    this.hls = null, localStorage.hasOwnProperty(t) ? this.volume = parseFloat(localStorage.getItem(t)) : this.volume = 0.2, this.onvolumechange = () => {
+    this.hls = null, localStorage.hasOwnProperty(t) ? this.volume = +localStorage.getItem(t) : this.volume = 0.2, this.onvolumechange = () => {
       localStorage.setItem(t, this.volume.toString());
     };
   }
-  /**
-   * @param src
-   */
   async playSrc(t) {
-    const i = t.indexOf(".m3u8") > 0;
+    const h = t.indexOf(".m3u8") > 0;
     if (this.isPaused(t))
       this.play();
     else {
-      this.stop(), e instanceof Object && i ? (this.hls = new e(), this instanceof HTMLAudioElement && this.hls.attachMedia(this), this.hls.loadSource(t), await new Promise((s) => {
-        var l;
-        (l = this.hls) == null || l.on(e.Events.MANIFEST_PARSED, () => {
+      this.stop(), h ? e.isSupported() && (this.hls = new e(), this instanceof HTMLAudioElement && this.hls.attachMedia(this), this.hls.loadSource(t), await new Promise((s) => {
+        var i;
+        (i = this.hls) == null || i.on(e.Events.MANIFEST_PARSED, () => {
           s();
         });
-      })) : (!this.hls || this.canPlayType("application/vnd.apple.mpegurl") && i) && (this.src = t, await new Promise((s) => {
+      })) : (this.src = t, await new Promise((s) => {
         this.addEventListener("loadedmetadata", () => {
           s();
         });
