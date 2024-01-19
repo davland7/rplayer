@@ -2,12 +2,12 @@ import Hls from 'hls.js';
 
 export default class rPlayer extends Audio {
   private hls: Hls | null;
-  private key: string = 'rplayer-volume';
+  // private key: string = 'rplayer-volume';
 
   constructor() {
     super();
 
-    this.volume = parseFloat(localStorage.getItem(this.key) || "0.2");
+    this.volume = 0.2; // parseFloat(localStorage.getItem(this.key) || "0.2");
   }
 
   async playSrc(src: string) {
@@ -91,9 +91,8 @@ export default class rPlayer extends Audio {
       const roundedValue = Math.round(value * 10) / 10;
       this.volume = roundedValue;
 
-      this.volume = roundedValue;
       this.dispatchEvent(new Event('volumechange'));
-      localStorage.setItem(this.key, roundedValue.toString());
+      // localStorage.setItem(this.key, roundedValue.toString());
 
       if (this instanceof HTMLAudioElement) {
         this.volume = roundedValue;

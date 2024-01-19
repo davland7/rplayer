@@ -1,7 +1,8 @@
 import i from "hls.js";
-class r extends Audio {
+class n extends Audio {
+  // private key: string = 'rplayer-volume';
   constructor() {
-    super(), this.key = "rplayer-volume", this.volume = parseFloat(localStorage.getItem(this.key) || "0.2");
+    super(), this.volume = 0.2;
   }
   async playSrc(t) {
     const e = t.indexOf(".m3u8") > 0;
@@ -51,7 +52,7 @@ class r extends Audio {
   setVolume(t) {
     if (t >= 0 && t <= 1) {
       const e = Math.round(t * 10) / 10;
-      this.volume = e, this.volume = e, this.dispatchEvent(new Event("volumechange")), localStorage.setItem(this.key, e.toString()), this instanceof HTMLAudioElement && (this.volume = e);
+      this.volume = e, this.dispatchEvent(new Event("volumechange")), this instanceof HTMLAudioElement && (this.volume = e);
     }
   }
   /**
@@ -82,5 +83,5 @@ class r extends Audio {
   }
 }
 export {
-  r as default
+  n as default
 };
