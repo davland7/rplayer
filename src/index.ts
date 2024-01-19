@@ -97,7 +97,7 @@ export default class rPlayer extends Audio {
    */
   private setVolume(value: number): void {
     if (value >= 0.0 && value <= 1.0) {
-      this.volume = parseFloat(value.toFixed(1));
+      this.volume = Math.round(value * 10) / 10;
     }
   }
 

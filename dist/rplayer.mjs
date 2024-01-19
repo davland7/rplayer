@@ -54,7 +54,7 @@ class o extends Audio {
    * @param {number} value
    */
   setVolume(t) {
-    t >= 0 && t <= 1 && (this.volume = parseFloat(t.toFixed(1)));
+    t >= 0 && t <= 1 && (this.volume = Math.round(t * 10) / 10);
   }
   /**
    * @param {string} src
