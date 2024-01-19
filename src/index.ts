@@ -67,13 +67,13 @@ export default class rPlayer extends Audio {
   }
 
   upVolume(): void {
-    const volume = this.volume + 0.1;
-    this.setVolume(volume);
+    const volume = this.volume;
+    this.setVolume(volume + 0.1);
   }
 
   downVolume(): void {
-    const volume = this.volume - 0.1;
-    this.setVolume(volume);
+    const volume = this.volume;
+    this.setVolume(volume - 0.1);
   }
 
   /**
@@ -84,19 +84,16 @@ export default class rPlayer extends Audio {
   };
 
   /**
-   * @param {number} secondes
+   * @param {number} value
    */
   private setVolume(value: number): void {
     if (value >= 0.0 && value <= 1.0) {
-      const roundedValue = Math.round(value * 10) / 10;
-      this.volume = roundedValue;
+      // const roundedValue = Math.round(value * 10) / 10;
+      // this.volume = roundedValue;
 
+      this.volume = value;
       this.dispatchEvent(new Event('volumechange'));
       // localStorage.setItem(this.key, roundedValue.toString());
-
-      if (this instanceof HTMLAudioElement) {
-        this.volume = roundedValue;
-      }
     }
   }
 

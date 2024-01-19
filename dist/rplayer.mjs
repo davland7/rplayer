@@ -1,17 +1,17 @@
-import i from "hls.js";
+import e from "hls.js";
 class n extends Audio {
   // private key: string = 'rplayer-volume';
   constructor() {
     super(), this.volume = 0.2;
   }
   async playSrc(t) {
-    const e = t.indexOf(".m3u8") > 0;
+    const h = t.indexOf(".m3u8") > 0;
     if (this.isPaused(t))
       this.play();
     else {
-      this.stop(), e ? i.isSupported() && (this.hls = new i(), this instanceof HTMLAudioElement && this.hls.attachMedia(this), this.hls.loadSource(t), await new Promise((s) => {
-        var h;
-        (h = this.hls) == null || h.on(i.Events.MANIFEST_PARSED, () => {
+      this.stop(), h ? e.isSupported() && (this.hls = new e(), this instanceof HTMLAudioElement && this.hls.attachMedia(this), this.hls.loadSource(t), await new Promise((s) => {
+        var i;
+        (i = this.hls) == null || i.on(e.Events.MANIFEST_PARSED, () => {
           s();
         });
       })) : (this.src = t, await new Promise((s) => {
@@ -33,12 +33,12 @@ class n extends Audio {
     this.pause(), this.currentTime = 0, this.hls && (this.hls.destroy(), this.hls = null);
   }
   upVolume() {
-    const t = this.volume + 0.1;
-    this.setVolume(t);
+    const t = this.volume;
+    this.setVolume(t + 0.1);
   }
   downVolume() {
-    const t = this.volume - 0.1;
-    this.setVolume(t);
+    const t = this.volume;
+    this.setVolume(t - 0.1);
   }
   /**
    * @param {number} secondes
@@ -47,13 +47,10 @@ class n extends Audio {
     this.currentTime = this.currentTime - t;
   }
   /**
-   * @param {number} secondes
+   * @param {number} value
    */
   setVolume(t) {
-    if (t >= 0 && t <= 1) {
-      const e = Math.round(t * 10) / 10;
-      this.volume = e, this.dispatchEvent(new Event("volumechange")), this instanceof HTMLAudioElement && (this.volume = e);
-    }
+    t >= 0 && t <= 1 && (this.volume = t, this.dispatchEvent(new Event("volumechange")));
   }
   /**
    * @param {string} src
@@ -66,7 +63,7 @@ class n extends Audio {
    * @returns {boolean}
    */
   get isHls() {
-    return this.hls !== null && this.hls instanceof i;
+    return this.hls !== null && this.hls instanceof e;
   }
   /**
    * @returns {string | undefined}
