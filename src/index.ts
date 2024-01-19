@@ -7,7 +7,7 @@ export default class rPlayer extends Audio {
   constructor() {
     super();
 
-    // this.volume = 0.2; // parseFloat(localStorage.getItem(this.key) || "0.2");
+    this.volume = 0.2; // parseFloat(localStorage.getItem(this.key) || "0.2");
   }
 
   async playSrc(src: string) {

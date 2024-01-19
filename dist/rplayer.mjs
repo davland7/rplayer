@@ -2,7 +2,7 @@ import e from "hls.js";
 class a extends Audio {
   // private key: string = 'rplayer-volume';
   constructor() {
-    super();
+    super(), this.volume = 0.2;
   }
   async playSrc(t) {
     const r = t.indexOf(".m3u8") > 0;
