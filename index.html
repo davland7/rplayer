@@ -59,7 +59,7 @@
     }
 
     html, body, .app-container, #app, .info-container, #info { margin: 0; width: 100%; height: 100%; }
-    
+
     #app { display: flex; flex-direction: column; font-family: 'Poppins', sans-serif; }
     #app header { padding: 5px 10px; background-color: var(--clr-black); color: var(--clr-yellow); text-align: center; }
     #app header h1 { margin: 0; font-size: 20px; line-height: 40px; font-weight: 600; }
@@ -67,7 +67,7 @@
     #app section button { color: var(--clr-white); margin: 5px 0; border: 0; font-size: 30px; cursor: pointer; }
     #app section button:nth-child(even) { margin-left: 5px; }
     #app section button:nth-child(odd) { margin-right: 5px; }
-    #app section button:nth-of-type(1) { background-color: var(--clr-flame); color: var(--clr-black); } 
+    #app section button:nth-of-type(1) { background-color: var(--clr-flame); color: var(--clr-black); }
     #app section button:focus:nth-of-type(1) { outline: none; box-shadow: 0 0 0 2px var(--clr-white), 0 0 0 5px var(--clr-flame); }
     #app section button:nth-of-type(2) { background-color: var(--clr-blue); }
     #app section button:focus:nth-of-type(2) { outline: none; box-shadow: 0 0 0 2px var(--clr-white), 0 0 0 5px var(--clr-blue); }
@@ -164,7 +164,7 @@
   <div class="w3-panel w3-white">
 <h2>Easy to use</h2>
 <pre class="w3-code jsHigh">
-&#060;script src="https://cdn.jsdelivr.net/npm/@davland7/rplayer/dist/rplayer.min.js"&#062;&#060;/script&#062;
+&#060;script src="https://cdn.jsdelivr.net/npm/@davland7/rplayer@2.0.6/dist/rplayer.min.js"&#062;&#060;/script&#062;
 </pre>
 <pre class="w3-code jsHigh">
 const audio = new rPlayer();
@@ -250,6 +250,7 @@ console.log('Time:', audio.currentTime);
     <div>
   </div>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/3.2.37/vue.global.prod.min.js" integrity="sha512-8GokEWxcB/NrPU4O8BHTgd9dkLouAsvqCnk6BSa2CZw7QXh0QM8GHfS53xYW1QJJVyJWctlcdRQwu5UxeLVsNA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="https://cdn.jsdelivr.net/npm/hls.js@1.5.3/dist/hls.min.js" integrity="sha256-yI6jd4S0qqdqD1qH2AnNNvxxIJ8N6NuUIFj7+0eumjM=" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/@davland7/rplayer/dist/rplayer.min.js"></script>
   <script type="text/javascript">
     const info = Vue.createApp({
@@ -311,7 +312,7 @@ console.log('Time:', audio.currentTime);
         up: function () {
           this.audio.upVolume();
           this.log();
-          
+
           this.trackEvent('button', 'Up');
         },
         down: function () {
@@ -335,7 +336,7 @@ console.log('Time:', audio.currentTime);
         play: function () {
           this.audio.playSrc(this.url);
           this.log();
-          
+
           this.trackEvent('button', 'Play');
         },
         stop: function () {
