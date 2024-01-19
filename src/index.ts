@@ -24,14 +24,14 @@ export default class rPlayer extends Audio {
    * @param src
    */
   async playSrc(src: string) {
-    const isHls = src.indexOf('.m3u8') > 0;
+    const isM3u8 = src.indexOf('.m3u8') > 0;
 
     if (this.isPaused(src)) {
       this.play();
     } else {
       this.stop();
 
-      if (Hls.isSupported() && isHls) {
+      if (Hls instanceof Object && isM3u8) {
         this.hls = new Hls();
 
         if (this instanceof HTMLAudioElement) {
@@ -45,7 +45,7 @@ export default class rPlayer extends Audio {
             resolve();
           });
         });
-      } else if (!this.hls && (this.canPlayType('application/vnd.apple.mpegurl') || (!isHls && Hls.isSupported()))) {
+      } else if (!this.hls || (this.canPlayType('application/vnd.apple.mpegurl') && isM3u8)) {
         this.src = src;
 
         await new Promise<void>((resolve) => {
@@ -106,7 +106,7 @@ export default class rPlayer extends Audio {
    * @returns {boolean}
    */
   get isHls(): boolean {
-    return this.hls instanceof Hls;
+    return this.hls !== null && this.hls instanceof Hls;
   }
 
   /**

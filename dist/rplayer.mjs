@@ -1,5 +1,5 @@
 import e from "hls.js";
-class r extends Audio {
+class a extends Audio {
   constructor() {
     super();
     const t = "rplayer-volume";
@@ -15,12 +15,12 @@ class r extends Audio {
     if (this.isPaused(t))
       this.play();
     else {
-      this.stop(), e.isSupported() && i ? (this.hls = new e(), this instanceof HTMLAudioElement && this.hls.attachMedia(this), this.hls.loadSource(t), await new Promise((s) => {
+      this.stop(), e instanceof Object && i ? (this.hls = new e(), this instanceof HTMLAudioElement && this.hls.attachMedia(this), this.hls.loadSource(t), await new Promise((s) => {
         var l;
         (l = this.hls) == null || l.on(e.Events.MANIFEST_PARSED, () => {
           s();
         });
-      })) : !this.hls && (this.canPlayType("application/vnd.apple.mpegurl") || !i && e.isSupported()) && (this.src = t, await new Promise((s) => {
+      })) : (!this.hls || this.canPlayType("application/vnd.apple.mpegurl") && i) && (this.src = t, await new Promise((s) => {
         this.addEventListener("loadedmetadata", () => {
           s();
         });
@@ -61,7 +61,7 @@ class r extends Audio {
    * @returns {boolean}
    */
   get isHls() {
-    return this.hls instanceof e;
+    return this.hls !== null && this.hls instanceof e;
   }
   /**
    * @returns {string | undefined}
@@ -78,5 +78,5 @@ class r extends Audio {
   }
 }
 export {
-  r as default
+  a as default
 };

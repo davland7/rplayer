@@ -1,6 +1,6 @@
 {
   "name": "@davland7/rplayer",
-  "version": "2.1.0",
+  "version": "2.1.1",
   "description": "rPlayer is a player play streaming radio, this player, offers the possibility to change different audio format. Example: .m3u8, .mp3, .aac.",
   "keywords": [
     "radio",
