@@ -1,31 +1,27 @@
-import e from "hls.js";
+import i from "hls.js";
 class o extends Audio {
   constructor() {
-    super();
-    const t = "rplayer-volume";
-    this.hls = null, localStorage.hasOwnProperty(t) ? this.volume = +localStorage.getItem(t) : this.volume = 0.2, this.onvolumechange = () => {
-      localStorage.setItem(t, this.volume.toString());
-    };
+    super(), this.key = "rplayer-volume", this.volume = parseFloat(localStorage.getItem(this.key) ?? "0.2");
   }
   async playSrc(t) {
-    const h = t.indexOf(".m3u8") > 0;
+    const s = t.indexOf(".m3u8") > 0;
     if (this.isPaused(t))
       this.play();
     else {
-      this.stop(), h ? e.isSupported() && (this.hls = new e(), this instanceof HTMLAudioElement && this.hls.attachMedia(this), this.hls.loadSource(t), await new Promise((s) => {
-        var i;
-        (i = this.hls) == null || i.on(e.Events.MANIFEST_PARSED, () => {
-          s();
+      this.stop(), s ? i.isSupported() && (this.hls = new i(), this instanceof HTMLAudioElement && this.hls.attachMedia(this), this.hls.loadSource(t), await new Promise((e) => {
+        var h;
+        (h = this.hls) == null || h.on(i.Events.MANIFEST_PARSED, () => {
+          e();
         });
-      })) : (this.src = t, await new Promise((s) => {
+      })) : (this.src = t, await new Promise((e) => {
         this.addEventListener("loadedmetadata", () => {
-          s();
+          e();
         });
       }));
       try {
         await this.play();
-      } catch (s) {
-        console.error("Error on play", s);
+      } catch (e) {
+        console.error("Error on play", e);
       }
     }
   }
@@ -51,7 +47,14 @@ class o extends Audio {
    * @param {number} value
    */
   setVolume(t) {
-    t >= 0 && t <= 1 && (this.volume = Math.round(t * 10) / 10);
+    if (t >= 0 && t <= 1) {
+      const s = Math.round(t * 10) / 10;
+      if (s !== this.volume) {
+        this.volume = s;
+        const e = new Event("volumechange");
+        this.dispatchEvent(e), localStorage.setItem(this.key, s.toFixed(1));
+      }
+    }
   }
   /**
    * @param {string} src
@@ -64,7 +67,7 @@ class o extends Audio {
    * @returns {boolean}
    */
   get isHls() {
-    return this.hls !== null && this.hls instanceof e;
+    return this.hls !== null && this.hls instanceof i;
   }
   /**
    * @returns {string | undefined}
