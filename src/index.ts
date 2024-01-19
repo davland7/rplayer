@@ -67,11 +67,13 @@ export default class rPlayer extends Audio {
   }
 
   upVolume(): void {
-    this.setVolume(this.volume + 0.1);
+    const volume = this.volume + 0.1;
+    this.setVolume(volume);
   }
 
   downVolume(): void {
-    this.setVolume(this.volume - 0.1);
+    const volume = this.volume - 0.1;
+    this.setVolume(volume);
   }
 
   /**

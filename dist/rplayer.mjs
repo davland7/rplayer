@@ -32,10 +32,12 @@ class o extends Audio {
     this.pause(), this.currentTime = 0, this.hls && (this.hls.destroy(), this.hls = null);
   }
   upVolume() {
-    this.setVolume(this.volume + 0.1);
+    const t = this.volume + 0.1;
+    this.setVolume(t);
   }
   downVolume() {
-    this.setVolume(this.volume - 0.1);
+    const t = this.volume - 0.1;
+    this.setVolume(t);
   }
   /**
    * @param {number} secondes
