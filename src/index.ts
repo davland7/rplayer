@@ -7,7 +7,7 @@ export default class rPlayer extends Audio {
   constructor() {
     super();
 
-    this.volume = parseFloat(localStorage.getItem(this.key) || "0.2");
+    this.volume = this.isAppleDevice() ? 1.0 : parseFloat(localStorage.getItem(this.key) || "0.2");
   }
 
   async playSrc(src: string) {
@@ -18,7 +18,7 @@ export default class rPlayer extends Audio {
     } else {
       this.stop();
 
-      if (isM3u8) {
+      if (isM3u8 && !this.canPlayType("application/vnd.apple.mpegurl")) {
         if (Hls.isSupported()) {
           this.hls = new Hls();
 
@@ -74,28 +74,20 @@ export default class rPlayer extends Audio {
   };
 
   upVolume(): void {
-    if (this.volume < 0.9) {  // Adjusted the check to ensure it doesn't go beyond 0.9
-      this.volume += 0.1;
-      localStorage.setItem('rplayer-volume', this.volume.toString());
+    if (!this.isAppleDevice() && this.volume < 1.0) {
+      this.volume = parseFloat((this.volume + 0.1).toFixed(1));
+      localStorage.setItem(this.key, this.volume.toString());
     }
   }
 
   downVolume(): void {
-    if (this.volume > 0.1) {  // Adjusted the check to ensure it doesn't go below 0.1
-      this.volume -= 0.1;
-      localStorage.setItem('rplayer-volume', this.volume.toString());
-    } else {
-      this.volume = 0;  // Set volume to 0 if it's below 0.1 to avoid negative values
-      localStorage.setItem('rplayer-volume', '0');
+    if (!this.isAppleDevice() && this.volume > 0.1) {
+      this.volume = parseFloat((this.volume - 0.1).toFixed(1));
+      localStorage.setItem(this.key, this.volume.toString());
+    } else if (!this.isAppleDevice()) {
+      this.volume = 0;
+      localStorage.setItem(this.key, '0');
     }
-  }
-
-  /**
-   * @param {string} src
-   * @returns
-   */
-  private isPaused(src: string): boolean {
-    return this.currentTime > 0 && !this.playing && this.url === src;
   }
 
   /**
@@ -117,5 +109,20 @@ export default class rPlayer extends Audio {
    */
   get playing(): boolean {
     return this.currentTime > 0 && !this.paused && !this.ended && this.readyState > 2;
+  }
+
+  /**
+   * @returns {boolean}
+   */
+  private isAppleDevice(): boolean {
+    return /iPad|iPhone|iPod/.test(navigator.userAgent);
+  }
+
+  /**
+   * @param {string} src
+   * @returns
+   */
+  private isPaused(src: string): boolean {
+    return this.currentTime > 0 && !this.playing && this.url === src;
   }
 }

@@ -364,7 +364,7 @@ console.log('Time:', audio.currentTime);
         },
         log: function () {
           info.playing = this.audio.playing;
-          info.volume = this.audio.volume;
+          info.volume = this.audio.volume * 100;
           info.paused = this.audio.paused;
           info.muted = this.audio.muted;
           info.src = this.audio.url;
