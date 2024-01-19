@@ -84,16 +84,20 @@ export default class rPlayer extends Audio {
   };
 
   /**
-   * @param {number} value
+   * @param {number} secondes
    */
   private setVolume(value: number): void {
     if (value >= 0.0 && value <= 1.0) {
-      const volume =Math.round(value * 10) / 10;
-      this.volume = volume;
+      const roundedValue = Math.round(value * 10) / 10;
+      this.volume = roundedValue;
 
-      const event = new Event('volumechange');
-      this.dispatchEvent(event);
-      localStorage.setItem(this.key, volume.toString());
+      this.volume = roundedValue;
+      this.dispatchEvent(new Event('volumechange'));
+      localStorage.setItem(this.key, roundedValue.toString());
+
+      if (this instanceof HTMLAudioElement) {
+        this.volume = roundedValue;
+      }
     }
   }
 
