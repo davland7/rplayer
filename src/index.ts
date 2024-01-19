@@ -7,7 +7,7 @@ export default class rPlayer extends Audio {
   constructor() {
     super();
 
-    this.volume = 0.2; // parseFloat(localStorage.getItem(this.key) || "0.2");
+    // this.volume = 0.2; // parseFloat(localStorage.getItem(this.key) || "0.2");
   }
 
   async playSrc(src: string) {
@@ -67,13 +67,13 @@ export default class rPlayer extends Audio {
   }
 
   upVolume(): void {
-    const volume = this.volume;
-    this.setVolume(volume + 0.1);
+    /*const volume = this.volume;
+    this.setVolume(volume + 0.1);*/
   }
 
   downVolume(): void {
-    const volume = this.volume;
-    this.setVolume(volume - 0.1);
+    /*const volume = this.volume;
+    this.setVolume(volume - 0.1);*/
   }
 
   /**
@@ -91,8 +91,8 @@ export default class rPlayer extends Audio {
       // const roundedValue = Math.round(value * 10) / 10;
       // this.volume = roundedValue;
 
-      this.volume = value;
-      this.dispatchEvent(new Event('volumechange'));
+      // this.volume = value;
+      // this.dispatchEvent(new Event('volumechange'));
       // localStorage.setItem(this.key, roundedValue.toString());
     }
   }
