@@ -2,12 +2,12 @@ import Hls from 'hls.js';
 
 export default class rPlayer extends Audio {
   private hls: Hls | null;
-  // private key: string = 'rplayer-volume';
+  private key: string = 'rplayer-volume';
 
   constructor() {
     super();
 
-    this.volume = 0.2; // parseFloat(localStorage.getItem(this.key) || "0.2");
+    this.volume = parseFloat(localStorage.getItem(this.key) || "0.2");
   }
 
   async playSrc(src: string) {
@@ -66,16 +66,6 @@ export default class rPlayer extends Audio {
     }
   }
 
-  upVolume(): void {
-    /*const volume = this.volume;
-    this.setVolume(volume + 0.1);*/
-  }
-
-  downVolume(): void {
-    /*const volume = this.volume;
-    this.setVolume(volume - 0.1);*/
-  }
-
   /**
    * @param {number} secondes
    */
@@ -83,17 +73,20 @@ export default class rPlayer extends Audio {
     this.currentTime = this.currentTime - secondes;
   };
 
-  /**
-   * @param {number} value
-   */
-  private setVolume(value: number): void {
-    if (value >= 0.0 && value <= 0.5) {
-      // const roundedValue = Math.round(value * 10) / 10;
-      // this.volume = roundedValue;
+  upVolume(): void {
+    if (this.volume < 0.9) {  // Adjusted the check to ensure it doesn't go beyond 0.9
+      this.volume += 0.1;
+      localStorage.setItem('rplayer-volume', this.volume.toString());
+    }
+  }
 
-      // this.volume = value;
-      // this.dispatchEvent(new Event('volumechange'));
-      // localStorage.setItem(this.key, roundedValue.toString());
+  downVolume(): void {
+    if (this.volume > 0.1) {  // Adjusted the check to ensure it doesn't go below 0.1
+      this.volume -= 0.1;
+      localStorage.setItem('rplayer-volume', this.volume.toString());
+    } else {
+      this.volume = 0;  // Set volume to 0 if it's below 0.1 to avoid negative values
+      localStorage.setItem('rplayer-volume', '0');
     }
   }
 

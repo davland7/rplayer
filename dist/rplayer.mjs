@@ -1,28 +1,27 @@
-import e from "hls.js";
-class a extends Audio {
-  // private key: string = 'rplayer-volume';
+import s from "hls.js";
+class o extends Audio {
   constructor() {
-    super(), this.volume = 0.2;
+    super(), this.key = "rplayer-volume", this.volume = parseFloat(localStorage.getItem(this.key) || "0.2");
   }
   async playSrc(t) {
-    const r = t.indexOf(".m3u8") > 0;
+    const l = t.indexOf(".m3u8") > 0;
     if (this.isPaused(t))
       this.play();
     else {
-      this.stop(), r ? e.isSupported() && (this.hls = new e(), this instanceof HTMLAudioElement && this.hls.attachMedia(this), this.hls.loadSource(t), await new Promise((s) => {
+      this.stop(), l ? s.isSupported() && (this.hls = new s(), this instanceof HTMLAudioElement && this.hls.attachMedia(this), this.hls.loadSource(t), await new Promise((e) => {
         var i;
-        (i = this.hls) == null || i.on(e.Events.MANIFEST_PARSED, () => {
-          s();
+        (i = this.hls) == null || i.on(s.Events.MANIFEST_PARSED, () => {
+          e();
         });
-      })) : (this.src = t, await new Promise((s) => {
+      })) : (this.src = t, await new Promise((e) => {
         this.addEventListener("loadedmetadata", () => {
-          s();
+          e();
         });
       }));
       try {
         await this.play();
-      } catch (s) {
-        console.error("Error on play", s);
+      } catch (e) {
+        console.error("Error on play", e);
       }
     }
   }
@@ -32,20 +31,17 @@ class a extends Audio {
   stop() {
     this.pause(), this.currentTime = 0, this.hls && (this.hls.destroy(), this.hls = null);
   }
-  upVolume() {
-  }
-  downVolume() {
-  }
   /**
    * @param {number} secondes
    */
   rewind(t) {
     this.currentTime = this.currentTime - t;
   }
-  /**
-   * @param {number} value
-   */
-  setVolume(t) {
+  upVolume() {
+    this.volume < 0.9 && (this.volume += 0.1, localStorage.setItem("rplayer-volume", this.volume.toString()));
+  }
+  downVolume() {
+    this.volume > 0.1 ? (this.volume -= 0.1, localStorage.setItem("rplayer-volume", this.volume.toString())) : (this.volume = 0, localStorage.setItem("rplayer-volume", "0"));
   }
   /**
    * @param {string} src
@@ -58,7 +54,7 @@ class a extends Audio {
    * @returns {boolean}
    */
   get isHls() {
-    return this.hls !== null && this.hls instanceof e;
+    return this.hls !== null && this.hls instanceof s;
   }
   /**
    * @returns {string | undefined}
@@ -75,5 +71,5 @@ class a extends Audio {
   }
 }
 export {
-  a as default
+  o as default
 };
