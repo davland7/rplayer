@@ -87,7 +87,7 @@ export default class rPlayer extends Audio {
    * @param {number} value
    */
   private setVolume(value: number): void {
-    if (value >= 0.0 && value <= 1.0) {
+    if (value >= 0.0 && value <= 0.5) {
       // const roundedValue = Math.round(value * 10) / 10;
       // this.volume = roundedValue;
 

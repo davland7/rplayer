@@ -50,7 +50,7 @@ class n extends Audio {
    * @param {number} value
    */
   setVolume(t) {
-    t >= 0 && t <= 1 && (this.volume = t, this.dispatchEvent(new Event("volumechange")));
+    t >= 0 && t <= 0.5 && (this.volume = t, this.dispatchEvent(new Event("volumechange")));
   }
   /**
    * @param {string} src
