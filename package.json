@@ -1,6 +1,6 @@
 {
   "name": "@davland7/rplayer",
-  "version": "2.1.2",
+  "version": "2.2.0",
   "description": "rPlayer is a player play streaming radio, this player, offers the possibility to change different audio format. Example: .m3u8, .mp3, .aac.",
   "keywords": [
     "radio",
@@ -37,7 +37,10 @@
     "hls.js": "^1.4.5"
   },
   "devDependencies": {
+    "@tailwindcss/forms": "^0.5.7",
+    "@tailwindcss/typography": "^0.5.10",
     "@types/node": "^20.11.16",
+    "tailwindcss": "^3.4.1",
     "vite": "^5.0.12",
     "vite-tsconfig-paths": "^4.3.1"
   }

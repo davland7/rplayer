@@ -1,15 +1,6 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <!-- Global site tag (gtag.js) - Google Analytics -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-HWN97K462C"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-
-    gtag('config', 'G-KZE9X7TPJC');
-  </script>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>rPlayer - JavaScript library</title>
@@ -30,215 +21,136 @@
   <meta property="og:image:height" content="1080" />
   <meta property="fb:app_id" content="401821003744476"/>
   <meta name="google-site-verification" content="2OEEwDyyW4QtWtDaa9-nDbNgiRWI6g8L2LqLIMvMJK4" />
-  <script
-  type="text/javascript"
-  src="https://app.termly.io/embed.min.js"
-  data-auto-block="on"
-  data-website-uuid="bfb51289-95ed-4130-a514-d1f946002464"
-></script>
-<link href="https://fonts.googleapis.com/css?family=Poppins:400,600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" media="screen and (min-width: 1024px)" href="https://cdn.jsdelivr.net/npm/w3--css@1.0.0/w3.css" integrity="sha256-Fu+tXj10rCX9//ELpE4eawJbwzshqhWQTV6b2Attp3o=" crossorigin="anonymous" type="text/css" />
-  <style type="text/css">
-    .blog-container { display: none; }
-
-    * { box-sizing: border-box; }
-
-    :root {
-      --clr-white: #ffffff;
-      --clr-black: #000000;
-      --clr-flame: #f2552c;
-      --clr-blue: #00477e;
-      --clr-js-org: #ffe70b;
-      --clr-red: #a6001a;
-      --clr-green: #004d33;
-      --clr-neutral-gray: #898e8c;
-      --clr-marina: #4f84c4;
-      --clr-yellow: #ffab00;
-      --clr-tawny-port: #FF1493;
-      --clr-greenery: #92B558;
-    }
-
-    html, body, .app-container, #app, .info-container, #info { margin: 0; width: 100%; height: 100%; }
-
-    #app { display: flex; flex-direction: column; font-family: 'Poppins', sans-serif; }
-    #app header { padding: 5px 10px; background-color: var(--clr-black); color: var(--clr-yellow); text-align: center; }
-    #app header h1 { margin: 0; font-size: 20px; line-height: 40px; font-weight: 600; }
-    #app section { flex: 1 1 100%; display: grid; grid-template-columns: repeat(2, 50%); padding: 5px 10px; }
-    #app section button { color: var(--clr-white); margin: 5px 0; border: 0; font-size: 30px; cursor: pointer; }
-    #app section button:nth-child(even) { margin-left: 5px; }
-    #app section button:nth-child(odd) { margin-right: 5px; }
-    #app section button:nth-of-type(1) { background-color: var(--clr-flame); color: var(--clr-black); }
-    #app section button:focus:nth-of-type(1) { outline: none; box-shadow: 0 0 0 2px var(--clr-white), 0 0 0 5px var(--clr-flame); }
-    #app section button:nth-of-type(2) { background-color: var(--clr-blue); }
-    #app section button:focus:nth-of-type(2) { outline: none; box-shadow: 0 0 0 2px var(--clr-white), 0 0 0 5px var(--clr-blue); }
-    #app section button:nth-of-type(3) { background-color: var(--clr-js-org); color: var(--clr-black); }
-    #app section button:focus:nth-of-type(3) { outline: none; box-shadow: 0 0 0 2px var(--clr-white), 0 0 0 5px var(--clr-js-org); }
-    #app section button:nth-of-type(4) { background-color: var(--clr-marina); color: var(--clr-black); }
-    #app section button:focus:nth-of-type(4) { outline: none; box-shadow: 0 0 0 2px var(--clr-white), 0 0 0 5px var(--clr-marina); }
-    #app section button:nth-of-type(5) { background-color: var(--clr-yellow); color: var(--clr-black); }
-    #app section button:focus:nth-of-type(5) { outline: none; box-shadow: 0 0 0 2px var(--clr-white), 0 0 0 5px var(--clr-yellow); }
-    #app section button:nth-of-type(6) { background-color: var(--clr-neutral-gray); color: var(--clr-black); }
-    #app section button:focus:nth-of-type(6) { outline: none; box-shadow: 0 0 0 2px var(--clr-white), 0 0 0 5px var(--clr-neutral-gray); }
-    #app section button:nth-of-type(7) { background-color: var(--clr-green); }
-    #app section button:focus:nth-of-type(7) { outline: none; box-shadow: 0 0 0 2px var(--clr-white), 0 0 0 5px var(--clr-green); }
-    #app section button:nth-of-type(8) { background-color: var(--clr-red); }
-    #app section button:focus:nth-of-type(8) { outline: none; box-shadow: 0 0 0 2px var(--clr-white), 0 0 0 5px var(--clr-red); }
-    #app section button:nth-of-type(9) { background-color: var(--clr-tawny-port); color: var(--clr-black); }
-    #app section button:focus:nth-of-type(9) { outline: none; box-shadow: 0 0 0 2px var(--clr-white), 0 0 0 5px var(--clr-tawny-port); }
-    #app section button:nth-of-type(10) { background-color: var(--clr-greenery); color: var(--clr-black); }
-    #app section button:focus:nth-of-type(10) { outline: none; box-shadow: 0 0 0 2px var(--clr-white), 0 0 0 5px var(--clr-greenery); }
-    #app footer { padding: 5px 10px 10px; text-align: center; }
-    #app footer a { background-color: #8a2e83; color: var(--clr-white); display: inline-block; margin-left: 10px; padding: 10px; text-decoration: none;}
-    #app footer a:focus { outline: none; box-shadow: 0 0 0 2px var(--clr-white), 0 0 0 5px #8a2e83; }
-
-    #info { background-color: var(--clr-black); color: var(--clr-white); padding: 20px; font-family: "Courier New", Courier, monospace; line-height: 1.5; }
-
-    @media screen and (orientation: portrait) and (max-width: 1024px) { .info-container { display: none; } }
-    @media screen and (orientation: landscape) { .app-container { display: none; } }
-
-    @media screen and (min-width: 1024px) {
-      .app-container { position: fixed; display: flex; justify-content: flex-end; align-items: center; width: 33%; height: 100%; }
-      .app-container #app { width: 250px; height: 500px; font-family: 'Source Sans Pro', Arial, Helvetica, sans-serif; }
-      .app-container #app button { font-size: 20px; }
-      .app-container #app button:hover:nth-of-type(1) { outline: none; box-shadow: 0 0 0 2px var(--clr-white), 0 0 0 5px var(--clr-flame); }
-      .app-container #app button:hover:nth-of-type(2) { outline: none; box-shadow: 0 0 0 2px var(--clr-white), 0 0 0 5px var(--clr-blue); }
-      .app-container #app button:hover:nth-of-type(3) { outline: none; box-shadow: 0 0 0 2px var(--clr-white), 0 0 0 5px var(--clr-js-org); }
-      .app-container #app button:hover:nth-of-type(4) { outline: none; box-shadow: 0 0 0 2px var(--clr-white), 0 0 0 5px var(--clr-marina); }
-      .app-container #app button:hover:nth-of-type(5) { outline: none; box-shadow: 0 0 0 2px var(--clr-white), 0 0 0 5px var(--clr-yellow); }
-      .app-container #app button:hover:nth-of-type(6) { outline: none; box-shadow: 0 0 0 2px var(--clr-white), 0 0 0 5px var(--clr-neutral-gray); }
-      .app-container #app button:hover:nth-of-type(7) { outline: none; box-shadow: 0 0 0 2px var(--clr-white), 0 0 0 5px var(--clr-green); }
-      .app-container #app button:hover:nth-of-type(8) { outline: none; box-shadow: 0 0 0 2px var(--clr-white), 0 0 0 5px var(--clr-red); }
-      .app-container #app button:hover:nth-of-type(9) { outline: none; box-shadow: 0 0 0 2px var(--clr-white), 0 0 0 5px var(--clr-tawny-port); }
-      .app-container #app button:hover:nth-of-type(10) { outline: none; box-shadow: 0 0 0 2px var(--clr-white), 0 0 0 5px var(--clr-greenery); }
-      .app-container #app header { background-color: var(--clr-white); color: var(--clr-black); }
-
-      .info-container { position: fixed; bottom: 0; left: 33%; height: 200px; z-index: 1; }
-      .info-container #info { margin-left: 30px; }
-
-      .blog-container { position: absolute; display: inline; width: 67%; margin-left: 33%; padding: 20px; padding-bottom: 200px; }
-    }
-  </style>
+  <link href="index.css" rel="stylesheet" />
 </head>
 <body>
-  <div class="app-container">
-    <div id="app">
-      <header>
-        <h1>rPlayer in Action</h1>
-      </header>
-      <section>
-        <button @click="add">Add</button>
-        <button @click="rewind">Rewind</button>
-        <button @click="up">Up</button>
-        <button @click="down">Down</button>
-        <button @click="mute">Mute</button>
-        <button @click="pause">Pause</button>
-        <button @click="play">Play</button>
-        <button @click="stop">Stop</button>
-        <button @click="hls">HLS</button>
-        <button @click="mp3">MP3</button>
-      </section>
-      <footer>
-        You listening <a @click="trackEvent('button', 'Listening')" href="https://www.thebeat925.ca/music/recently-played" target="_blank" rel="noreferrer noopener">The Beat 92.5</a>
-      </footer>
-    </div>
-  </div>
-  <div class="info-container">
-    <div id="info">
-        <div>Playing: {{ playing }}</div>
-        <div>Paused: {{ paused }}</div>
-        <div>Muted: {{ muted }}</div>
-        <div>Volume: {{ volume }}%</div>
-        <div>Source: {{ src }}</div>
-        <div>hls.js: {{ isHls }}</div>
-        <div>Time: {{ time }}</div>
+  <div class="container m-auto max-w-screen-lg">
+    <header class="m-12">
+      <h1 class="m-12 text-5xl font-bold">rPlayer in Action</h1>
+    </header>
+    <section class="flex flex-col items-center">
+      <input class="w-full max-w-2xl border border-gray-300 rounded-md py-2 px-4 focus:outline-none focus:border-blue-500 mb-4" id="urlInput" type="text" />
+      <div class="flex gap-1">
+        <div class="flex gap-1">
+          <button class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded mb-2" onclick="audio.rewind(10)">Rewind</button>
+          <button class="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded mb-2" onclick="audio.pause()">Pause</button>
+          <button class="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded mb-2" onclick="audio.stop()">Stop</button>
+        </div>
+        <div class="flex gap-1">
+          <button class="bg-purple-500 hover:bg-purple-600 text-white font-bold py-2 px-4 rounded mb-2" onclick="audio.upVolume()">Up</button>
+          <button class="bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-2 px-4 rounded mb-2" onclick="audio.downVolume()">Down</button>
+          <button class="bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-4 rounded mb-2" onclick="audio.mute()">Mute</button>
+        </div>
+        <div class="flex gap-1">
+          <button class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded mb-2" onclick="play()">Play</button>
+          <button class="bg-pink-500 hover:bg-pink-600 text-white font-bold py-2 px-4 rounded mb-2" onclick="hls()">HLS</button>
+          <button class="bg-teal-500 hover:bg-teal-600 text-white font-bold py-2 px-4 rounded mb-2" onclick="mp3()">MP3</button>
+        </div>
       </div>
-  </div>
-  <div class="blog-container">
-    <div class="w3-container" style="max-width: 760px;">
-
-      <div class="w3-panel">
-        <p>Radio player is a player play streaming radio, this player, offers the possibility to change different audio format. Example: .m3u8, .mp3, .aac.</p>
-        <p><a href="https://www.npmjs.com/package/@davland7/rplayer" target="_blank" rel="noreferrer noopener">npm</a>, <a href="https://github.com/davland7/rplayer" target="_blank" rel="noreferrer noopener">GitHub</a></p>
-      </div>
-
-  <div class="w3-panel w3-white">
-<h2>Easy to use</h2>
-<pre class="w3-code jsHigh">
-/* Required for HLS */
-&#060;script src="https://cdn.jsdelivr.net/npm/hls.js@1.5.3/dist/hls.min.js"&#062;&#060;/script&#062;
-&#060;script src="https://cdn.jsdelivr.net/npm/@davland7/rplayer@2.1.2/dist/rplayer.umd.min.js"&#062;&#060;/script&#062;
+      <p>You listening <a class="underline" href="https://www.thebeat925.ca/music/recently-played" target="_blank" rel="noreferrer noopener">The Beat 92.5</a></p>
+    </section>
+    <section class="p-12 w-full m-auto prose prose-base prose-pre:w-full">
+<pre>
+<span id="playing">Playing: </span>
+<span id="paused">Paused: </span>
+<span id="muted">Muted: </span>
+<span id="volume">Volume: </span>
+<span id="isHls">hls.js: </span>
+<span id="time">Time: </span>
 </pre>
-<pre class="w3-code jsHigh">
+      <h2>Easy to use</h2>
+<pre>
+&#060;script src="https://cdn.jsdelivr.net/npm/hls.js@1.5.3/dist/hls.min.js"&#062;&#060;/script&#062;
+&#060;script src="https://cdn.jsdelivr.net/npm/@davland7/rplayer@2.2.0/dist/rplayer.umd.min.js"&#062;&#060;/script&#062;
+</pre>
+
+      <div class="bg-blue-100 border-l-4 border-blue-500 text-blue-700 p-4" role="alert">
+        <p class="font-bold">Important Information:</p>
+        <p><span class="font-bold">rPlayer</span> is optimized for HLS content. While HLS is native to Apple devices, for Windows and Android, it's crucial to use the hls.js library for proper .m3u8 stream functionality. Please ensure the use of hls.js on non-Apple platforms.</p>
+      </div>
+
+      <div class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4" role="alert">
+        <p class="font-bold">Tip:</p>
+        <p>You can use rPlayer without hls.js if you don't need to support HLS formats like .m3u8. juste not add hls.js to your project.</p>
+      </div>
+
+<pre class="language-javascript">
 const audio = new rPlayer();
 </pre>
-<p>rPlayer is extending <a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/audio" rel="noreferrer" target="_blank">Audio</a> HTMLMediaElement</p>
+      <p>rPlayer is extending <a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/audio" rel="noreferrer" target="_blank">Audio</a> HTMLMediaElement</p>
 
-<h2>Play</h2>
-<p>Play don't works with HLS. &#128577;</p>
-<pre class="w3-code jsHigh">
+      <h2>Play</h2>
+      <p>Play doesn't work with HLS. &#128577;</p>
+<pre>
 const audio = new Audio('URL.m3u8');
 audio.play();
 </pre>
-<p>Or</p>
-<pre class="w3-code jsHigh">
+      <p>Or</p>
+<pre>
 audio.src = 'URL.m3u8';
 audio.play();
 </pre>
-<p>Works with HLS. It's Magic &#128170;</p>
-<pre class="w3-code jsHigh">
+      <p>Works with HLS. It's Magic &#128170;</p>
+<pre>
 audio.playSrc('URL.m3u8');
 </pre>
-<p>In addition to .m3u8, you can also use .mp3, .aac, .ogg and others. &#128558;</p>
-<pre class="w3-code jsHigh">
+      <p>In addition to .m3u8, you can also use .mp3, .aac, .ogg and others. &#128558;</p>
+<pre>
 audio.playSrc('URL.aac');
 </pre>
 
-<h2>Set Volume</h2>
-<p>The volume must not outside the range [0, 1].</p>
-<pre class="w3-code jsHigh notranslate">
+      <h2>Set Volume</h2>
+      <p>The volume must not be outside the range [0, 1].</p>
+<pre>
 audio.volume = 0.2; // 0.2 Default set in local storage
 </pre>
-<p>The localStorage is very cool. &#128526;</p>
+      <p>localStorage is very cool. &#128526;</p>
 
-<h2>Extras</h2>
+      <h2>Extras</h2>
 
-<h3>Stop</h3>
-<pre class="w3-code jsHigh">
+      <h3>Stop</h3>
+<pre>
 audio.stop();
 </pre>
 
-<h3>Mute</h3>
-<pre class="w3-code jsHigh">
+      <h3>Mute</h3>
+<pre>
 audio.mute();
 </pre>
 
-<h3>Rewind</h3>
-<pre class="w3-code jsHigh">
+      <h3>Rewind</h3>
+<pre>
 audio.rewind(10); // seconds
 </pre>
 
-<h3>Volume Up</h3>
-<pre class="w3-code jsHigh notranslate">
+      <h3>Volume Up</h3>
+
+<pre>
 audio.upVolume();
 </pre>
-<p>A way not to make a mistake if is not good range. &#128521;</p>
+      <p>A way not to make a mistake if the range is not good. &#128521;</p>
 
-<h3>Volume Down</h3>
-<p>10 level up and down and blocks both ends. &#128513;</p>
-<pre class="w3-code jsHigh notranslate">
+      <h3>Volume Down</h3>
+      <p>10 levels up and down and blocks both ends. &#128513;</p>
+<pre>
 audio.downVolume();
 </pre>
 
-<h2>timeupdate event</h2>
-<p>The <a href="//developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/timeupdate_event" rel="noreferrer" target="_blank">timeupdate event</a> is fired when the time indicated by the currentTime attribute has been updated.</p>
-<pre class="w3-code jsHigh notranslate">
+      <div class="bg-yellow-200 border-l-4 border-yellow-500 text-yellow-700 p-4" role="alert">
+        <p class="font-bold">Warning:</p>
+        <p>On iOS devices such as iPad and iPhone, the audio level is always controlled by the user physically. This means that the volume property is not adjustable through JavaScript on iOS devices. When you read the volume property on iOS, it will always return 1, reflecting that the user has direct control over the device's volume. Additionally, the library will always return 1 on iOS.</p>
+      </div>
+
+      <h2>timeupdate event</h2>
+      <p>The <a href="//developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/timeupdate_event" rel="noreferrer" target="_blank">timeupdate event</a> is fired when the time indicated by the currentTime attribute has been updated.</p>
+<pre>
 audio.ontimeupdate = function() {
   console.log('Time:', audio.currentTime);
 };
 </pre>
 
-<h2>Infos</h2>
-<pre class="w3-code jsHigh">
+      <h2>Infos</h2>
+<pre>
 console.log('Playing:', audio.playing);
 console.log('Paused:', audio.paused);
 console.log('Muted:', audio.muted);
@@ -247,144 +159,48 @@ console.log('Source:', audio.url);
 console.log('HLS:', audio.isHls);
 console.log('Time:', audio.currentTime);
 </pre>
-
-      </div>
-    <div>
+    </section>
   </div>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/3.2.37/vue.global.prod.min.js" integrity="sha512-8GokEWxcB/NrPU4O8BHTgd9dkLouAsvqCnk6BSa2CZw7QXh0QM8GHfS53xYW1QJJVyJWctlcdRQwu5UxeLVsNA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
   <script src="https://cdn.jsdelivr.net/npm/hls.js@1.5.3/dist/hls.min.js" integrity="sha256-yI6jd4S0qqdqD1qH2AnNNvxxIJ8N6NuUIFj7+0eumjM=" crossorigin="anonymous"></script>
-  <script src="/dist/rplayer.umd.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@davland7/rplayer@2.2.0/dist/rplayer.umd.min.js"></script>
   <script type="text/javascript">
-    const info = Vue.createApp({
-      data: () => ({
-        playing: false,
-        volume: null,
-        paused: false,
-        muted: false,
-        isHls: false,
-        src: null,
-        time: 0
-      })
-    }).mount('#info');
+    const hlsUrl = 'https://playerservices.streamtheworld.com/api/livestream-redirect/CKBEFMAAC.m3u8';
+    const mp3Url = 'https://playerservices.streamtheworld.com/api/livestream-redirect/CKBEFMAAC.aac';
+    document.getElementById('urlInput').value = hlsUrl;
 
-    Vue.createApp({
-      data: () => ({
-        audio: null,
-        url: null,
-        urls: {
-          mp3: 'https://playerservices.streamtheworld.com/api/livestream-redirect/CKBEFMAAC.aac',
-          hls: 'https://playerservices.streamtheworld.com/api/livestream-redirect/CKBEFMAAC.m3u8'
-        }
-      }),
-      created: function () {
-        this.init();
-      },
-      methods: {
-        init: function () {
-          this.audio = new rPlayer();
-          this.url = this.urls.hls;
+    const audio = new rPlayer();
 
-          this.log();
+    document.addEventListener('DOMContentLoaded', function() {
+      updateLogs();
+    });
 
-          const self = this;
-          this.audio.ontimeupdate = function() {
-            self.log();
-          };
-        },
-        add: function () {
-          let url;
-          url = prompt('Add your url');
+    audio.ontimeupdate = function() {
+      updateLogs();
+    };
 
-          if (Boolean(url)) {
-            this.url = url;
-            this.play();
-
-            this.trackEvent('button', 'Add');
-            this.trackEvent('url', url);
-          } else {
-            alert('Your url is not valid!');
-          }
-        },
-        rewind: function () {
-          this.audio.rewind(10);
-          this.log();
-
-          this.trackEvent('button', 'Rewind');
-        },
-        up: function () {
-          this.audio.upVolume();
-          this.log();
-
-          this.trackEvent('button', 'Up');
-        },
-        down: function () {
-          this.audio.downVolume();
-          this.log();
-
-          this.trackEvent('button', 'Down');
-        },
-        mute: function () {
-          this.audio.mute();
-          this.log();
-
-          this.trackEvent('button', 'Mute');
-        },
-        pause: function () {
-          this.audio.pause();
-          this.log();
-
-          this.trackEvent('button', 'Pause');
-        },
-        play: function () {
-          this.audio.playSrc(this.url);
-          this.log();
-
-          this.trackEvent('button', 'Play');
-        },
-        stop: function () {
-          this.audio.stop();
-          this.log();
-
-          this.trackEvent('button', 'Stop');
-        },
-        hls: function () {
-          this.url = this.urls.hls;
-          this.play();
-
-          this.trackEvent('button', 'Hls');
-        },
-        mp3: function () {
-          this.url = this.urls.mp3;
-          this.play();
-
-          this.trackEvent('button', 'Mp3');
-        },
-        trackEvent: function (category, label) {
-          gtag('event', 'click', {'event_category': category, 'event_label': label});
-        },
-        log: function () {
-          info.playing = this.audio.playing;
-          info.volume = this.audio.volume * 100;
-          info.paused = this.audio.paused;
-          info.muted = this.audio.muted;
-          info.src = this.audio.url;
-          info.isHls = this.audio.isHls;
-          info.time = this.audio.currentTime;
-        }
-      }
-    }).mount('#app');
-
-    // W3 code color
-    if (window.matchMedia("(min-width:1024px)").matches) {
-      const script = document.createElement('script');
-      script.setAttribute('type', 'text/javascript');
-      script.setAttribute('src', 'https://www.w3schools.com/lib/w3codecolor.js');
-      script.onload = function () {
-        w3CodeColor();
-      };
-
-      document.body.appendChild(script);
+    function updateLogs() {
+      document.getElementById('playing').textContent = 'Playing: ' + audio.playing;
+      document.getElementById('paused').textContent = 'Paused: ' + audio.paused;
+      document.getElementById('muted').textContent = 'Muted: ' + audio.muted;
+      document.getElementById('volume').textContent = 'Volume: ' + audio.volume * 100 + '%';
+      document.getElementById('isHls').textContent = 'hls.js: ' + audio.isHls;
+      document.getElementById('time').textContent = 'Time: ' + audio.currentTime;
     }
+
+    function play() {
+      const url = document.getElementById('urlInput').value;
+      audio.playSrc(url);
+    }
+
+    function hls() {
+      audio.playSrc(hlsUrl);
+      document.getElementById('urlInput').value = hlsUrl;
+    };
+
+    function mp3() {
+      audio.playSrc(mp3Url);
+      document.getElementById('urlInput').value = mp3Url;
+    };
   </script>
 </body>
 </html>
