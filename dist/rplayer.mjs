@@ -1,5 +1,5 @@
 import t from "hls.js";
-class h extends Audio {
+class a extends Audio {
   constructor() {
     super(), this.key = "rplayer-volume", this.volume = this.isAppleDevice() ? 1 : parseFloat(localStorage.getItem(this.key) || "0.2");
   }
@@ -8,7 +8,7 @@ class h extends Audio {
     if (this.isPaused(e))
       this.play();
     else {
-      this.stop(), console.log("isM3u8", s), console.log("Hls.isSupported()", t.isSupported()), console.log('this.canPlayType("application/vnd.apple.mpegURL")', this.canPlayType("application/vnd.apple.mpegURL")), typeof t < "u" && t.isSupported() && s && !this.canPlayType("application/vnd.apple.mpegURL") && !this.isAppleDevice() ? (this.hls = new t(), this instanceof HTMLAudioElement && this.hls.attachMedia(this), this.hls.loadSource(e), await new Promise((i) => {
+      this.stop(), console.error("isM3u8", s), console.error("Hls.isSupported()", t.isSupported()), console.error('this.canPlayType("application/vnd.apple.mpegURL")', this.canPlayType("application/vnd.apple.mpegURL")), typeof t < "u" && t.isSupported() && s && !this.canPlayType("application/vnd.apple.mpegURL") && !this.isAppleDevice() ? (this.hls = new t(), this instanceof HTMLAudioElement && this.hls.attachMedia(this), this.hls.loadSource(e), await new Promise((i) => {
         var l;
         (l = this.hls) == null || l.on(t.Events.MANIFEST_PARSED, () => {
           i();
@@ -95,5 +95,5 @@ class h extends Audio {
   }
 }
 export {
-  h as default
+  a as default
 };

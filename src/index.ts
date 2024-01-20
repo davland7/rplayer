@@ -18,9 +18,9 @@ export default class rPlayer extends Audio {
     } else {
       this.stop();
 
-      console.log('isM3u8', isM3u8);
-      console.log('Hls.isSupported()', Hls.isSupported());
-      console.log('this.canPlayType("application/vnd.apple.mpegURL")', this.canPlayType('application/vnd.apple.mpegURL'));
+      console.error('isM3u8', isM3u8);
+      console.error('Hls.isSupported()', Hls.isSupported());
+      console.error('this.canPlayType("application/vnd.apple.mpegURL")', this.canPlayType('application/vnd.apple.mpegURL'));
 
       if ((typeof Hls !== 'undefined' && Hls.isSupported() && isM3u8) && (!this.canPlayType('application/vnd.apple.mpegURL') && !this.isAppleDevice())) {
         this.hls = new Hls();
