@@ -1,19 +1,19 @@
-import e from "hls.js";
+import t from "hls.js";
 class r extends Audio {
   constructor() {
     super(), this.key = "rplayer-volume", this.volume = this.isAppleDevice() ? 1 : parseFloat(localStorage.getItem(this.key) || "0.2");
   }
-  async playSrc(t) {
-    const l = t.indexOf(".m3u8") > 0;
-    if (this.isPaused(t))
+  async playSrc(e) {
+    const l = e.indexOf(".m3u8") > 0;
+    if (this.isPaused(e))
       this.play();
     else {
-      this.stop(), e instanceof Object && e.isSupported() && !this.supportsHls() && l ? (this.hls = new e(), this instanceof HTMLAudioElement && this.hls.attachMedia(this), this.hls.loadSource(t), await new Promise((s) => {
+      this.stop(), t instanceof Object && t.isSupported() && !this.supportsHls() && l ? (this.hls = new t(), this instanceof HTMLAudioElement && this.hls.attachMedia(this), this.hls.loadSource(e), await new Promise((s) => {
         var i;
-        (i = this.hls) == null || i.on(e.Events.MANIFEST_PARSED, () => {
+        (i = this.hls) == null || i.on(t.Events.MANIFEST_PARSED, () => {
           s();
         });
-      })) : (this.src = t, await new Promise((s) => {
+      })) : (this.src = e, await new Promise((s) => {
         this.addEventListener("loadedmetadata", () => {
           s();
         });
@@ -34,8 +34,8 @@ class r extends Audio {
   /**
    * @param {number} secondes
    */
-  rewind(t) {
-    this.currentTime -= t;
+  rewind(e) {
+    console.log("rewind", e), this.currentTime = 0;
   }
   upVolume() {
     !this.isAppleDevice() && this.volume < 1 && (this.volume = parseFloat((this.volume + 0.1).toFixed(1)), localStorage.setItem(this.key, this.volume.toString()));
@@ -47,7 +47,7 @@ class r extends Audio {
    * @returns {boolean}
    */
   get isHls() {
-    return e instanceof Object && this.hls !== null && this.hls instanceof e;
+    return t instanceof Object && this.hls !== null && this.hls instanceof t;
   }
   /**
    * @returns {string | undefined}
@@ -77,8 +77,8 @@ class r extends Audio {
    * @param {string} src
    * @returns
    */
-  isPaused(t) {
-    return this.currentTime > 0 && !this.playing && this.url === t;
+  isPaused(e) {
+    return this.currentTime > 0 && !this.playing && this.url === e;
   }
 }
 export {
