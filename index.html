@@ -31,21 +31,17 @@
     </header>
     <section class="flex flex-col items-center m-12 mb-0">
       <input class="w-full max-w-2xl border border-gray-300 rounded-md py-2 px-4 focus:outline-none focus:border-blue-500 mb-4" id="urlInput" type="text" />
-      <div class="flex flex-col md:flex-row md:gap-2">
-        <div class="grid grid-cols-3 gap-2">
-          <button class="bg-blue-500 hover:bg-blue-600 text-black font-bold py-2 px-4 rounded mb-2" onclick="audio.rewind(10)">Rewind</button>
-          <button class="bg-yellow-500 hover:bg-yellow-600 text-black font-bold py-2 px-4 rounded mb-2" onclick="audio.pause()">Pause</button>
-          <button class="bg-red-500 hover:bg-red-600 text-black font-bold py-2 px-4 rounded mb-2" onclick="audio.stop()">Stop</button>
-        </div>
-        <div class="grid grid-cols-3 gap-2">
-          <button class="bg-purple-500 hover:bg-purple-600 text-black font-bold py-2 px-4 rounded mb-2" onclick="audio.upVolume()">Up</button>
-          <button class="bg-indigo-500 hover:bg-indigo-600 text-black font-bold py-2 px-4 rounded mb-2" onclick="audio.downVolume()">Down</button>
-          <button class="bg-orange-500 hover:bg-orange-600 text-black font-bold py-2 px-4 rounded mb-2" onclick="audio.mute()">Mute</button>
-        </div>
-        <div class="grid grid-cols-3 gap-2">
-          <button class="bg-green-500 hover:bg-green-600 text-black font-bold py-2 px-4 rounded mb-2" onclick="play()">Play</button>
-          <button class="bg-pink-500 hover:bg-pink-600 text-black font-bold py-2 px-4 rounded mb-2" onclick="hls()">HLS</button>
-          <button class="bg-teal-500 hover:bg-teal-600 text-black font-bold py-2 px-4 rounded mb-2" onclick="mp3()">MP3</button>
+      <div class="flex flex-col md:flex-row">
+        <div class="grid grid-cols-3 gap-2 md:grid-cols-9">
+          <button class="bg-green-500 hover:bg-green-600 text-black font-bold p-2 rounded" onclick="play()">Play</button>
+          <button class="bg-red-500 hover:bg-red-600 text-black font-bold p-2 rounded" onclick="audio.stop()">Stop</button>
+          <button class="bg-yellow-500 hover:bg-yellow-600 text-black font-bold p-2 rounded" onclick="audio.pause()">Pause</button>
+          <button class="bg-pink-500 hover:bg-pink-600 text-black font-bold p-2 rounded" onclick="hls()">HLS</button>
+          <button class="bg-teal-500 hover:bg-teal-600 text-black font-bold p-2 rounded" onclick="mp3()">MP3</button>
+          <button class="bg-blue-500 hover:bg-blue-600 text-black font-bold p-2 rounded" onclick="audio.rewind(10)">Rewind</button>
+          <button class="bg-purple-500 hover:bg-purple-600 text-black font-bold p-2 rounded" onclick="audio.upVolume()">Up</button>
+          <button class="bg-indigo-500 hover:bg-indigo-600 text-black font-bold p-2 rounded" onclick="audio.downVolume()">Down</button>
+          <button class="bg-orange-500 hover:bg-orange-600 text-black font-bold p-2 rounded" onclick="audio.mute()">Mute</button>
         </div>
       </div>
       <p>You listening <a class="underline" href="https://www.thebeat925.ca/music/recently-played" target="_blank" rel="noreferrer noopener">The Beat 92.5</a></p>
@@ -172,21 +168,6 @@ console.log('Time:', audio.currentTime);
 
     const audio = new rPlayer();
 
-    document.addEventListener('DOMContentLoaded', function() {
-      updateLogs();
-    });
-    audio.ontimeupdate = () => updateLogs();
-
-    function updateLogs() {
-      document.getElementById('url').textContent = 'Source: ' + audio.url;
-      document.getElementById('playing').textContent = 'Playing: ' + audio.playing;
-      document.getElementById('paused').textContent = 'Paused: ' + audio.paused;
-      document.getElementById('muted').textContent = 'Muted: ' + audio.muted;
-      document.getElementById('volume').textContent = 'Volume: ' + audio.volume * 100 + '%';
-      document.getElementById('isHls').textContent = 'hls.js: ' + audio.isHls;
-      document.getElementById('time').textContent = 'Time: ' + audio.currentTime;
-    }
-
     function play() {
       const url = document.getElementById('urlInput').value;
       audio.playSrc(url);
@@ -201,6 +182,21 @@ console.log('Time:', audio.currentTime);
       audio.playSrc(mp3Url);
       document.getElementById('urlInput').value = mp3Url;
     };
+
+    document.addEventListener('DOMContentLoaded', function() {
+      updateLogs();
+    });
+    audio.ontimeupdate = () => updateLogs();
+
+    function updateLogs() {
+      document.getElementById('url').textContent = 'Source: ' + audio.url;
+      document.getElementById('playing').textContent = 'Playing: ' + audio.playing;
+      document.getElementById('paused').textContent = 'Paused: ' + audio.paused;
+      document.getElementById('muted').textContent = 'Muted: ' + audio.muted;
+      document.getElementById('volume').textContent = 'Volume: ' + audio.volume * 100 + '%';
+      document.getElementById('isHls').textContent = 'hls.js: ' + audio.isHls;
+      document.getElementById('time').textContent = 'Time: ' + audio.currentTime;
+    }
   </script>
 </body>
 </html>
