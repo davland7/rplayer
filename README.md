@@ -119,7 +119,7 @@ console.log('hls.js:', audio.isHls);
 console.log('Time:', audio.currentTime);
 ```
 
-rPlayer 2.2.1
+rPlayer 2.2.2
 
 ## Used by
 
