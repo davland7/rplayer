@@ -1,5 +1,5 @@
-import t from "hls.js";
-class r extends Audio {
+import s from "hls.js";
+class o extends Audio {
   constructor() {
     super(), this.key = "rplayer-volume", this.volume = this.isAppleDevice() ? 1 : parseFloat(localStorage.getItem(this.key) || "0.2");
   }
@@ -8,20 +8,20 @@ class r extends Audio {
     if (this.isPaused(e))
       this.play();
     else {
-      this.stop(), t instanceof Object && t.isSupported() && !this.isAppleDevice() && l ? (this.hls = new t(), this instanceof HTMLAudioElement && this.hls.attachMedia(this), this.hls.loadSource(e), await new Promise((s) => {
+      this.stop(), s.isSupported() && l && !this.isAppleDevice() ? (this.hls = new s(), this instanceof HTMLAudioElement && this.hls.attachMedia(this), this.hls.loadSource(e), await new Promise((t) => {
         var i;
-        (i = this.hls) == null || i.on(t.Events.MANIFEST_PARSED, () => {
-          s();
+        (i = this.hls) == null || i.on(s.Events.MANIFEST_PARSED, () => {
+          t();
         });
-      })) : (this.src = e, await new Promise((s) => {
+      })) : (this.src = e, await new Promise((t) => {
         this.addEventListener("loadedmetadata", () => {
-          s();
+          t();
         });
       }));
       try {
         await this.play();
-      } catch (s) {
-        console.error("Error on play", s);
+      } catch (t) {
+        console.error("Error on play", t);
       }
     }
   }
@@ -66,7 +66,7 @@ class r extends Audio {
    * @returns {boolean}
    */
   get isHls() {
-    return t instanceof Object && this.hls !== null && this.hls instanceof t;
+    return s instanceof Object && this.hls !== null && this.hls instanceof s;
   }
   /**
    * @returns {string | undefined}
@@ -95,5 +95,5 @@ class r extends Audio {
   }
 }
 export {
-  r as default
+  o as default
 };
