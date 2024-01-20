@@ -4,17 +4,17 @@ class r extends Audio {
     super(), this.key = "rplayer-volume", this.volume = this.isIOS() ? 1 : parseFloat(localStorage.getItem(this.key) || "0.2");
   }
   async playSrc(t) {
-    const i = t.indexOf(".m3u8") > 0;
+    const a = t.indexOf(".m3u8") > 0;
     if (this.isPaused(t))
       this.play();
     else {
-      this.stop(), this.canPlayType("application/vnd.apple.mpegurl") === "probably" && i ? (this.src = t, await new Promise((e) => {
+      this.stop(), this.isIOS() ? (this.src = t, await new Promise((e) => {
         this.addEventListener("loadedmetadata", () => {
           e();
         });
-      })) : typeof s < "u" && s.isSupported() && i ? (this.hls = new s(), this instanceof HTMLAudioElement && this.hls.attachMedia(this), this.hls.loadSource(t), await new Promise((e) => {
-        var a;
-        (a = this.hls) == null || a.on(s.Events.MANIFEST_PARSED, () => {
+      })) : typeof s < "u" && s.isSupported() && a ? (this.hls = new s(), this instanceof HTMLAudioElement && this.hls.attachMedia(this), this.hls.loadSource(t), await new Promise((e) => {
+        var i;
+        (i = this.hls) == null || i.on(s.Events.MANIFEST_PARSED, () => {
           e();
         });
       })) : (this.src = t, await new Promise((e) => {
@@ -50,7 +50,6 @@ class r extends Audio {
   }
   /**
    * Increases the volume of the player.
-   * This method only works if the device is not an Apple device and the current volume is less than 1.0.
    * The volume is increased by 0.1 and stored in the local storage.
    */
   upVolume() {

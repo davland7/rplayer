@@ -18,7 +18,7 @@ export default class rPlayer extends Audio {
     } else {
       this.stop();
 
-      if (this.canPlayType('application/vnd.apple.mpegurl') === 'probably' && isM3u8) {
+      if (this.isIOS()) {
         this.src = src;
 
         await new Promise<void>((resolve) => {
@@ -90,7 +90,6 @@ export default class rPlayer extends Audio {
 
   /**
    * Increases the volume of the player.
-   * This method only works if the device is not an Apple device and the current volume is less than 1.0.
    * The volume is increased by 0.1 and stored in the local storage.
    */
   upVolume(): void {
