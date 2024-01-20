@@ -30,21 +30,21 @@
     </header>
     <section class="flex flex-col items-center">
       <input class="w-full max-w-2xl border border-gray-300 rounded-md py-2 px-4 focus:outline-none focus:border-blue-500 mb-4" id="urlInput" type="text" />
-      <div class="flex gap-1">
+      <div class="flex flex-col md:flex-row gap-1">
         <div class="flex gap-1">
-          <button class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded mb-2" onclick="audio.rewind(10)">Rewind</button>
-          <button class="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded mb-2" onclick="audio.pause()">Pause</button>
-          <button class="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded mb-2" onclick="audio.stop()">Stop</button>
+          <button class="bg-blue-500 hover:bg-blue-600 text-black font-bold py-2 px-4 rounded mb-2" onclick="audio.rewind(10)">Rewind</button>
+          <button class="bg-yellow-500 hover:bg-yellow-600 text-black font-bold py-2 px-4 rounded mb-2" onclick="audio.pause()">Pause</button>
+          <button class="bg-red-500 hover:bg-red-600 text-black font-bold py-2 px-4 rounded mb-2" onclick="audio.stop()">Stop</button>
         </div>
         <div class="flex gap-1">
-          <button class="bg-purple-500 hover:bg-purple-600 text-white font-bold py-2 px-4 rounded mb-2" onclick="audio.upVolume()">Up</button>
-          <button class="bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-2 px-4 rounded mb-2" onclick="audio.downVolume()">Down</button>
-          <button class="bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-4 rounded mb-2" onclick="audio.mute()">Mute</button>
+          <button class="bg-purple-500 hover:bg-purple-600 text-black font-bold py-2 px-4 rounded mb-2" onclick="audio.upVolume()">Up</button>
+          <button class="bg-indigo-500 hover:bg-indigo-600 text-black font-bold py-2 px-4 rounded mb-2" onclick="audio.downVolume()">Down</button>
+          <button class="bg-orange-500 hover:bg-orange-600 text-black font-bold py-2 px-4 rounded mb-2" onclick="audio.mute()">Mute</button>
         </div>
         <div class="flex gap-1">
-          <button class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded mb-2" onclick="play()">Play</button>
-          <button class="bg-pink-500 hover:bg-pink-600 text-white font-bold py-2 px-4 rounded mb-2" onclick="hls()">HLS</button>
-          <button class="bg-teal-500 hover:bg-teal-600 text-white font-bold py-2 px-4 rounded mb-2" onclick="mp3()">MP3</button>
+          <button class="bg-green-500 hover:bg-green-600 text-black font-bold py-2 px-4 rounded mb-2" onclick="play()">Play</button>
+          <button class="bg-pink-500 hover:bg-pink-600 text-black font-bold py-2 px-4 rounded mb-2" onclick="hls()">HLS</button>
+          <button class="bg-teal-500 hover:bg-teal-600 text-black font-bold py-2 px-4 rounded mb-2" onclick="mp3()">MP3</button>
         </div>
       </div>
       <p>You listening <a class="underline" href="https://www.thebeat925.ca/music/recently-played" target="_blank" rel="noreferrer noopener">The Beat 92.5</a></p>
@@ -136,7 +136,7 @@ audio.upVolume();
 audio.downVolume();
 </pre>
 
-      <div class="bg-yellow-200 border-l-4 border-yellow-500 text-yellow-700 p-4" role="alert">
+      <div class="bg-yellow-200 border-l-4 border-yellow-500 text-black p-4" role="alert">
         <p class="font-bold">Warning:</p>
         <p>On iOS devices such as iPad and iPhone, the audio level is always controlled by the user physically. This means that the volume property is not adjustable through JavaScript on iOS devices. When you read the volume property on iOS, it will always return 1, reflecting that the user has direct control over the device's volume. Additionally, the library will always return 1 on iOS.</p>
       </div>
@@ -161,7 +161,6 @@ console.log('Time:', audio.currentTime);
 </pre>
     </section>
   </div>
-  <script src="https://cdn.jsdelivr.net/npm/hls.js@1.5.3/dist/hls.min.js" integrity="sha256-yI6jd4S0qqdqD1qH2AnNNvxxIJ8N6NuUIFj7+0eumjM=" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/@davland7/rplayer@2.2.0/dist/rplayer.umd.min.js"></script>
   <script type="text/javascript">
     const hlsUrl = 'https://playerservices.streamtheworld.com/api/livestream-redirect/CKBEFMAAC.m3u8';
