@@ -1,14 +1,14 @@
 import s from "hls.js";
-class r extends Audio {
+class o extends Audio {
   constructor() {
     super(), this.key = "rplayer-volume", this.volume = this.isAppleDevice() ? 1 : parseFloat(localStorage.getItem(this.key) || "0.2");
   }
   async playSrc(e) {
-    const l = e.toLowerCase().endsWith(".m3u8");
+    const l = e.indexOf(".m3u8") > 0;
     if (this.isPaused(e))
       this.play();
     else {
-      this.stop(), s.isSupported() && l && !this.isAppleDevice() ? (this.hls = new s(), this instanceof HTMLAudioElement && this.hls.attachMedia(this), this.hls.loadSource(e), await new Promise((t) => {
+      this.stop(), l && !this.isAppleDevice() ? (this.hls = new s(), this instanceof HTMLAudioElement && this.hls.attachMedia(this), this.hls.loadSource(e), await new Promise((t) => {
         var i;
         (i = this.hls) == null || i.on(s.Events.MANIFEST_PARSED, () => {
           t();
@@ -95,5 +95,5 @@ class r extends Audio {
   }
 }
 export {
-  r as default
+  o as default
 };

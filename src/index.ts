@@ -11,14 +11,14 @@ export default class rPlayer extends Audio {
   }
 
   async playSrc(src: string): Promise<void>{
-    const isM3u8 = src.toLowerCase().endsWith('.m3u8');
+    const isM3u8 = src.indexOf('.m3u8') > 0;
 
     if (this.isPaused(src)) {
       this.play();
     } else {
       this.stop();
 
-      if ((Hls.isSupported() && isM3u8) && !this.isAppleDevice()) {
+      if (isM3u8 && !this.isAppleDevice()) {
         this.hls = new Hls();
 
         if (this instanceof HTMLAudioElement) {
