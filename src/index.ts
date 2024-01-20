@@ -18,7 +18,7 @@ export default class rPlayer extends Audio {
     } else {
       this.stop();
 
-      if (Hls instanceof Object && Hls.isSupported() && !this.supportsHls() && isM3u8) {
+      if (Hls instanceof Object && Hls.isSupported() && !this.isAppleDevice() && isM3u8) {
         this.hls = new Hls();
 
         if (this instanceof HTMLAudioElement) {
@@ -141,12 +141,5 @@ export default class rPlayer extends Audio {
    */
   private isPaused(src: string): boolean {
     return this.currentTime > 0 && !this.playing && this.url === src;
-  }
-
-  /**
-   * @returns {boolean}
-   */
-  private supportsHls(): boolean {
-    return this.isAppleDevice() && Boolean(this.canPlayType('application/vnd.apple.mpegURL') || this.canPlayType('audio/mpegurl'));
   }
 }
