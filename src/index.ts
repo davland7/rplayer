@@ -18,22 +18,20 @@ export default class rPlayer extends Audio {
     } else {
       this.stop();
 
-      if (Hls instanceof Object && isM3u8 && !this.canPlayType("application/vnd.apple.mpegurl")) {
-        if (Hls.isSupported()) {
-          this.hls = new Hls();
+      if (Hls instanceof Object && Hls.isSupported() && !this.supportsHls() && isM3u8) {
+        this.hls = new Hls();
 
-          if (this instanceof HTMLAudioElement) {
-            this.hls.attachMedia(this as HTMLAudioElement as HTMLVideoElement);
-          }
-
-          this.hls.loadSource(src);
-
-          await new Promise<void>((resolve) => {
-            this.hls?.on(Hls.Events.MANIFEST_PARSED, () => {
-              resolve();
-            });
-          });
+        if (this instanceof HTMLAudioElement) {
+          this.hls.attachMedia(this as HTMLAudioElement as HTMLVideoElement);
         }
+
+        this.hls.loadSource(src);
+
+        await new Promise<void>((resolve) => {
+          this.hls?.on(Hls.Events.MANIFEST_PARSED, () => {
+            resolve();
+          });
+        });
       } else {
         this.src = src;
 
@@ -70,7 +68,7 @@ export default class rPlayer extends Audio {
    * @param {number} secondes
    */
   rewind(secondes: number): void {
-    this.currentTime = this.currentTime - secondes;
+    this.currentTime -= secondes;
   };
 
   upVolume(): void {
@@ -109,6 +107,13 @@ export default class rPlayer extends Audio {
    */
   get playing(): boolean {
     return this.currentTime > 0 && !this.paused && !this.ended && this.readyState > 2;
+  }
+
+  /**
+   * @returns {boolean}
+   */
+  private supportsHls(): boolean {
+    return Boolean(this.canPlayType('application/vnd.apple.mpegURL') || this.canPlayType('audio/mpegurl'))
   }
 
   /**

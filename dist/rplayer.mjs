@@ -1,19 +1,19 @@
-import t from "hls.js";
-class o extends Audio {
+import e from "hls.js";
+class r extends Audio {
   constructor() {
     super(), this.key = "rplayer-volume", this.volume = this.isAppleDevice() ? 1 : parseFloat(localStorage.getItem(this.key) || "0.2");
   }
-  async playSrc(e) {
-    const l = e.indexOf(".m3u8") > 0;
-    if (this.isPaused(e))
+  async playSrc(t) {
+    const l = t.indexOf(".m3u8") > 0;
+    if (this.isPaused(t))
       this.play();
     else {
-      this.stop(), t instanceof Object && l && !this.canPlayType("application/vnd.apple.mpegurl") ? t.isSupported() && (this.hls = new t(), this instanceof HTMLAudioElement && this.hls.attachMedia(this), this.hls.loadSource(e), await new Promise((s) => {
+      this.stop(), e instanceof Object && e.isSupported() && !this.supportsHls() && l ? (this.hls = new e(), this instanceof HTMLAudioElement && this.hls.attachMedia(this), this.hls.loadSource(t), await new Promise((s) => {
         var i;
-        (i = this.hls) == null || i.on(t.Events.MANIFEST_PARSED, () => {
+        (i = this.hls) == null || i.on(e.Events.MANIFEST_PARSED, () => {
           s();
         });
-      })) : (this.src = e, await new Promise((s) => {
+      })) : (this.src = t, await new Promise((s) => {
         this.addEventListener("loadedmetadata", () => {
           s();
         });
@@ -34,8 +34,8 @@ class o extends Audio {
   /**
    * @param {number} secondes
    */
-  rewind(e) {
-    this.currentTime = this.currentTime - e;
+  rewind(t) {
+    this.currentTime -= t;
   }
   upVolume() {
     !this.isAppleDevice() && this.volume < 1 && (this.volume = parseFloat((this.volume + 0.1).toFixed(1)), localStorage.setItem(this.key, this.volume.toString()));
@@ -47,7 +47,7 @@ class o extends Audio {
    * @returns {boolean}
    */
   get isHls() {
-    return t instanceof Object && this.hls !== null && this.hls instanceof t;
+    return e instanceof Object && this.hls !== null && this.hls instanceof e;
   }
   /**
    * @returns {string | undefined}
@@ -64,6 +64,12 @@ class o extends Audio {
   /**
    * @returns {boolean}
    */
+  supportsHls() {
+    return !!(this.canPlayType("application/vnd.apple.mpegURL") || this.canPlayType("audio/mpegurl"));
+  }
+  /**
+   * @returns {boolean}
+   */
   isAppleDevice() {
     return /iPad|iPhone|iPod/.test(navigator.userAgent);
   }
@@ -71,10 +77,10 @@ class o extends Audio {
    * @param {string} src
    * @returns
    */
-  isPaused(e) {
-    return this.currentTime > 0 && !this.playing && this.url === e;
+  isPaused(t) {
+    return this.currentTime > 0 && !this.playing && this.url === t;
   }
 }
 export {
-  o as default
+  r as default
 };
