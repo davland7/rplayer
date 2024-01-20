@@ -8,20 +8,20 @@ class r extends Audio {
     if (this.isPaused(e))
       this.play();
     else {
-      this.stop(), typeof t < "u" && t.isSupported() && l && this.canPlayType("application/vnd.apple.mpegURL") !== "probably" ? (this.hls = new t(), this instanceof HTMLAudioElement && this.hls.attachMedia(this), this.hls.loadSource(e), await new Promise((s) => {
-        var i;
-        (i = this.hls) == null || i.on(t.Events.MANIFEST_PARSED, () => {
-          s();
+      this.stop(), typeof t < "u" && t.isSupported() && l && this.canPlayType("application/vnd.apple.mpegURL") !== "probably" && !this.isAppleDevice() ? (this.hls = new t(), this instanceof HTMLAudioElement && this.hls.attachMedia(this), this.hls.loadSource(e), await new Promise((i) => {
+        var s;
+        (s = this.hls) == null || s.on(t.Events.MANIFEST_PARSED, () => {
+          i();
         });
-      })) : (this.src = e, await new Promise((s) => {
+      })) : (this.src = e, await new Promise((i) => {
         this.addEventListener("loadedmetadata", () => {
-          s();
+          i();
         });
       }));
       try {
         await this.play();
-      } catch (s) {
-        console.error("Error on play", s);
+      } catch (i) {
+        console.error("Error on play", i);
       }
     }
   }
