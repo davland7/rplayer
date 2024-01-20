@@ -18,7 +18,7 @@ export default class rPlayer extends Audio {
     } else {
       this.stop();
 
-      if ((typeof Hls !== 'undefined' && Hls.isSupported() && isM3u8) && !this.isAppleDevice()) {
+      if (!this.isAppleDevice()) {
         this.hls = new Hls();
 
         if (this instanceof HTMLAudioElement) {
