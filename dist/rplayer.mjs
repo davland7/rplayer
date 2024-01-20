@@ -84,7 +84,7 @@ class o extends Audio {
    * @returns {boolean}
    */
   isAppleDevice() {
-    return /iPad|iPhone|iPod/.test(navigator.userAgent);
+    return /(iPhone|iPod|iPad)/i.test(navigator.userAgent);
   }
   /**
    * @param {string} src
