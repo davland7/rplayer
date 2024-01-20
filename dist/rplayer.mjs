@@ -1,27 +1,40 @@
-import t from "hls.js";
-class r extends Audio {
+import s from "hls.js";
+class a extends Audio {
   constructor() {
     super(), this.key = "rplayer-volume", this.volume = this.isAppleDevice() ? 1 : parseFloat(localStorage.getItem(this.key) || "0.2");
   }
   async playSrc(e) {
-    const l = e.indexOf(".m3u8") > 0;
+    const i = e.indexOf(".m3u8") > 0;
     if (this.isPaused(e))
       this.play();
     else {
-      this.stop(), typeof t < "u" && t.isSupported() && l && this.canPlayType("application/vnd.apple.mpegURL") !== "probably" && !this.isAppleDevice() ? (this.hls = new t(), this instanceof HTMLAudioElement && this.hls.attachMedia(this), this.hls.loadSource(e), await new Promise((i) => {
-        var s;
-        (s = this.hls) == null || s.on(t.Events.MANIFEST_PARSED, () => {
-          i();
+      if (this.stop(), this.canPlayType("application/vnd.apple.mpegURL") === "probably" && i)
+        this.src = e, await new Promise((t) => {
+          this.addEventListener("loadedmetadata", () => {
+            t();
+          });
         });
-      })) : (this.src = e, await new Promise((i) => {
-        this.addEventListener("loadedmetadata", () => {
-          i();
+      else if (this.isAppleDevice())
+        this.src = e, await new Promise((t) => {
+          this.addEventListener("loadedmetadata", () => {
+            t();
+          });
         });
-      }));
+      else if (typeof s < "u" && s.isSupported() && i)
+        this.hls = new s(), this instanceof HTMLAudioElement && this.hls.attachMedia(this), this.hls.loadSource(e), await new Promise((t) => {
+          var l;
+          (l = this.hls) == null || l.on(s.Events.MANIFEST_PARSED, () => {
+            t();
+          });
+        });
+      else {
+        console.error("HLS is not supported and the source is not a .m3u8 file.");
+        return;
+      }
       try {
         await this.play();
-      } catch (i) {
-        console.error("Error on play", i);
+      } catch (t) {
+        console.error("Error on play", t);
       }
     }
   }
@@ -66,7 +79,7 @@ class r extends Audio {
    * @returns {boolean}
    */
   get isHls() {
-    return t instanceof Object && this.hls !== null && this.hls instanceof t;
+    return s instanceof Object && this.hls !== null && this.hls instanceof s;
   }
   /**
    * @returns {string | undefined}
@@ -95,5 +108,5 @@ class r extends Audio {
   }
 }
 export {
-  r as default
+  a as default
 };
