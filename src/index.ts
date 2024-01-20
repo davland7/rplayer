@@ -132,7 +132,7 @@ export default class rPlayer extends Audio {
    * @returns {boolean}
    */
   private isAppleDevice(): boolean {
-    return /iPad|iPhone|iPod/.test(navigator.userAgent) && !(window as any).MSStream;
+    return /iPad|iPhone|iPod/.test(navigator.userAgent);
   }
 
   /**
