@@ -94,14 +94,14 @@ export default class rPlayer extends Audio {
    * @returns {boolean}
    */
   get isHls(): boolean {
-    return this.hls !== null && this.hls instanceof Hls;
+    return Hls instanceof Object && this.hls !== null && this.hls instanceof Hls;
   }
 
   /**
    * @returns {string | undefined}
    */
   get url(): string | undefined {
-    return this.isHls ? this.hls?.url : this.src;
+    return this.isHls ? this.hls.url : this.src;
   }
 
   /**

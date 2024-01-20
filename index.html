@@ -24,24 +24,25 @@
   <link href="index.css" rel="stylesheet" />
 </head>
 <body>
-  <div class="container m-auto max-w-screen-lg">
+  <div class="container max-w-screen-md m-auto">
     <header class="m-12">
       <h1 class="m-12 text-5xl font-bold">rPlayer in Action</h1>
+      <p>rPlayer is a player play streaming radio, this player, offers the possibility to change different audio format. Example: .m3u8, .mp3, .aac.</p>
     </header>
-    <section class="flex flex-col items-center">
+    <section class="flex flex-col items-center m-12 mb-0">
       <input class="w-full max-w-2xl border border-gray-300 rounded-md py-2 px-4 focus:outline-none focus:border-blue-500 mb-4" id="urlInput" type="text" />
-      <div class="flex flex-col md:flex-row gap-1">
-        <div class="flex gap-1">
+      <div class="flex flex-col md:flex-row md:gap-2">
+        <div class="grid grid-cols-3 gap-2">
           <button class="bg-blue-500 hover:bg-blue-600 text-black font-bold py-2 px-4 rounded mb-2" onclick="audio.rewind(10)">Rewind</button>
           <button class="bg-yellow-500 hover:bg-yellow-600 text-black font-bold py-2 px-4 rounded mb-2" onclick="audio.pause()">Pause</button>
           <button class="bg-red-500 hover:bg-red-600 text-black font-bold py-2 px-4 rounded mb-2" onclick="audio.stop()">Stop</button>
         </div>
-        <div class="flex gap-1">
+        <div class="grid grid-cols-3 gap-2">
           <button class="bg-purple-500 hover:bg-purple-600 text-black font-bold py-2 px-4 rounded mb-2" onclick="audio.upVolume()">Up</button>
           <button class="bg-indigo-500 hover:bg-indigo-600 text-black font-bold py-2 px-4 rounded mb-2" onclick="audio.downVolume()">Down</button>
           <button class="bg-orange-500 hover:bg-orange-600 text-black font-bold py-2 px-4 rounded mb-2" onclick="audio.mute()">Mute</button>
         </div>
-        <div class="flex gap-1">
+        <div class="grid grid-cols-3 gap-2">
           <button class="bg-green-500 hover:bg-green-600 text-black font-bold py-2 px-4 rounded mb-2" onclick="play()">Play</button>
           <button class="bg-pink-500 hover:bg-pink-600 text-black font-bold py-2 px-4 rounded mb-2" onclick="hls()">HLS</button>
           <button class="bg-teal-500 hover:bg-teal-600 text-black font-bold py-2 px-4 rounded mb-2" onclick="mp3()">MP3</button>
@@ -49,8 +50,9 @@
       </div>
       <p>You listening <a class="underline" href="https://www.thebeat925.ca/music/recently-played" target="_blank" rel="noreferrer noopener">The Beat 92.5</a></p>
     </section>
-    <section class="p-12 w-full m-auto prose prose-base prose-pre:w-full">
+    <section class="p-12 m-auto prose prose-base">
 <pre>
+<span id="url">Source: </span>
 <span id="playing">Playing: </span>
 <span id="paused">Paused: </span>
 <span id="muted">Muted: </span>
@@ -151,18 +153,18 @@ audio.ontimeupdate = function() {
 
       <h2>Infos</h2>
 <pre>
+console.log('Source:', audio.url);
 console.log('Playing:', audio.playing);
 console.log('Paused:', audio.paused);
 console.log('Muted:', audio.muted);
 console.log('Volume:', audio.volume * 100);
-console.log('Source:', audio.url);
 console.log('HLS:', audio.isHls);
 console.log('Time:', audio.currentTime);
 </pre>
     </section>
   </div>
   <script src="https://cdn.jsdelivr.net/npm/hls.js@1.5.3/dist/hls.min.js" integrity="sha256-yI6jd4S0qqdqD1qH2AnNNvxxIJ8N6NuUIFj7+0eumjM=" crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@davland7/rplayer@2.2.0/dist/rplayer.umd.min.js"></script>
+  <script src="/dist/rplayer.umd.js"></script>
   <script type="text/javascript">
     const hlsUrl = 'https://playerservices.streamtheworld.com/api/livestream-redirect/CKBEFMAAC.m3u8';
     const mp3Url = 'https://playerservices.streamtheworld.com/api/livestream-redirect/CKBEFMAAC.aac';
@@ -173,12 +175,10 @@ console.log('Time:', audio.currentTime);
     document.addEventListener('DOMContentLoaded', function() {
       updateLogs();
     });
-
-    audio.ontimeupdate = function() {
-      updateLogs();
-    };
+    audio.ontimeupdate = () => updateLogs();
 
     function updateLogs() {
+      document.getElementById('url').textContent = 'Source: ' + audio.url;
       document.getElementById('playing').textContent = 'Playing: ' + audio.playing;
       document.getElementById('paused').textContent = 'Paused: ' + audio.paused;
       document.getElementById('muted').textContent = 'Muted: ' + audio.muted;
