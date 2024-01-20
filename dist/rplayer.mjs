@@ -1,5 +1,5 @@
 import s from "hls.js";
-class l extends Audio {
+class h extends Audio {
   constructor() {
     super(), this.key = "rplayer-volume", this.volume = this.isIOS() ? 1 : parseFloat(localStorage.getItem(this.key) || "0.2");
   }
@@ -8,7 +8,7 @@ class l extends Audio {
     if (this.isPaused(t))
       this.play();
     else {
-      this.stop(), this.isIOS() ? (this.src = t, await new Promise((e) => {
+      this.stop(), this.canPlayType("application/vnd.apple.mpegurl") === "probably" ? (this.src = t, await new Promise((e) => {
         this.addEventListener("loadedmetadata", () => {
           e();
         });
@@ -88,7 +88,7 @@ class l extends Audio {
    * @returns {boolean}
    */
   isIOS() {
-    return /iPad|iPhone|iPod/.test(navigator.platform) || navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1;
+    return typeof navigator < "u" && (/iPad|iPhone|iPod/.test(navigator.userAgent) || navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
   }
   /**
    * @param {string} src
@@ -99,5 +99,5 @@ class l extends Audio {
   }
 }
 export {
-  l as default
+  h as default
 };

@@ -18,7 +18,7 @@ export default class rPlayer extends Audio {
     } else {
       this.stop();
 
-      if (this.isIOS()) {
+      if (this.canPlayType('application/vnd.apple.mpegurl') === 'probably'){
         this.src = src;
 
         await new Promise<void>((resolve) => {
@@ -142,8 +142,9 @@ export default class rPlayer extends Audio {
    * @returns {boolean}
    */
   private isIOS(): boolean {
-    return /iPad|iPhone|iPod/.test(navigator.platform) ||
-      (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+    return typeof navigator !== 'undefined' && (
+      /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+      (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1));
   }
 
   /**
