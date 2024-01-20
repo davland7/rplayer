@@ -60,13 +60,13 @@
 <span id="paused">Paused: </span>
 <span id="muted">Muted: </span>
 <span id="volume">Volume: </span>
-<span id="isHls">hls.js: </span>
+<span id="isHlsjs">hls.js: </span>
 <span id="time">Time: </span>
 </pre>
       <h2>Easy to use</h2>
 <pre>
 &#060;script src="https://cdn.jsdelivr.net/npm/hls.js@1.5.3/dist/hls.min.js"&#062;&#060;/script&#062;
-&#060;script src="https://cdn.jsdelivr.net/npm/@davland7/rplayer@2.2.1/dist/rplayer.umd.min.js"&#062;&#060;/script&#062;
+&#060;script src="https://cdn.jsdelivr.net/npm/@davland7/rplayer@2.2.2/dist/rplayer.umd.min.js"&#062;&#060;/script&#062;
 </pre>
 
 <pre>
@@ -162,12 +162,12 @@ console.log('Playing:', audio.playing);
 console.log('Paused:', audio.paused);
 console.log('Muted:', audio.muted);
 console.log('Volume:', audio.volume * 100);
-console.log('hls.js:', audio.isHls);
+console.log('hls.js:', audio.isHlsjs);
 console.log('Time:', audio.currentTime);
 </pre>
     </section>
     <footer>
-      <p class="mt-6">rPlayer 2.2.1</p>
+      <p class="mt-6">rPlayer 2.2.2</p>
     </footer>
   </div>
   <script src="https://cdn.jsdelivr.net/npm/hls.js@1.5.3/dist/hls.min.js" integrity="sha256-yI6jd4S0qqdqD1qH2AnNNvxxIJ8N6NuUIFj7+0eumjM=" crossorigin="anonymous"></script>
@@ -205,7 +205,7 @@ console.log('Time:', audio.currentTime);
       document.getElementById('paused').textContent = 'Paused: ' + audio.paused;
       document.getElementById('muted').textContent = 'Muted: ' + audio.muted;
       document.getElementById('volume').textContent = 'Volume: ' + audio.volume * 100 + '%';
-      document.getElementById('isHls').textContent = 'hls.js: ' + audio.isHls;
+      document.getElementById('isHlsjs').textContent = 'hls.js: ' + audio.isHlsjs;
       document.getElementById('time').textContent = 'Time: ' + audio.currentTime;
     }
   </script>

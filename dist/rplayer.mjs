@@ -64,14 +64,14 @@ class a extends Audio {
   /**
    * @returns {boolean}
    */
-  get isHls() {
+  get isHlsjs() {
     return e instanceof Object && this.hls !== null && this.hls instanceof e;
   }
   /**
    * @returns {string | undefined}
    */
   get url() {
-    return this.isHls ? this.hls.url : this.src;
+    return this.isHlsjs ? this.hls.url : this.src;
   }
   /**
    * @returns {boolean}

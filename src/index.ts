@@ -111,7 +111,7 @@ export default class rPlayer extends Audio {
   /**
    * @returns {boolean}
    */
-  get isHls(): boolean {
+  get isHlsjs(): boolean {
     return Hls instanceof Object && this.hls !== null && this.hls instanceof Hls;
   }
 
@@ -119,7 +119,7 @@ export default class rPlayer extends Audio {
    * @returns {string | undefined}
    */
   get url(): string | undefined {
-    return this.isHls ? this.hls.url : this.src;
+    return this.isHlsjs ? this.hls.url : this.src;
   }
 
   /**
