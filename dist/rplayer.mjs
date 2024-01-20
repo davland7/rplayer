@@ -1,20 +1,20 @@
 import s from "hls.js";
-class h extends Audio {
+class r extends Audio {
   constructor() {
     super(), this.key = "rplayer-volume", this.volume = this.isIOS() ? 1 : parseFloat(localStorage.getItem(this.key) || "0.2");
   }
   async playSrc(t) {
-    const a = t.indexOf(".m3u8") > 0;
+    const i = t.indexOf(".m3u8") > 0;
     if (this.isPaused(t))
       this.play();
     else {
-      this.stop(), this.canPlayType("application/vnd.apple.mpegurl") === "probably" ? (this.src = t, await new Promise((e) => {
+      this.stop(), this.canPlayType("application/vnd.apple.mpegurl") === "probably" && i ? (this.src = t, await new Promise((e) => {
         this.addEventListener("loadedmetadata", () => {
           e();
         });
-      })) : typeof s < "u" && s.isSupported() && a ? (this.hls = new s(), this instanceof HTMLAudioElement && this.hls.attachMedia(this), this.hls.loadSource(t), await new Promise((e) => {
-        var i;
-        (i = this.hls) == null || i.on(s.Events.MANIFEST_PARSED, () => {
+      })) : typeof s < "u" && s.isSupported() && i ? (this.hls = new s(), this instanceof HTMLAudioElement && this.hls.attachMedia(this), this.hls.loadSource(t), await new Promise((e) => {
+        var a;
+        (a = this.hls) == null || a.on(s.Events.MANIFEST_PARSED, () => {
           e();
         });
       })) : (this.src = t, await new Promise((e) => {
@@ -54,7 +54,7 @@ class h extends Audio {
    * The volume is increased by 0.1 and stored in the local storage.
    */
   upVolume() {
-    !this.isIOS() && this.volume < 1 && (this.volume = parseFloat((this.volume + 0.1).toFixed(1)), localStorage.setItem(this.key, this.volume.toString()));
+    this.volume < 1 && (this.volume = parseFloat((this.volume + 0.1).toFixed(1)), localStorage.setItem(this.key, this.volume.toString()));
   }
   /**
    * Decreases the volume of the player.
@@ -99,5 +99,5 @@ class h extends Audio {
   }
 }
 export {
-  h as default
+  r as default
 };

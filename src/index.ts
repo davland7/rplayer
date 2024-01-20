@@ -18,7 +18,7 @@ export default class rPlayer extends Audio {
     } else {
       this.stop();
 
-      if (this.canPlayType('application/vnd.apple.mpegurl') === 'probably'){
+      if (this.canPlayType('application/vnd.apple.mpegurl') === 'probably' && isM3u8) {
         this.src = src;
 
         await new Promise<void>((resolve) => {
@@ -94,7 +94,7 @@ export default class rPlayer extends Audio {
    * The volume is increased by 0.1 and stored in the local storage.
    */
   upVolume(): void {
-    if (!this.isIOS() && this.volume < 1.0) {
+    if (this.volume < 1.0) {
       this.volume = parseFloat((this.volume + 0.1).toFixed(1));
       localStorage.setItem(this.key, this.volume.toString());
     }
