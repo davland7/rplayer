@@ -8,7 +8,7 @@ class r extends Audio {
     if (this.isPaused(e))
       this.play();
     else {
-      this.stop(), t instanceof Object && t.isSupported() && !this.supportsHls() && l ? (this.hls = new t(), this instanceof HTMLAudioElement && this.hls.attachMedia(this), this.hls.loadSource(e), await new Promise((s) => {
+      this.stop(), t instanceof Object && t.isSupported() && !this.isAppleDevice() && l ? (this.hls = new t(), this instanceof HTMLAudioElement && this.hls.attachMedia(this), this.hls.loadSource(e), await new Promise((s) => {
         var i;
         (i = this.hls) == null || i.on(t.Events.MANIFEST_PARSED, () => {
           s();
@@ -92,12 +92,6 @@ class r extends Audio {
    */
   isPaused(e) {
     return this.currentTime > 0 && !this.playing && this.url === e;
-  }
-  /**
-   * @returns {boolean}
-   */
-  supportsHls() {
-    return this.isAppleDevice() && !!(this.canPlayType("application/vnd.apple.mpegURL") || this.canPlayType("audio/mpegurl"));
   }
 }
 export {
