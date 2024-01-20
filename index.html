@@ -24,29 +24,36 @@
   <link href="index.css" rel="stylesheet" />
 </head>
 <body>
-  <div class="container max-w-screen-md m-auto">
-    <header class="m-12">
-      <h1 class="m-12 text-5xl font-bold">rPlayer in Action</h1>
-      <p>rPlayer is a player play streaming radio, this player, offers the possibility to change different audio format. Example: .m3u8, .mp3, .aac.</p>
+  <div class="container max-w-screen-md m-auto p-6">
+    <header>
+      <h1 class="mt-6 text-5xl font-bold">rPlayer in Action</h1>
+      <p class="mt-6">rPlayer is a player play streaming radio, this player, offers the possibility to change different audio format. Example: .m3u8, .mp3, .aac.</p>
+      <div class="flex justify-between mt-6">
+        <span>Used by <a class="underline hover:text-blue-700" href="https://chromewebstore.google.com/detail/mini-radio/klcjochgjlcecbalpokmcldlfhngcnfh?hl=en" target="_blank">Mini Radio</a></span>
+        <ul class="flex gap-2">
+          <li><a class="underline hover:text-blue-700" href="https://github.com/davland7/rplayer" target="_blank">github</a></li>
+          <li>|</li>
+          <li><a class="underline hover:text-blue-700" href="https://www.npmjs.com/package/@davland7/rplayer" target="_blank">npm</a></li>
+        </ul>
+    </div>
     </header>
-    <section class="flex flex-col items-center m-12 mb-0">
-      <input class="w-full max-w-2xl border border-gray-300 rounded-md py-2 px-4 focus:outline-none focus:border-blue-500 mb-4" id="urlInput" type="text" />
-      <div class="flex flex-col md:flex-row">
-        <div class="grid grid-cols-3 gap-2 md:grid-cols-9">
-          <button class="bg-green-500 hover:bg-green-600 text-black font-bold p-2 rounded" onclick="play()">Play</button>
-          <button class="bg-red-500 hover:bg-red-600 text-black font-bold p-2 rounded" onclick="audio.stop()">Stop</button>
-          <button class="bg-yellow-500 hover:bg-yellow-600 text-black font-bold p-2 rounded" onclick="audio.pause()">Pause</button>
-          <button class="bg-pink-500 hover:bg-pink-600 text-black font-bold p-2 rounded" onclick="hls()">HLS</button>
-          <button class="bg-teal-500 hover:bg-teal-600 text-black font-bold p-2 rounded" onclick="mp3()">MP3</button>
-          <button class="bg-blue-500 hover:bg-blue-600 text-black font-bold p-2 rounded" onclick="audio.rewind(10)">Rewind</button>
-          <button class="bg-purple-500 hover:bg-purple-600 text-black font-bold p-2 rounded" onclick="audio.upVolume()">Up</button>
-          <button class="bg-indigo-500 hover:bg-indigo-600 text-black font-bold p-2 rounded" onclick="audio.downVolume()">Down</button>
-          <button class="bg-orange-500 hover:bg-orange-600 text-black font-bold p-2 rounded" onclick="audio.mute()">Mute</button>
-        </div>
+    <section class="flex flex-col">
+      <label for="urlInput" class="text-xl font-bold mt-6">Enter the URL of the audio stream</label>
+      <input class="w-full mt-4 py-2 px-4 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500" id="urlInput" type="text" />
+      <div class="grid grid-cols-3 gap-2 md:grid-cols-9 mt-4">
+        <button class="bg-green-500 hover:bg-green-600 text-black font-bold p-2 rounded" onclick="play()">Play</button>
+        <button class="bg-red-500 hover:bg-red-600 text-black font-bold p-2 rounded" onclick="audio.stop()">Stop</button>
+        <button class="bg-yellow-500 hover:bg-yellow-600 text-black font-bold p-2 rounded" onclick="audio.pause()">Pause</button>
+        <button class="bg-pink-500 hover:bg-pink-600 text-black font-bold p-2 rounded" onclick="hls()">HLS</button>
+        <button class="bg-teal-500 hover:bg-teal-600 text-black font-bold p-2 rounded" onclick="mp3()">MP3</button>
+        <button class="bg-blue-500 hover:bg-blue-600 text-black font-bold p-2 rounded" onclick="audio.rewind(10)">Rewind</button>
+        <button class="bg-purple-500 hover:bg-purple-600 text-black font-bold p-2 rounded" onclick="audio.upVolume()">Up</button>
+        <button class="bg-indigo-500 hover:bg-indigo-600 text-black font-bold p-2 rounded" onclick="audio.downVolume()">Down</button>
+        <button class="bg-orange-500 hover:bg-orange-600 text-black font-bold p-2 rounded" onclick="audio.mute()">Mute</button>
       </div>
-      <p>You listening <a class="underline" href="https://www.thebeat925.ca/music/recently-played" target="_blank" rel="noreferrer noopener">The Beat 92.5</a></p>
+      <p class="mt-4">You listening <a class="underline hover:text-blue-500" href="https://www.thebeat925.ca/music/recently-played" target="_blank" rel="noreferrer noopener">The Beat 92.5</a></p>
     </section>
-    <section class="p-12 m-auto prose prose-base">
+    <section class="prose prose-base prose-pre:mt-6">
 <pre>
 <span id="url">Source: </span>
 <span id="playing">Playing: </span>
@@ -159,6 +166,9 @@ console.log('HLS:', audio.isHls);
 console.log('Time:', audio.currentTime);
 </pre>
     </section>
+    <footer>
+      <p class="mt-6">rPlayer 2.2.1</p>
+    </footer>
   </div>
   <script src="https://cdn.jsdelivr.net/npm/hls.js@1.5.3/dist/hls.min.js" integrity="sha256-yI6jd4S0qqdqD1qH2AnNNvxxIJ8N6NuUIFj7+0eumjM=" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/@davland7/rplayer@2.2.1/dist/rplayer.umd.min.js"></script>
