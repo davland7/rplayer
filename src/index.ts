@@ -68,9 +68,7 @@ export default class rPlayer extends Audio {
    * @param {number} secondes
    */
   rewind(secondes: number): void {
-    console.log('rewind', secondes);
-    // this.currentTime -= secondes;
-    this.currentTime = 0;
+    this.currentTime -= secondes;
   };
 
   upVolume(): void {
@@ -115,7 +113,7 @@ export default class rPlayer extends Audio {
    * @returns {boolean}
    */
   private supportsHls(): boolean {
-    return Boolean(this.canPlayType('application/vnd.apple.mpegURL') || this.canPlayType('audio/mpegurl'))
+    return this.isAppleDevice() && Boolean(this.canPlayType('application/vnd.apple.mpegURL') || this.canPlayType('audio/mpegurl'))
   }
 
   /**

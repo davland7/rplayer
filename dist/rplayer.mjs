@@ -35,7 +35,7 @@ class r extends Audio {
    * @param {number} secondes
    */
   rewind(e) {
-    console.log("rewind", e), this.currentTime = 0;
+    this.currentTime -= e;
   }
   upVolume() {
     !this.isAppleDevice() && this.volume < 1 && (this.volume = parseFloat((this.volume + 0.1).toFixed(1)), localStorage.setItem(this.key, this.volume.toString()));
@@ -65,7 +65,7 @@ class r extends Audio {
    * @returns {boolean}
    */
   supportsHls() {
-    return !!(this.canPlayType("application/vnd.apple.mpegURL") || this.canPlayType("audio/mpegurl"));
+    return this.isAppleDevice() && !!(this.canPlayType("application/vnd.apple.mpegURL") || this.canPlayType("audio/mpegurl"));
   }
   /**
    * @returns {boolean}
