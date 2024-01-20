@@ -37,18 +37,16 @@ Works with HLS. It's Magic 💪
 audio.playSrc('URL.m3u8');
 ```
 
-[!IMPORTANT]
-Important Information:
-**rPlayer** is optimized for HLS content. While HLS is native to Apple devices, for Windows and Android, it's crucial to use the hls.js library for proper .m3u8 stream functionality. Please ensure the use of hls.js on devices other than iPhone and iPad.
+> [!IMPORTANT]
+> **rPlayer** is optimized for HLS content. While HLS is native to Apple devices, for Windows and Android, it's crucial to use the hls.js library for proper .m3u8 stream functionality. Please ensure the use of hls.js on devices other than iPhone and iPad.
 
 In addition to .m3u8, you can also use .mp3, .aac, .ogg and others. 😮
 
 ```
 audio.playSrc('URL.aac');
 ```
-[!TIP]
-Tip:
-You can use rPlayer without hls.js if you don't need to support HLS formats like .m3u8. juste not add hls.js to your project.
+> [!TIP]
+> You can use rPlayer without hls.js if you don't need to support HLS formats like .m3u8. juste not add hls.js to your project.
 
 ## Set Volume
 
@@ -96,9 +94,8 @@ A way not to make a mistake if the range is not good. 😉
 audio.downVolume();
 ```
 
-[!WARNING]
-Warning:
-On iOS devices such as iPad and iPhone, the audio level is always controlled by the user physically. This means that the volume property is not adjustable through JavaScript on iOS devices. When you read the volume property on iOS, it will always return 1, reflecting that the user has direct control over the device's volume. Additionally, the library will always return 1 on iOS.
+> [!WARNING]
+> On iOS devices such as iPad and iPhone, the audio level is always controlled by the user physically. This means that the volume property is not adjustable through JavaScript on iOS devices. When you read the volume property on iOS, it will always return 1, reflecting that the user has direct control over the device's volume. Additionally, the library will always return 1 on iOS.
 
 ## timeupdate event
 
