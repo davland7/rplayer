@@ -1,10 +1,10 @@
 import s from "hls.js";
-class o extends Audio {
+class r extends Audio {
   constructor() {
     super(), this.key = "rplayer-volume", this.volume = this.isAppleDevice() ? 1 : parseFloat(localStorage.getItem(this.key) || "0.2");
   }
   async playSrc(e) {
-    const l = e.indexOf(".m3u8") > 0;
+    const l = e.toLowerCase().endsWith(".m3u8");
     if (this.isPaused(e))
       this.play();
     else {
@@ -95,5 +95,5 @@ class o extends Audio {
   }
 }
 export {
-  o as default
+  r as default
 };

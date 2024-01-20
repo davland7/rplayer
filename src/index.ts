@@ -11,7 +11,7 @@ export default class rPlayer extends Audio {
   }
 
   async playSrc(src: string): Promise<void>{
-    const isM3u8 = src.indexOf('.m3u8') > 0;
+    const isM3u8 = src.toLowerCase().endsWith('.m3u8');
 
     if (this.isPaused(src)) {
       this.play();
