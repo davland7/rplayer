@@ -10,7 +10,7 @@ export default class rPlayer extends Audio {
     this.volume = this.isAppleDevice() ? 1.0 : parseFloat(localStorage.getItem(this.key) || "0.2");
   }
 
-  async playSrc({ src }: { src: string; }): Promise<void> {
+  async playSrc(src: string): Promise<void>{
     const isM3u8 = src.indexOf('.m3u8') > 0;
 
     if (this.isPaused(src)) {

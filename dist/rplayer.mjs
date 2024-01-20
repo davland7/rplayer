@@ -3,7 +3,7 @@ class r extends Audio {
   constructor() {
     super(), this.key = "rplayer-volume", this.volume = this.isAppleDevice() ? 1 : parseFloat(localStorage.getItem(this.key) || "0.2");
   }
-  async playSrc({ src: e }) {
+  async playSrc(e) {
     const l = e.indexOf(".m3u8") > 0;
     if (this.isPaused(e))
       this.play();
