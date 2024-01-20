@@ -1,36 +1,27 @@
 import s from "hls.js";
-class a extends Audio {
+class r extends Audio {
   constructor() {
     super(), this.key = "rplayer-volume", this.volume = this.isAppleDevice() ? 1 : parseFloat(localStorage.getItem(this.key) || "0.2");
   }
   async playSrc(e) {
-    const i = e.indexOf(".m3u8") > 0;
+    const l = e.indexOf(".m3u8") > 0;
     if (this.isPaused(e))
       this.play();
     else {
-      if (this.stop(), this.canPlayType("application/vnd.apple.mpegURL") === "probably" && i)
-        this.src = e, await new Promise((t) => {
-          this.addEventListener("loadedmetadata", () => {
-            t();
-          });
+      this.stop(), this.isAppleDevice() ? (this.src = e, await new Promise((t) => {
+        this.addEventListener("loadedmetadata", () => {
+          t();
         });
-      else if (this.isAppleDevice())
-        this.src = e, await new Promise((t) => {
-          this.addEventListener("loadedmetadata", () => {
-            t();
-          });
+      })) : typeof s < "u" && s.isSupported() && l ? (this.hls = new s(), this instanceof HTMLAudioElement && this.hls.attachMedia(this), this.hls.loadSource(e), await new Promise((t) => {
+        var i;
+        (i = this.hls) == null || i.on(s.Events.MANIFEST_PARSED, () => {
+          t();
         });
-      else if (typeof s < "u" && s.isSupported() && i)
-        this.hls = new s(), this instanceof HTMLAudioElement && this.hls.attachMedia(this), this.hls.loadSource(e), await new Promise((t) => {
-          var l;
-          (l = this.hls) == null || l.on(s.Events.MANIFEST_PARSED, () => {
-            t();
-          });
+      })) : (this.src = e, await new Promise((t) => {
+        this.addEventListener("loadedmetadata", () => {
+          t();
         });
-      else {
-        console.error("HLS is not supported and the source is not a .m3u8 file.");
-        return;
-      }
+      }));
       try {
         await this.play();
       } catch (t) {
@@ -108,5 +99,5 @@ class a extends Audio {
   }
 }
 export {
-  a as default
+  r as default
 };

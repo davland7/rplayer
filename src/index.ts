@@ -18,8 +18,7 @@ export default class rPlayer extends Audio {
     } else {
       this.stop();
 
-      // Vérifie si le navigateur peut lire les flux HLS directement
-      if (this.canPlayType('application/vnd.apple.mpegURL') === 'probably' && isM3u8) {
+      if (this.isAppleDevice()) {
         this.src = src;
 
         await new Promise<void>((resolve) => {
@@ -27,29 +26,22 @@ export default class rPlayer extends Audio {
             resolve();
           });
         });
-      } else { // Si le navigateur ne peut pas lire les flux HLS directement
-        // Vérifie si ce n'est pas un appareil Apple
-        if (!this.isAppleDevice()) {
-          // Vérifie si Hls est défini et si le fichier est un fichier m3u8
-          if (typeof Hls !== 'undefined' && Hls.isSupported() && isM3u8) {
-            this.hls = new Hls();
+      } else {
+        if (typeof Hls !== 'undefined' && Hls.isSupported() && isM3u8) {
+          this.hls = new Hls();
 
-            if (this instanceof HTMLAudioElement) {
-              this.hls.attachMedia(this as HTMLAudioElement as HTMLVideoElement);
-            }
-
-            this.hls.loadSource(src);
-
-            await new Promise<void>((resolve) => {
-              this.hls?.on(Hls.Events.MANIFEST_PARSED, () => {
-                resolve();
-              });
-            });
-          } else {
-            console.error('HLS is not supported and the source is not a .m3u8 file.');
-            return;
+          if (this instanceof HTMLAudioElement) {
+            this.hls.attachMedia(this as HTMLAudioElement as HTMLVideoElement);
           }
-        } else { // Si c'est un appareil Apple, chargez simplement la source directement
+
+          this.hls.loadSource(src);
+
+          await new Promise<void>((resolve) => {
+            this.hls?.on(Hls.Events.MANIFEST_PARSED, () => {
+              resolve();
+            });
+          });
+        } else {
           this.src = src;
 
           await new Promise<void>((resolve) => {
