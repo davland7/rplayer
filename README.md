@@ -1,70 +1,108 @@
-# rPlayer
+# rPlayer in Action
 
-Radio player is a player play streaming radio, this player, offers the possibility to change different audio format. Example: .m3u8, .mp3, .aac.
-
-## rPlayer in action
-
-https://rplayer.js.org/
+rPlayer is a player play streaming radio, this player, offers the possibility to change different audio format. Example: .m3u8, .mp3, .aac.
 
 ## Easy to use
 
 ```
-var audio = new rPlayer();
+<script src="https://cdn.jsdelivr.net/npm/hls.js@1.5.3/dist/hls.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@davland7/rplayer@2.2.1/dist/rplayer.umd.min.js"></script>
 ```
+
+```
+const audio = new rPlayer();
+```
+
+rPlayer is extending [Audio](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/audio) HTMLMediaElement
 
 ## Play
 
+Play doesn't work with HLS. 🙁
+
 ```
-audio.playSrc('URL');
+const audio = new Audio('URL.m3u8');
+audio.play();
 ```
 
-## Stop
+Or
+
+```
+audio.src = 'URL.m3u8';
+audio.play();
+```
+
+Works with HLS. It's Magic 💪
+
+```
+audio.playSrc('URL.m3u8');
+```
+
+[!IMPORTANT]
+Important Information:
+**rPlayer** is optimized for HLS content. While HLS is native to Apple devices, for Windows and Android, it's crucial to use the hls.js library for proper .m3u8 stream functionality. Please ensure the use of hls.js on devices other than iPhone and iPad.
+
+In addition to .m3u8, you can also use .mp3, .aac, .ogg and others. 😮
+
+```
+audio.playSrc('URL.aac');
+```
+[!TIP]
+Tip:
+You can use rPlayer without hls.js if you don't need to support HLS formats like .m3u8. juste not add hls.js to your project.
+
+## Set Volume
+
+The volume must not be outside the range [0, 1].
+
+```
+audio.volume = 0.2; // 0.2 Default set in local storage
+```
+
+localStorage is very cool. 😎
+
+## Extras
+
+### Stop
 
 ```
 audio.stop();
 ```
 
-## Pause
-
-```
-audio.pause();
-```
-
-## Mute
+### Mute
 
 ```
 audio.mute();
 ```
 
-## Rewind
+### Rewind
 
 ```
-audio.rewind(10); // Secondes
+audio.rewind(10); // seconds
 ```
 
-## Set Volume
-
-The volume must not outside the range [0, 1].
-
-```
-audio.volume = 0.7; // 0.7 Default set in local storage
-```
-
-## Volume Up
+### Volume Up
 
 ```
 audio.upVolume();
 ```
 
-## Volume Down
+A way not to make a mistake if the range is not good. 😉
+
+### Volume Down
+
+10 levels up and down and blocks both ends. 😁
 
 ```
 audio.downVolume();
 ```
 
+[!WARNING]
+Warning:
+On iOS devices such as iPad and iPhone, the audio level is always controlled by the user physically. This means that the volume property is not adjustable through JavaScript on iOS devices. When you read the volume property on iOS, it will always return 1, reflecting that the user has direct control over the device's volume. Additionally, the library will always return 1 on iOS.
+
 ## timeupdate event
 
-The [timeupdate event](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/timeupdate_event) is fired when the time indicated by the currentTime attribute has been updated.
+The [timeupdate event](http://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/timeupdate_event) is fired when the time indicated by the currentTime attribute has been updated.
 
 ```
 audio.ontimeupdate = function() {
@@ -75,34 +113,16 @@ audio.ontimeupdate = function() {
 ## Infos
 
 ```
+console.log('Source:', audio.url);
 console.log('Playing:', audio.playing);
-console.log('Volume:', audio.volume * 100);
 console.log('Paused:', audio.paused);
 console.log('Muted:', audio.muted);
-console.log('Source:', audio.src);
+console.log('Volume:', audio.volume * 100);
+console.log('hls.js:', audio.isHls);
 console.log('Time:', audio.currentTime);
 ```
 
-## Include hls.js
-
-* [hls.js](https://github.com/video-dev/hls.js)
-
-## Demo
-
-```
-npm install
-npm run build
-npm run start
-```
-
-[http://localhost:9999/](http://localhost:9999/)
-
-## npm dependencies
-
-```
-npm install hls.js --save
-npm install @babel/core babel-loader webpack webpack-cli webpack-dev-server --save-dev
-```
+rPlayer 2.2.1
 
 ## Used by
 
