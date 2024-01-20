@@ -3,25 +3,25 @@ class o extends Audio {
   constructor() {
     super(), this.key = "rplayer-volume", this.volume = this.isAppleDevice() ? 1 : parseFloat(localStorage.getItem(this.key) || "0.2");
   }
-  async playSrc(t) {
-    const l = t.indexOf(".m3u8") > 0;
-    if (this.isPaused(t))
+  async playSrc(e) {
+    const l = e.indexOf(".m3u8") > 0;
+    if (this.isPaused(e))
       this.play();
     else {
-      this.stop(), s.isSupported() && l ? (this.hls = new s(), this instanceof HTMLAudioElement && this.hls.attachMedia(this), this.hls.loadSource(t), await new Promise((e) => {
+      this.stop(), s.isSupported() && l && !this.isAppleDevice() ? (this.hls = new s(), this instanceof HTMLAudioElement && this.hls.attachMedia(this), this.hls.loadSource(e), await new Promise((t) => {
         var i;
         (i = this.hls) == null || i.on(s.Events.MANIFEST_PARSED, () => {
-          e();
+          t();
         });
-      })) : (this.src = t, await new Promise((e) => {
+      })) : (this.src = e, await new Promise((t) => {
         this.addEventListener("loadedmetadata", () => {
-          e();
+          t();
         });
       }));
       try {
         await this.play();
-      } catch (e) {
-        console.error("Error on play", e);
+      } catch (t) {
+        console.error("Error on play", t);
       }
     }
   }
@@ -41,8 +41,8 @@ class o extends Audio {
   /**
    * @param {number} secondes
    */
-  rewind(t) {
-    this.currentTime -= t;
+  rewind(e) {
+    this.currentTime -= e;
   }
   /**
    * Increases the volume of the player.
@@ -90,8 +90,8 @@ class o extends Audio {
    * @param {string} src
    * @returns
    */
-  isPaused(t) {
-    return this.currentTime > 0 && !this.playing && this.url === t;
+  isPaused(e) {
+    return this.currentTime > 0 && !this.playing && this.url === e;
   }
 }
 export {
