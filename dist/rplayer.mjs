@@ -1,31 +1,27 @@
-import s from "hls.js";
-class r extends Audio {
+import e from "hls.js";
+class a extends Audio {
   constructor() {
     super(), this.key = "rplayer-volume", this.volume = this.isIOS() ? 1 : parseFloat(localStorage.getItem(this.key) || "0.2");
   }
   async playSrc(t) {
-    const a = t.indexOf(".m3u8") > 0;
+    const o = t.indexOf(".m3u8") > 0;
     if (this.isPaused(t))
       this.play();
     else {
-      this.stop(), this.isIOS() ? (this.src = t, await new Promise((e) => {
-        this.addEventListener("loadedmetadata", () => {
-          e();
-        });
-      })) : typeof s < "u" && s.isSupported() && a ? (this.hls = new s(), this instanceof HTMLAudioElement && this.hls.attachMedia(this), this.hls.loadSource(t), await new Promise((e) => {
+      this.stop(), this.src = t, typeof e < "u" && e.isSupported() && o && !this.isIOS() ? (this.hls = new e(), this instanceof HTMLAudioElement && this.hls.attachMedia(this), this.hls.loadSource(t), await new Promise((s) => {
         var i;
-        (i = this.hls) == null || i.on(s.Events.MANIFEST_PARSED, () => {
-          e();
+        (i = this.hls) == null || i.on(e.Events.MANIFEST_PARSED, () => {
+          s();
         });
-      })) : (this.src = t, await new Promise((e) => {
+      })) : (this.src = t, await new Promise((s) => {
         this.addEventListener("loadedmetadata", () => {
-          e();
+          s();
         });
       }));
       try {
         await this.play();
-      } catch (e) {
-        console.error("Error on play", e);
+      } catch (s) {
+        console.error("Error on play", s);
       }
     }
   }
@@ -69,7 +65,7 @@ class r extends Audio {
    * @returns {boolean}
    */
   get isHls() {
-    return s instanceof Object && this.hls !== null && this.hls instanceof s;
+    return e instanceof Object && this.hls !== null && this.hls instanceof e;
   }
   /**
    * @returns {string | undefined}
@@ -98,5 +94,5 @@ class r extends Audio {
   }
 }
 export {
-  r as default
+  a as default
 };
