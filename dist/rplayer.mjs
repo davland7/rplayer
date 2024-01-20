@@ -1,27 +1,27 @@
 import t from "hls.js";
-class a extends Audio {
+class r extends Audio {
   constructor() {
     super(), this.key = "rplayer-volume", this.volume = this.isAppleDevice() ? 1 : parseFloat(localStorage.getItem(this.key) || "0.2");
   }
   async playSrc(e) {
-    const s = e.indexOf(".m3u8") > 0;
+    const l = e.indexOf(".m3u8") > 0;
     if (this.isPaused(e))
       this.play();
     else {
-      this.stop(), console.error("isM3u8", s), console.error("Hls.isSupported()", t.isSupported()), console.error('this.canPlayType("application/vnd.apple.mpegURL")', this.canPlayType("application/vnd.apple.mpegURL")), typeof t < "u" && t.isSupported() && s && !this.canPlayType("application/vnd.apple.mpegURL") && !this.isAppleDevice() ? (this.hls = new t(), this instanceof HTMLAudioElement && this.hls.attachMedia(this), this.hls.loadSource(e), await new Promise((i) => {
-        var l;
-        (l = this.hls) == null || l.on(t.Events.MANIFEST_PARSED, () => {
-          i();
+      this.stop(), typeof t < "u" && t.isSupported() && l && this.canPlayType("application/vnd.apple.mpegURL") !== "probably" ? (this.hls = new t(), this instanceof HTMLAudioElement && this.hls.attachMedia(this), this.hls.loadSource(e), await new Promise((s) => {
+        var i;
+        (i = this.hls) == null || i.on(t.Events.MANIFEST_PARSED, () => {
+          s();
         });
-      })) : (this.src = e, await new Promise((i) => {
+      })) : (this.src = e, await new Promise((s) => {
         this.addEventListener("loadedmetadata", () => {
-          i();
+          s();
         });
       }));
       try {
         await this.play();
-      } catch (i) {
-        console.error("Error on play", i);
+      } catch (s) {
+        console.error("Error on play", s);
       }
     }
   }
@@ -95,5 +95,5 @@ class a extends Audio {
   }
 }
 export {
-  a as default
+  r as default
 };
