@@ -1,31 +1,31 @@
 import s from "hls.js";
-class r extends Audio {
+class l extends Audio {
   constructor() {
-    super(), this.key = "rplayer-volume", this.volume = this.isAppleDevice() ? 1 : parseFloat(localStorage.getItem(this.key) || "0.2");
+    super(), this.key = "rplayer-volume", this.volume = this.isIOS() ? 1 : parseFloat(localStorage.getItem(this.key) || "0.2");
   }
-  async playSrc(e) {
-    const l = e.indexOf(".m3u8") > 0;
-    if (this.isPaused(e))
+  async playSrc(t) {
+    const a = t.indexOf(".m3u8") > 0;
+    if (this.isPaused(t))
       this.play();
     else {
-      this.stop(), this.isAppleDevice() ? (this.src = e, await new Promise((t) => {
+      this.stop(), this.isIOS() ? (this.src = t, await new Promise((e) => {
         this.addEventListener("loadedmetadata", () => {
-          t();
+          e();
         });
-      })) : typeof s < "u" && s.isSupported() && l ? (this.hls = new s(), this instanceof HTMLAudioElement && this.hls.attachMedia(this), this.hls.loadSource(e), await new Promise((t) => {
+      })) : typeof s < "u" && s.isSupported() && a ? (this.hls = new s(), this instanceof HTMLAudioElement && this.hls.attachMedia(this), this.hls.loadSource(t), await new Promise((e) => {
         var i;
         (i = this.hls) == null || i.on(s.Events.MANIFEST_PARSED, () => {
-          t();
+          e();
         });
-      })) : (this.src = e, await new Promise((t) => {
+      })) : (this.src = t, await new Promise((e) => {
         this.addEventListener("loadedmetadata", () => {
-          t();
+          e();
         });
       }));
       try {
         await this.play();
-      } catch (t) {
-        console.error("Error on play", t);
+      } catch (e) {
+        console.error("Error on play", e);
       }
     }
   }
@@ -45,8 +45,8 @@ class r extends Audio {
   /**
    * @param {number} secondes
    */
-  rewind(e) {
-    this.currentTime -= e;
+  rewind(t) {
+    this.currentTime -= t;
   }
   /**
    * Increases the volume of the player.
@@ -54,7 +54,7 @@ class r extends Audio {
    * The volume is increased by 0.1 and stored in the local storage.
    */
   upVolume() {
-    !this.isAppleDevice() && this.volume < 1 && (this.volume = parseFloat((this.volume + 0.1).toFixed(1)), localStorage.setItem(this.key, this.volume.toString()));
+    !this.isIOS() && this.volume < 1 && (this.volume = parseFloat((this.volume + 0.1).toFixed(1)), localStorage.setItem(this.key, this.volume.toString()));
   }
   /**
    * Decreases the volume of the player.
@@ -64,7 +64,7 @@ class r extends Audio {
    * it sets the volume to 0 and updates the volume in the local storage.
    */
   downVolume() {
-    !this.isAppleDevice() && this.volume > 0.1 ? (this.volume = parseFloat((this.volume - 0.1).toFixed(1)), localStorage.setItem(this.key, this.volume.toString())) : this.isAppleDevice() || (this.volume = 0, localStorage.setItem(this.key, "0"));
+    !this.isIOS() && this.volume > 0.1 ? (this.volume = parseFloat((this.volume - 0.1).toFixed(1)), localStorage.setItem(this.key, this.volume.toString())) : this.isIOS() || (this.volume = 0, localStorage.setItem(this.key, "0"));
   }
   /**
    * @returns {boolean}
@@ -87,17 +87,17 @@ class r extends Audio {
   /**
    * @returns {boolean}
    */
-  isAppleDevice() {
-    return /(iPhone|iPod|iPad)/i.test(navigator.userAgent);
+  isIOS() {
+    return /iPad|iPhone|iPod/.test(navigator.platform) || navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1;
   }
   /**
    * @param {string} src
    * @returns
    */
-  isPaused(e) {
-    return this.currentTime > 0 && !this.playing && this.url === e;
+  isPaused(t) {
+    return this.currentTime > 0 && !this.playing && this.url === t;
   }
 }
 export {
-  r as default
+  l as default
 };

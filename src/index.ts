@@ -7,7 +7,7 @@ export default class rPlayer extends Audio {
   constructor() {
     super();
 
-    this.volume = this.isAppleDevice() ? 1.0 : parseFloat(localStorage.getItem(this.key) || "0.2");
+    this.volume = this.isIOS() ? 1.0 : parseFloat(localStorage.getItem(this.key) || "0.2");
   }
 
   async playSrc(src: string): Promise<void> {
@@ -18,7 +18,7 @@ export default class rPlayer extends Audio {
     } else {
       this.stop();
 
-      if (this.isAppleDevice()) {
+      if (this.isIOS()) {
         this.src = src;
 
         await new Promise<void>((resolve) => {
@@ -94,7 +94,7 @@ export default class rPlayer extends Audio {
    * The volume is increased by 0.1 and stored in the local storage.
    */
   upVolume(): void {
-    if (!this.isAppleDevice() && this.volume < 1.0) {
+    if (!this.isIOS() && this.volume < 1.0) {
       this.volume = parseFloat((this.volume + 0.1).toFixed(1));
       localStorage.setItem(this.key, this.volume.toString());
     }
@@ -108,10 +108,10 @@ export default class rPlayer extends Audio {
    * it sets the volume to 0 and updates the volume in the local storage.
    */
   downVolume(): void {
-    if (!this.isAppleDevice() && this.volume > 0.1) {
+    if (!this.isIOS() && this.volume > 0.1) {
       this.volume = parseFloat((this.volume - 0.1).toFixed(1));
       localStorage.setItem(this.key, this.volume.toString());
-    } else if (!this.isAppleDevice()) {
+    } else if (!this.isIOS()) {
       this.volume = 0;
       localStorage.setItem(this.key, '0');
     }
@@ -141,8 +141,9 @@ export default class rPlayer extends Audio {
   /**
    * @returns {boolean}
    */
-  private isAppleDevice(): boolean {
-    return /(iPhone|iPod|iPad)/i.test(navigator.userAgent);
+  private isIOS(): boolean {
+    return /iPad|iPhone|iPod/.test(navigator.platform) ||
+      (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
   }
 
   /**
