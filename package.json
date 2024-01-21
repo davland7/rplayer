@@ -1,6 +1,6 @@
 {
   "name": "@davland7/rplayer",
-  "version": "2.2.2",
+  "version": "2.2.3",
   "description": "rPlayer is a player play streaming radio, this player, offers the possibility to change different audio format. Example: .m3u8, .mp3, .aac.",
   "keywords": [
     "radio",
@@ -21,10 +21,10 @@
     "dist"
   ],
   "main": "./dist/rplayer.umd.js",
-  "module": "./dist/rplayer.es.js",
+  "module": "./dist/rplayer.mjs",
   "exports": {
     ".": {
-      "import": "./dist/rplayer.es.js",
+      "import": "./dist/rplayer.mjs",
       "require": "./dist/rplayer.umd.js"
     }
   },
