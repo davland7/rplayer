@@ -6,7 +6,7 @@ rPlayer is a player play streaming radio, this player, offers the possibility to
 
 ```
 <script src="https://cdn.jsdelivr.net/npm/hls.js@1.5.3/dist/hls.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@davland7/rplayer@2.2.1/dist/rplayer.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@davland7/rplayer@2.2.4/dist/rplayer.umd.min.js"></script>
 ```
 
 ```
@@ -119,7 +119,7 @@ console.log('hls.js:', audio.isHls);
 console.log('Time:', audio.currentTime);
 ```
 
-rPlayer 2.2.2
+rPlayer 2.2.4
 
 ## Used by
 
