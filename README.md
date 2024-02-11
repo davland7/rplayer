@@ -9,7 +9,7 @@ rPlayer is a player play streaming radio, this player, offers the possibility to
 ```
 npm install @davland7/rplayer
 
-import rPlayer from '@davland7/rplayer';
+import audio from '@davland7/rplayer';
 ```
 
 ### CDN
@@ -130,8 +130,6 @@ console.log('Time:', audio.currentTime);
 ```
 
 rPlayer 2.2.4
-
-## CDN
 
 [![](https://data.jsdelivr.com/v1/package/npm/@davland7/rplayer/badge)](https://www.jsdelivr.com/package/npm/@davland7/rplayer)
 

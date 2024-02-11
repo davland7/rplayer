@@ -73,6 +73,21 @@
 <span id="time">Time: </span>
 </pre>
       <h2>Easy to use</h2>
+
+      <h3>NPM</h3>
+
+      <p>Install the package via npm.</p>
+<pre>
+npm install @davland7/rplayer
+</pre>
+      <p>Import the package and use it in your project.</p>
+<pre>
+import rPlayer from '@davland7/rplayer';
+
+const audio = new rPlayer();
+</pre>
+
+      <h3>CDN</h3>
 <pre>
 &#060;script src="https://cdn.jsdelivr.net/npm/hls.js@1.5.3/dist/hls.min.js"&#062;&#060;/script&#062;
 &#060;script src="https://cdn.jsdelivr.net/npm/@davland7/rplayer@2.2.4/dist/rplayer.umd.min.js"&#062;&#060;/script&#062;
@@ -108,11 +123,6 @@ audio.playSrc('URL.m3u8');
 <pre>
 audio.playSrc('URL.aac');
 </pre>
-
-      <div class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4" role="alert">
-        <p class="font-bold">Tip:</p>
-        <p>You can use rPlayer without hls.js if you don't need to support HLS formats like .m3u8. juste not add hls.js to your project.</p>
-      </div>
 
       <h2>Set Volume</h2>
       <p>The volume must not be outside the range [0, 1].</p>
