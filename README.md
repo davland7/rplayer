@@ -4,6 +4,16 @@ rPlayer is a player play streaming radio, this player, offers the possibility to
 
 ## Easy to use
 
+### NPM
+
+```
+npm install @davland7/rplayer
+
+import rPlayer from '@davland7/rplayer';
+```
+
+### CDN
+
 ```
 <script src="https://cdn.jsdelivr.net/npm/hls.js@1.5.3/dist/hls.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@davland7/rplayer@2.2.4/dist/rplayer.umd.min.js"></script>
@@ -120,6 +130,10 @@ console.log('Time:', audio.currentTime);
 ```
 
 rPlayer 2.2.4
+
+## CDN
+
+[![](https://data.jsdelivr.com/v1/package/npm/@davland7/rplayer/badge)](https://www.jsdelivr.com/package/npm/@davland7/rplayer)
 
 ## Used by
 
