@@ -1,47 +1,45 @@
 {
-  "name": "@davland7/rplayer",
+  "name": "rplayer",
+  "type": "module",
   "version": "2.2.4",
   "description": "rPlayer is a player play streaming radio, this player, offers the possibility to change different audio format. Example: .m3u8, .mp3, .aac.",
-  "keywords": [
-    "radio",
-    "audio",
-    "mp3",
-    "hls"
+  "main": "dist/rplayer.umd.js",
+  "module": "dist/rplayer.es.js",
+  "types": "dist/rplayer.d.ts",
+  "files": [
+    "lib"
   ],
-  "repository": {
-    "url": "git://github.com/davland7/rplayer.git"
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "build:lib": "vite build",
+    "preview": "astro preview",
+    "astro": "astro"
   },
+  "keywords": [
+    "rplayer",
+    "audio",
+    "library"
+  ],
   "author": "David Landry",
   "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/davland7/rplayer/issues"
-  },
-  "homepage": "https://rplayer.js.org",
-  "files": [
-    "dist"
-  ],
-  "main": "./dist/rplayer.umd.js",
-  "module": "./dist/rplayer.mjs",
-  "exports": {
-    ".": {
-      "import": "./dist/rplayer.mjs",
-      "require": "./dist/rplayer.umd.js"
-    }
-  },
-  "scripts": {
-    "dev": "vite --host",
-    "build": "vite build",
-    "preview": "vite preview"
-  },
   "dependencies": {
-    "hls.js": "^1.5.7"
+    "@astrojs/react": "^4.2.2",
+    "@formspree/react": "^3.0.0",
+    "@tailwindcss/forms": "^0.5.10",
+    "@tailwindcss/typography": "^0.5.16",
+    "@tailwindcss/vite": "^4.0.17",
+    "@types/react": "^19.0.12",
+    "@types/react-dom": "^19.0.4",
+    "astro": "^5.5.5",
+    "hls.js": "^1.6.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "recaptcha-v3": "^1.11.3",
+    "tailwindcss": "^4.0.17"
   },
   "devDependencies": {
-    "@tailwindcss/forms": "^0.5.7",
-    "@tailwindcss/typography": "^0.5.12",
-    "@types/node": "^20.12.4",
-    "tailwindcss": "^3.4.3",
-    "vite": "^5.2.8",
-    "vite-tsconfig-paths": "^4.3.2"
+    "@types/hls.js": "^0.13.3",
+    "vite": "^6.2.3"
   }
 }

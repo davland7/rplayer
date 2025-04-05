@@ -1,0 +1,141 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { Image } from 'astro:assets';
+import ImageMiniRadioLogo from "../assets/mini-radio-logo.png";
+import ImageChromeWebStoreBadge from "../assets/chrome-web-store-badge.png";
+import ImageMiniRadioPopup from "../assets/mini-radio-popup.png";
+import ImageMiniRadioOptions from "../assets/mini-radio-options.png";
+import ContactForm from '../components/ContactForm/ContactForm';
+
+const miniRadioChromeWebStoreLink = "https://chromewebstore.google.com/detail/mini-radio/klcjochgjlcecbalpokmcldlfhngcnfh?hl=FR";
+---
+
+<Layout
+  title="Mini Radio - Écoutez vos stations préférées"
+  description="Mini Radio est une extension Chrome qui vous permet d'écouter vos stations de radio préférées au Québec. Simple, rapide et intuitive."
+  themeColor="#ffffff"
+  keywords="Mini Radio, radio, extension Chrome, écoute de radio, stations de radio, Québec"
+  lang="fr"
+>
+  <header class="bg-secondary text-white text-center py-16 px-4">
+    <Image src={ImageMiniRadioLogo} alt="Logo de Mini Radio" class="mx-auto mb-4" />
+    <h1 class="text-3xl font-bold">Mini Radio : 16 stations québécoises à portée d'un clic !</h1>
+    <p class="mt-2">Écoutez vos stations locales préférées directement depuis votre navigateur. Plus besoin de chercher, cliquez sur l'icône de l'extension et profitez votre station !</p>
+  </header>
+
+  <section class="w-full py-16">
+    <div class="container mx-auto flex flex-wrap items-center">
+      <div class="w-full md:w-1/2">
+        <div class="my-8 mx-4 flex-1 bg-gray-200 rounded-lg p-6">
+          <h2 class="text-2xl font-semibold mb-8">Qu'est-ce que Mini Radio ?</h2>
+          <p class="mb-4">Mini Radio, créée le 29 décembre 2015, est une extension Chrome simple et intuitive pour écouter vos stations de radio préférées au Québec. Initialement développée pour un usage personnel, elle est maintenant accessible à tous.</p>
+          <p class="mb-4">Pour célébrer ses 🎉 10 ans, Mini Radio a été entièrement réécrite pour suivre les standards de 2025, offrant une expérience encore plus rapide, légère et facile à utiliser.</p>
+          <p class="mb-4">Des nouveaux ajouts comme l'historique intelligent et les raccourcis clavier rendent l'écoute encore plus agréable.</p>
+        </div>
+      </div>
+      <div class="w-full md:w-1/2 px-4 justify-center flex">
+        <div class="w-96 py-8 px-4">
+          <h2 class="text-2xl font-semibold mb-8 col-span-2">16 Stations disponibles</h2>
+          <div class="grid grid-cols-2 gap-4">
+            <ul class="list-disc list-inside">
+              <li><a class="text-secondary hover:underline" href="https://www.thebeat925.ca/" target="_blank">The Beat 92.5</a></li>
+              <li><a class="text-secondary hover:underline" href="https://www.985fm.ca/" target="_blank">98.5 FM</a></li>
+              <li><a class="text-secondary hover:underline" href="https://ici.radio-canada.ca/" target="_blank">Radio Canada</a></li>
+              <li><a class="text-secondary hover:underline" href="https://www.ckoi.com/" target="_blank">CKOI 96.9</a></li>
+              <li><a class="text-secondary hover:underline" href="https://www.radiox.com/" target="_blank">Radio X</a></li>
+              <li><a class="text-secondary hover:underline" href="https://www.chom.com/" target="_blank">CHOM 97.7</a></li>
+              <li><a class="text-secondary hover:underline" href="https://www.wknd.fm/" target="_blank">WKND 91.9</a></li>
+              <li><a class="text-secondary hover:underline" href="https://www.energie.ca/" target="_blank">Énergie 94.3</a></li>
+            </ul>
+            <ul class="list-disc list-inside">
+              <li><a class="text-secondary hover:underline" href="https://www.rougefm.ca/" target="_blank">Rouge FM</a></li>
+              <li><a class="text-secondary hover:underline" href="https://montreal.rythmefm.com/" target="_blank">Rythme FM</a></li>
+              <li><a class="text-secondary hover:underline" href="https://quebec.wknd.fm/" target="_blank">BLVD 102.1</a></li>
+              <li><a class="text-secondary hover:underline" href="https://www.radiopirate.com/" target="_blank">Radio Pirate Live</a></li>
+              <li><a class="text-secondary hover:underline" href="https://bpmsports.ca/" target="_blank">BPM Sports</a></li>
+              <li><a class="text-secondary hover:underline" href="https://www.fm93.com/" target="_blank">FM93</a></li>
+              <li><a class="text-secondary hover:underline" href="https://www.qub.radio/" target="_blank">QUB Radio</a></li>
+              <li><a class="text-secondary hover:underline" href="https://www.hitcountry.ca/" target="_blank">Hit Country</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="w-full">
+    <div class="container mx-auto max-w-5xl flex flex-wrap items-center">
+      <div class="w-full md:w-1/2 py-8 px-4 flex justify-center">
+        <Image src={ImageMiniRadioPopup} alt="Popup light" />
+      </div>
+      <div class="w-full md:w-1/2 py-8 px-4 flex justify-center">
+        <div class="text-center md:text-left">
+          <h2 class="text-2xl font-semibold mb-8">Fonctionnalités</h2>
+          <ul class="space-y-3">
+            <li>📻 <strong>Accès simplifié</strong> à vos radios préférées.</li>
+            <li>🕒 <strong>Historique intelligent</strong> <sup class="bg-red-600 text-white p-1 rounded-sm font-semibold">Nouveau</sup> et ajouts personnalisés.</li>
+            <li>🌙 <strong>Thème automatique</strong> basé sur votre système.</li>
+            <li>⌨️ <strong>Contrôles pratiques</strong> <sup class="bg-red-600 text-white p-1 rounded-sm font-semibold">Nouveau</sup> avec raccourcis clavier Play/Pause.</li>
+            <li>🔊 <strong>Volume</strong> : Ajustez le volume selon vos préférences.</li>
+            <li>⚙️ <strong>Station personnalisée</strong> : Ajoutez votre station.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+    <section class="py-24 p-4">
+      <div class="max-w-[960px] mx-auto text-center">
+        <h2 class="text-2xl font-semibold mb-8">Page Options</h2>
+        <p class="mb-8">Mini Radio vous permet de personnaliser votre expérience d'écoute avec la page Options. Ajustez le volume, ajoutez votre station personnalisée et écouter sur Mini radio.</p>
+      </div>
+      <Image src={ImageMiniRadioOptions} alt="Page Options" class="mx-auto" />
+    </section>
+
+    <section class="w-full py-24 p-4 bg-white">
+      <div class="container mx-auto flex flex-wrap items-center">
+        <div class="max-w-3xl mx-auto text-center">
+          <h2 class="text-2xl font-semibold mb-8">Comment installer Mini Radio</h2>
+          <a href={miniRadioChromeWebStoreLink} target="_blank" class="inline-block mb-4">
+            <Image src={ImageChromeWebStoreBadge} alt="Téléchargez Mini Radio sur le Chrome Web Store" />
+          </a>
+          <ol class="list-decimal list-inside space-y-3">
+            <li>Installez Chrome sur votre ordinateur (si ce n'est pas déjà fait).</li>
+            <li>Allez sur le <a href={miniRadioChromeWebStoreLink} target="_blank" class="text-secondary font-semibold hover:underline">Chrome Web Store</a>.</li>
+            <li>Cliquez sur <strong>"Ajouter à Chrome"</strong> et confirmez en cliquant sur <strong>"Ajouter l'extension"</strong>.</li>
+            <li>Une fois installé, l'icône Mini Radio apparaîtra dans la barre d'outils de Chrome.</li>
+            <li>Cliquez sur l'icône pour ouvrir Mini Radio et accéder à la liste des stations disponibles.</li>
+            <li>Pour un accès rapide, faites un clic droit sur l'icône et sélectionnez <strong>"Épingler"</strong>.</li>
+          </ol>
+        </div>
+      </div>
+    </section>
+
+    <section class="w-full py-16">
+      <div class="container mx-auto flex flex-wrap items-center">
+        <div class="w-full md:w-1/2 flex justify-center items-center">
+          <div class="py-8 px-4">
+            <h2 class="text-2xl font-semibold mb-8">Commentaires et suggestions</h2>
+            <p class="mb-4">Nous aimerions connaître votre avis sur Mini Radio !</p>
+            <ContactForm client:visible />
+          </div>
+        </div>
+        <div class="w-full md:w-1/2 flex justify-center items-center">
+          <div class="my-8 mx-4 bg-gray-200 rounded-lg p-6 max-w-lg">
+            <h2 class="text-2xl font-semibold mb-8">Soutenez Mini Radio !</h2>
+            <p class="mb-4">💙 Vous aimez Mini Radio ? Aidez-nous à nous faire connaître :</p>
+            <ul>
+              <li class="mb-4">⭐ <a class="text-secondary hover:underline font-semibold" href={miniRadioChromeWebStoreLink} target="_blank">Laissez-nous une note de 5 étoiles</a> sur le Chrome Web Store.</li>
+              <li class="mb-4">🌐 <a class="text-secondary hover:underline font-semibold" href="https://www.facebook.com/miniradioquebec" target="_blank">Suivez-nous</a> sur Facebook.</li>
+            </ul>
+            <p>Merci infiniment pour votre soutien et votre aide précieuse ! 💖</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="bg-primary text-center py-4">
+    <p>&copy; 2025 Mini Radio -  Propulsé par <a href="/" class="underline hover:no-underline">radio Player</a>.
+  </footer>
+</Layout>

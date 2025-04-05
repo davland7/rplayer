@@ -1,0 +1,33 @@
+---
+import CookieBar from '../components/CookieBar/CookieBar';
+import '../styles/global.css'
+
+export interface Props {
+  title: string;
+  description?: string;
+  themeColor?: string;
+  keywords?: string;
+  lang?: 'en' | 'fr';
+}
+
+const { title, description, themeColor, keywords, lang } = Astro.props;
+---
+
+<!doctype html>
+<html lang={lang}>
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<meta name="generator" content={Astro.generator} />
+    {description && <meta name="description" content={description} />}
+    {keywords && <meta name="keywords" content={keywords} />}
+    {themeColor && <meta name="theme-color" content={themeColor} />}
+    <meta name="author" content="David Landry" />
+    <title>{title}</title>
+	</head>
+	<body class="font-sans antialiased bg-gray-100">
+    <CookieBar lang={lang} client:idle />
+		<slot />
+  </body>
+</html>

@@ -1,1 +1,18 @@
-node_modules
+# build output
+dist/
+
+# generated types
+.astro/
+*.d.ts
+
+# dependencies
+node_modules/
+
+# logs
+npm-debug.log*
+
+# macOS-specific files
+.DS_Store
+
+# VSCode-specific files
+.vscode/

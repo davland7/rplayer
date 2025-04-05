@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-XDNK03GJLB"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-XDNK03GJLB');
+  </script>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>rPlayer - JavaScript library</title>
+  <meta name="description" content="rPlayer is a player play streaming radio, this player, offers the possibility to change different audio format. Example: .m3u8, .mp3, .aac." />
+  <meta name="theme-color" content="#000000" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  <link rel="icon" href="images/favicon.png" />
+  <link rel="apple-touch-icon" href="images/icons-192.png" />
+  <meta property="og:url" content="https://rplayer.js.org/" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="rPlayer in action" />
+  <meta property="og:description" content="rPlayer is a player play streaming radio, this player, offers the possibility to change different audio format. Example: .m3u8, .mp3, .aac." />
+  <meta property="og:image" content="https://rplayer.js.org/images/rplayer-in-action.jpg" />
+  <meta property="og:image:secure_url" content="https://rplayer.js.org/images/rplayer-in-action.jpg" />
+  <meta property="og:image:type" content="image/jpeg" />
+  <meta property="og:image:width" content="1080" />
+  <meta property="og:image:height" content="1080" />
+  <meta property="fb:app_id" content="401821003744476"/>
+  <meta name="google-site-verification" content="2OEEwDyyW4QtWtDaa9-nDbNgiRWI6g8L2LqLIMvMJK4" />
+  <link href="index.css" rel="stylesheet" />
+</head>
+<body>
+  <div class="container max-w-screen-md m-auto p-6">
+    <header>
+      <h1 class="mt-6 text-5xl font-bold">rPlayer in Action</h1>
+      <p class="mt-6">rPlayer is a player play streaming radio, this player, offers the possibility to change different audio format. Example: .m3u8, .mp3, .aac.</p>
+      <div class="flex justify-between mt-6">
+        <a class="flex align-middle underline hover:text-blue-700" href="https://chromewebstore.google.com/detail/mini-radio/klcjochgjlcecbalpokmcldlfhngcnfh?hl=en" target="_blank">
+          <img class="w-6 h-6 mr-2" src="images/radio-icon.png" alt="Mini Radio on chrome web store" />
+          Mini Radio
+        </a>
+        <ul class="flex gap-2">
+          <li><a class="underline hover:text-blue-700" href="https://github.com/davland7/rplayer" target="_blank">github</a></li>
+          <li>|</li>
+          <li><a class="underline hover:text-blue-700" href="https://www.npmjs.com/package/@davland7/rplayer" target="_blank">npm</a></li>
+        </ul>
+    </div>
+    </header>
+    <section class="flex flex-col">
+      <label for="urlInput" class="text-xl font-bold mt-6">Enter the URL of the audio stream</label>
+      <input class="w-full mt-4 py-2 px-4 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500" id="urlInput" type="text" />
+      <div class="grid grid-cols-3 gap-2 md:grid-cols-9 mt-4">
+        <button class="border-2 border-black hover:bg-green-600 text-black font-bold p-2 rounded" onclick="play()">Play</button>
+        <button class="border-2 border-black hover:bg-red-600 text-black font-bold p-2 rounded" onclick="audio.stop()">Stop</button>
+        <button class="border-2 border-black hover:bg-yellow-600 text-black font-bold p-2 rounded" onclick="audio.pause()">Pause</button>
+        <button class="border-2 border-black hover:bg-pink-600 text-black font-bold p-2 rounded" onclick="hls()">HLS</button>
+        <button class="border-2 border-black hover:bg-teal-600 text-black font-bold p-2 rounded" onclick="mp3()">MP3</button>
+        <button class="border-2 border-black hover:bg-blue-600 text-black font-bold p-2 rounded" onclick="audio.rewind(10)">Rewind</button>
+        <button class="border-2 border-black hover:bg-purple-600 text-black font-bold p-2 rounded" onclick="audio.upVolume()">Up</button>
+        <button class="border-2 border-black hover:bg-indigo-600 text-black font-bold p-2 rounded" onclick="audio.downVolume()">Down</button>
+        <button class="border-2 border-black hover:bg-orange-600 text-black font-bold p-2 rounded" onclick="audio.mute()">Mute</button>
+      </div>
+      <p class="mt-4">You listening <a class="underline hover:text-blue-500" href="https://www.thebeat925.ca/music/recently-played" target="_blank" rel="noreferrer noopener">The Beat 92.5</a></p>
+    </section>
+    <section class="prose prose-base prose-pre:mt-6">
+<pre>
+<span id="url">Source: </span>
+<span id="playing">Playing: </span>
+<span id="paused">Paused: </span>
+<span id="muted">Muted: </span>
+<span id="volume">Volume: </span>
+<span id="isHlsjs">hls.js: </span>
+<span id="time">Time: </span>
+</pre>
+      <h2>Easy to use</h2>
+
+      <h3>NPM</h3>
+
+      <p>Install the package via npm.</p>
+<pre>
+npm install @davland7/rplayer
+</pre>
+      <p>Import the package and use it in your project.</p>
+<pre>
+import rPlayer from '@davland7/rplayer';
+
+const audio = new rPlayer();
+</pre>
+
+      <h3>CDN</h3>
+<pre>
+&#060;script src="https://cdn.jsdelivr.net/npm/hls.js@1.5.3/dist/hls.min.js"&#062;&#060;/script&#062;
+&#060;script src="https://cdn.jsdelivr.net/npm/@davland7/rplayer@2.2.4/dist/rplayer.umd.min.js"&#062;&#060;/script&#062;
+</pre>
+
+<pre>
+const audio = new rPlayer();
+</pre>
+      <p>rPlayer is extending <a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/audio" rel="noreferrer" target="_blank">Audio</a> HTMLMediaElement</p>
+
+      <h2>Play</h2>
+      <p>Play doesn't work with HLS. &#128577;</p>
+<pre>
+const audio = new Audio('URL.m3u8');
+audio.play();
+</pre>
+      <p>Or</p>
+<pre>
+audio.src = 'URL.m3u8';
+audio.play();
+</pre>
+      <p>Works with HLS. It's Magic &#128170;</p>
+<pre>
+audio.playSrc('URL.m3u8');
+</pre>
+
+      <div class="bg-blue-100 border-l-4 border-blue-500 text-blue-700 p-4" role="alert">
+        <p class="font-bold">Important Information:</p>
+        <p><span class="font-bold">rPlayer</span> is optimized for HLS content. While HLS is native to Apple devices, for Windows and Android, it's crucial to use the hls.js library for proper .m3u8 stream functionality. Please ensure the use of hls.js on devices other than iPhone and iPad.</p>
+      </div>
+
+      <p>In addition to .m3u8, you can also use .mp3, .aac, .ogg and others. &#128558;</p>
+<pre>
+audio.playSrc('URL.aac');
+</pre>
+
+      <h2>Set Volume</h2>
+      <p>The volume must not be outside the range [0, 1].</p>
+<pre>
+audio.volume = 0.2; // 0.2 Default set in local storage
+</pre>
+      <p>localStorage is very cool. &#128526;</p>
+
+      <h2>Extras</h2>
+
+      <h3>Stop</h3>
+<pre>
+audio.stop();
+</pre>
+
+      <h3>Mute</h3>
+<pre>
+audio.mute();
+</pre>
+
+      <h3>Rewind</h3>
+<pre>
+audio.rewind(10); // seconds
+</pre>
+
+      <h3>Volume Up</h3>
+
+<pre>
+audio.upVolume();
+</pre>
+      <p>A way not to make a mistake if the range is not good. &#128521;</p>
+
+      <h3>Volume Down</h3>
+      <p>10 levels up and down and blocks both ends. &#128513;</p>
+<pre>
+audio.downVolume();
+</pre>
+
+      <div class="bg-yellow-200 border-l-4 border-yellow-500 text-black p-4" role="alert">
+        <p class="font-bold">Warning:</p>
+        <p>On iOS devices such as iPad and iPhone, the audio level is always controlled by the user physically. This means that the volume property is not adjustable through JavaScript on iOS devices. When you read the volume property on iOS, it will always return 1, reflecting that the user has direct control over the device's volume. Additionally, the library will always return 1 on iOS.</p>
+      </div>
+
+      <h2>timeupdate event</h2>
+      <p>The <a href="//developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/timeupdate_event" rel="noreferrer" target="_blank">timeupdate event</a> is fired when the time indicated by the currentTime attribute has been updated.</p>
+<pre>
+audio.ontimeupdate = function() {
+  console.log('Time:', audio.currentTime);
+};
+</pre>
+
+      <h2>Infos</h2>
+<pre>
+console.log('Source:', audio.url);
+console.log('Playing:', audio.playing);
+console.log('Paused:', audio.paused);
+console.log('Muted:', audio.muted);
+console.log('Volume:', audio.volume * 100);
+console.log('hls.js:', audio.isHlsjs);
+console.log('Time:', audio.currentTime);
+</pre>
+    </section>
+    <footer>
+      <p class="mt-6">rPlayer 2.2.4</p>
+    </footer>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/hls.js@1.5.3/dist/hls.min.js" integrity="sha256-yI6jd4S0qqdqD1qH2AnNNvxxIJ8N6NuUIFj7+0eumjM=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@davland7/rplayer@2.2.4/dist/rplayer.umd.min.js"></script>
+  <script type="text/javascript">
+    const hlsUrl = 'https://playerservices.streamtheworld.com/api/livestream-redirect/CKBEFMAAC.m3u8';
+    const mp3Url = 'https://playerservices.streamtheworld.com/api/livestream-redirect/CKBEFMAAC.aac';
+    document.getElementById('urlInput').value = hlsUrl;
+
+    const audio = new rPlayer();
+
+    function play() {
+      const url = document.getElementById('urlInput').value;
+      audio.playSrc(url);
+    }
+
+    function hls() {
+      audio.playSrc(hlsUrl);
+      document.getElementById('urlInput').value = hlsUrl;
+    };
+
+    function mp3() {
+      audio.playSrc(mp3Url);
+      document.getElementById('urlInput').value = mp3Url;
+    };
+
+    document.addEventListener('DOMContentLoaded', function() {
+      updateLogs();
+    });
+    audio.ontimeupdate = () => updateLogs();
+
+    function updateLogs() {
+      document.getElementById('url').textContent = 'Source: ' + audio.url;
+      document.getElementById('playing').textContent = 'Playing: ' + audio.playing;
+      document.getElementById('paused').textContent = 'Paused: ' + audio.paused;
+      document.getElementById('muted').textContent = 'Muted: ' + audio.muted;
+      document.getElementById('volume').textContent = 'Volume: ' + audio.volume * 100 + '%';
+      document.getElementById('isHlsjs').textContent = 'hls.js: ' + audio.isHlsjs;
+      document.getElementById('time').textContent = 'Time: ' + audio.currentTime;
+    }
+  </script>
+</body>
+</html>

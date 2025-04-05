@@ -1,15 +1,14 @@
 {
+  "extends": "astro/tsconfigs/strict",
+  "include": [
+    ".astro/types.d.ts",
+    "**/*"
+  ],
+  "exclude": [
+    "dist"
+  ],
   "compilerOptions": {
-    "moduleResolution": "node",
-    "allowSyntheticDefaultImports": true,
-    "esModuleInterop": true,
-    "target": "es2018",
-    "lib": ["es2015", "dom"],
-    "importHelpers": true,
-    "baseUrl": "./",
-    "paths": {
-      "@/*": ["src/*"]
-    },
-    "types": ["hls.js", "node"]
+    "jsx": "react-jsx",
+    "jsxImportSource": "react"
   }
 }
