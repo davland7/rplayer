@@ -3,7 +3,20 @@
 @plugin '@tailwindcss/forms';
 
 @theme {
-  --color-primary: #ebba16;
-  --color-secondary: #001f97;
+  --color-primary: #ffe70b; /* Main yellow */
+  --color-secondary: #e6cf00; /* Darker yellow */
   --color-tertiary: #f5f5f5;
+}
+
+/* Custom Tailwind colors */
+:root {
+  --primary-color: #ffe70b;
+  --primary-dark: #e6cf00;
+  --primary-light: #fff259;
+}
+
+/* Custom styles */
+body {
+  scroll-behavior: smooth;
+  scroll-padding-top: 5rem;
 }

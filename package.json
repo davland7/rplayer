@@ -1,45 +1,70 @@
 {
   "name": "rplayer",
   "type": "module",
-  "version": "2.2.4",
-  "description": "rPlayer is a player play streaming radio, this player, offers the possibility to change different audio format. Example: .m3u8, .mp3, .aac.",
-  "main": "dist/rplayer.umd.js",
-  "module": "dist/rplayer.es.js",
-  "types": "dist/rplayer.d.ts",
+  "version": "3.0.0",
+  "description": "RPlayer is an audio player for streaming radio that offers the possibility to play different audio formats including HLS streams (.m3u8), MP3, AAC and more.",
+  "main": "lib/rplayer.umd.min.js",
+  "module": "lib/rplayer.es.js",
+  "types": "lib/rplayer.d.ts",
   "files": [
     "lib"
   ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/davland7/rplayer.git"
+  },
+  "bugs": {
+    "url": "https://github.com/davland7/rplayer/issues"
+  },
+  "homepage": "https://rplayer.js.org",
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
-    "build:lib": "vite build",
+    "build:all": "node build.js",
+    "build:lib": "node build-lib.js",
+    "build:lib:es": "vite build --config vite.lib.config.js",
+    "build:lib:umd": "vite build --config vite.lib-cdn.config.js",
     "preview": "astro preview",
     "astro": "astro"
   },
   "keywords": [
     "rplayer",
     "audio",
+    "player",
+    "streaming",
+    "radio",
+    "hls",
+    "mp3",
+    "aac",
     "library"
   ],
   "author": "David Landry",
   "license": "MIT",
   "dependencies": {
+    "flag-icons": "^7.5.0",
+    "hls.js": "^1.6.1",
+    "react-icons": "^5.5.0"
+  },
+  "devDependencies": {
     "@astrojs/react": "^4.2.3",
     "@formspree/react": "^3.0.0",
     "@tailwindcss/forms": "^0.5.10",
     "@tailwindcss/typography": "^0.5.16",
     "@tailwindcss/vite": "^4.1.3",
+    "@types/hls.js": "^1.0.0",
     "@types/react": "^19.1.0",
     "@types/react-dom": "^19.1.1",
     "astro": "^5.6.1",
-    "hls.js": "^1.6.1",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "recaptcha-v3": "^1.11.3",
-    "tailwindcss": "^4.1.3"
-  },
-  "devDependencies": {
-    "@types/hls.js": "^1.0.0",
+    "tailwindcss": "^4.1.3",
     "vite": "^6.2.5"
   }
 }

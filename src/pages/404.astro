@@ -1,17 +1,18 @@
 ---
 import Layout from "../layouts/Layout.astro";
+import { Content as NotFoundContent } from '../content/404.md';
+import MarkdownSection from "../components/MarkdownSection.astro";
 ---
 
 <Layout
-  title="404 - Page Not Found"
+  title="404 - Page Not Found | RPlayer"
   description="Sorry, the page you're looking for doesn't exist."
-  themeColor="#ffffff"
-  keywords="404, page not found, error, Mini Radio"
+  themeColor="#000000"
+  keywords="404, page not found, error, RPlayer, audio player"
   lang="en"
+  showNav={false}
 >
-  <h1 class="text-4xl font-bold text-center mt-8">404 - Page Not Found</h1>
-  <p class="text-lg text-center mt-4">Sorry, the page you're looking for doesn't exist.</p>
-  <p class="text-center mt-4">
-    <a href="/" class="text-blue-600 underline">Back to Home</a>
-  </p>
+  <MarkdownSection>
+    <NotFoundContent />
+  </MarkdownSection>
 </Layout>

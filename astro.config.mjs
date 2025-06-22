@@ -7,8 +7,15 @@ export default defineConfig({
   devToolbar: {
     enabled: false,
   },
-  integrations: [react()],
+  integrations: [
+    react()
+  ],
   vite: {
     plugins: [tailwindcss()],
   },
+  markdown: {
+    syntaxHighlight: 'prism',
+    remarkPlugins: [],
+    rehypePlugins: []
+  }
 });

@@ -1,0 +1,17 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { Content as PrivacyPolicy } from '../content/privacy-policy.md';
+import MarkdownSection from '../components/MarkdownSection.astro';
+---
+
+<Layout
+  title="Privacy Policy - RPlayer"
+  description="Privacy Policy for RPlayer website and library"
+  themeColor="#000000"
+  lang="en"
+  currentPage="privacy"
+>
+  <MarkdownSection>
+    <PrivacyPolicy />
+  </MarkdownSection>
+</Layout>

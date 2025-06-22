@@ -1,0 +1,117 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { Content as HomeContent } from '../content/home.md';
+import { Content as AboutContent } from '../content/about.md';
+import MarkdownSection from '../components/MarkdownSection.astro';
+import RadioSearch from '../components/RadioSearch';
+import "flag-icons/css/flag-icons.min.css";
+
+// Radio Browser API configuration
+const API_BASE = 'https://de1.api.radio-browser.info/json';
+
+async function fetchPopularTags(limit: number = 20): Promise<any[]> {
+  try {
+    const response = await fetch(`${API_BASE}/tags?order=stationcount&reverse=true&limit=${limit}`);
+    if (!response.ok) throw new Error('Failed to load tags');
+    return await response.json();
+  } catch (error) {
+    console.error('Failed to load tags:', error);
+    return [];
+  }
+}
+
+interface GenreCountryItem {
+  code: string;
+  name: string;
+  search: 'country' | 'tag' | 'saved';
+}
+
+async function fetchPopularGenresAndCountries(limit: number = 20): Promise<GenreCountryItem[]> {
+  // Fetch countries and tags, then merge and normalize
+  try {
+    const [tags, countries] = await Promise.all([
+      fetchPopularTags(limit),
+      (async () => {
+        const response = await fetch(`${API_BASE}/countries?order=stationcount&reverse=true&limit=${limit}`);
+        if (!response.ok) throw new Error('Failed to load countries');
+        return await response.json();
+      })()
+    ]);
+    // Normalize countries
+    const countryItems: GenreCountryItem[] = (countries || []).map((c: any) => ({
+      code: c.iso_3166_1?.toLowerCase() || '',
+      name: c.name,
+      search: 'country',
+    }));
+    // Normalize tags
+    const tagItems: GenreCountryItem[] = (tags || []).map((t: any) => ({
+      code: '',
+      name: t.name,
+      search: 'tag',
+    }));
+    // Merge, alphabetical sort (includes special "Saved" tag)
+    const combined: GenreCountryItem[] = [
+      ...countryItems,
+      ...tagItems,
+      { code: '', name: 'Saved', search: 'saved' as const }
+    ].sort((a, b) => a.name.localeCompare(b.name));
+    return combined;
+  } catch (error) {
+    console.error('Failed to load genres/countries:', error);
+    // Static fallback if error
+    return [
+      { code: 'us', name: 'United States', search: 'country' },
+      { code: 'fr', name: 'France', search: 'country' },
+      { code: '', name: 'rock', search: 'tag' },
+      { code: '', name: 'pop', search: 'tag' },
+      { code: '', name: 'Saved', search: 'saved' }
+    ];
+  }
+}
+
+const SEARCH_PARAMS: Record<string, string> = {
+  order: 'clickcount',
+  limit: '100',
+  reverse: 'true',
+  hidebroken: 'true',
+  offset: '0',
+};
+
+function buildParams(params: Record<string, string>): string {
+  return Object.entries(params)
+    .map(([k, v]) => `${encodeURIComponent(k)}=${encodeURIComponent(v)}`)
+    .join('&');
+}
+
+const preloadedStations = await fetch(
+  `${API_BASE}/stations/search?tag=dance&${buildParams(SEARCH_PARAMS)}`
+).then(r => r.json());
+const preloadedGenresCountries = await fetchPopularGenresAndCountries(20);
+const initialTag = 'dance';
+---
+
+<Layout
+  title="RPlayer - Audio Player for Streaming Radio"
+  description="RPlayer is a lightweight audio player for streaming radio that supports HLS streams, MP3, AAC and more formats."
+  themeColor="#000000"
+  lang="en"
+  currentPage="home"
+>
+  <MarkdownSection>
+    <HomeContent />
+  </MarkdownSection>
+
+  <RadioSearch
+    client:only="react"
+    preloadedStations={preloadedStations}
+    preloadedGenresCountries={preloadedGenresCountries}
+    initialTag={initialTag}
+    apiBase={API_BASE}
+    searchParams={SEARCH_PARAMS}
+    initialVisibleCount={10}
+  />
+
+  <MarkdownSection id="about">
+    <AboutContent />
+  </MarkdownSection>
+</Layout>

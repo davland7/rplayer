@@ -39,8 +39,8 @@
       <p class="mt-6">rPlayer is a player play streaming radio, this player, offers the possibility to change different audio format. Example: .m3u8, .mp3, .aac.</p>
       <div class="flex justify-between mt-6">
         <a class="flex align-middle underline hover:text-blue-700" href="https://chromewebstore.google.com/detail/mini-radio/klcjochgjlcecbalpokmcldlfhngcnfh?hl=en" target="_blank">
-          <img class="w-6 h-6 mr-2" src="images/radio-icon.png" alt="Mini Radio on chrome web store" />
-          Mini Radio
+          <img class="w-6 h-6 mr-2" src="images/icons-192.png" alt="RPlayer" />
+          RPlayer
         </a>
         <ul class="flex gap-2">
           <li><a class="underline hover:text-blue-700" href="https://github.com/davland7/rplayer" target="_blank">github</a></li>
@@ -85,9 +85,9 @@ npm install @davland7/rplayer
 </pre>
       <p>Import the package and use it in your project.</p>
 <pre>
-import rPlayer from '@davland7/rplayer';
+import RPlayer from '@davland7/rplayer';
 
-const audio = new rPlayer();
+const audio = new RPlayer();
 </pre>
 
       <h3>CDN</h3>
@@ -97,9 +97,9 @@ const audio = new rPlayer();
 </pre>
 
 <pre>
-const audio = new rPlayer();
+const audio = new RPlayer();
 </pre>
-      <p>rPlayer is extending <a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/audio" rel="noreferrer" target="_blank">Audio</a> HTMLMediaElement</p>
+      <p>RPlayer is extending <a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/audio" rel="noreferrer" target="_blank">Audio</a> HTMLMediaElement</p>
 
       <h2>Play</h2>
       <p>Play doesn't work with HLS. &#128577;</p>
@@ -189,17 +189,17 @@ console.log('Time:', audio.currentTime);
 </pre>
     </section>
     <footer>
-      <p class="mt-6">rPlayer 2.2.4</p>
+      <p class="mt-6">RPlayer 3.0.0</p>
     </footer>
   </div>
-  <script src="https://cdn.jsdelivr.net/npm/hls.js@1.5.3/dist/hls.min.js" integrity="sha256-yI6jd4S0qqdqD1qH2AnNNvxxIJ8N6NuUIFj7+0eumjM=" crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@davland7/rplayer@2.2.4/dist/rplayer.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/hls.js@1.6.1/dist/hls.min.js" integrity="sha256-yI6jd4S0qqdqD1qH2AnNNvxxIJ8N6NuUIFj7+0eumjM=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@davland7/rplayer@3.0.0/dist/rplayer.umd.min.js"></script>
   <script type="text/javascript">
     const hlsUrl = 'https://playerservices.streamtheworld.com/api/livestream-redirect/CKBEFMAAC.m3u8';
     const mp3Url = 'https://playerservices.streamtheworld.com/api/livestream-redirect/CKBEFMAAC.aac';
     document.getElementById('urlInput').value = hlsUrl;
 
-    const audio = new rPlayer();
+    const audio = new RPlayer();
 
     function play() {
       const url = document.getElementById('urlInput').value;
