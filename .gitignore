@@ -1,5 +1,6 @@
 # build output
 dist/
+lib/
 
 # generated types
 .astro/
@@ -10,9 +11,20 @@ node_modules/
 
 # logs
 npm-debug.log*
+*.log
 
 # macOS-specific files
 .DS_Store
 
 # VSCode-specific files
 .vscode/
+
+# test coverage
+coverage/
+
+# environment files
+.env*
+*.local
+
+# npm pack files
+*.tgz

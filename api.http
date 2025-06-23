@@ -1,29 +1,12 @@
-### Radio Browser API Endpoints
-https://all.api.radio-browser.info/json/stations/search?limit=20&hidebroken=true&order=clickcount&reverse=true&is_verified=true
+### Fetch countries
+GET https://de1.api.radio-browser.info/json/countries?order=stationcount&reverse=true&limit=5
 
-### Search for Classical Music Stations
-https://de1.api.radio-browser.info/json/stations/search?limit=10&hidebroken=true&codec=MP3&is_verified=true&tagExact=true&tag=classical
+### Fetch genres (tags)
+GET https://de1.api.radio-browser.info/json/tags?order=stationcount&reverse=true&limit=5
 
-### Stations triées par dernière vérification réussie (comme dans notre interface)
-https://de1.api.radio-browser.info/json/stations/search?limit=30&hidebroken=true&order=lastcheckok&reverse=true&codec_not=FLV
+### Search by tag (Example: Dance)
+GET https://de1.api.radio-browser.info/json/stations/search?tag=dance&order=clickcount&limit=5&reverse=true&hidebroken=true&offset=0
 
-### Stations en France avec codec MP3 uniquement
-https://de1.api.radio-browser.info/json/stations/search?limit=30&hidebroken=true&country=France&codec=MP3&order=lastcheckok&reverse=true
-
-### Stations avec le genre "rock" triées par popularité
-https://de1.api.radio-browser.info/json/stations/search?limit=30&hidebroken=true&tag=rock&order=votes&reverse=true
-
-### Stations HLS (m3u8) uniquement
-https://de1.api.radio-browser.info/json/stations/search?limit=30&hidebroken=true&url_ending=m3u8&order=lastcheckok&reverse=true
-
-### Liste des codecs disponibles (utilisé dans le filtre de codecs)
-https://de1.api.radio-browser.info/json/codecs?hidebroken=true&limit=20&order=stationcount&reverse=true
-
-### Liste des pays avec nombre de stations (utilisé dans le filtre de pays)
-https://de1.api.radio-browser.info/json/countries?hidebroken=true&limit=100&order=stationcount&reverse=true
-
-### Liste des genres populaires (utilisé dans le filtre de genres)
-https://de1.api.radio-browser.info/json/tags?hidebroken=true&limit=20&order=stationcount&reverse=true
-
-### Recherche par nom de station avec "radio france"
-https://de1.api.radio-browser.info/json/stations/search?limit=30&hidebroken=true&name=radio%20france&order=lastcheckok&reverse=true
+### Search by country (Example: Canada)
+# Note: The country name must start with an uppercase letter (e.g., 'Canada', not 'canada')
+GET https://de1.api.radio-browser.info/json/stations/search?country=Canada&order=clickcount&limit=5&reverse=true&hidebroken=true&offset=0

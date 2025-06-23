@@ -8,7 +8,7 @@ interface PlayerUrlFieldProps {
 
 const PlayerUrlField: React.FC<PlayerUrlFieldProps> = ({ inputUrl, onInputUrlChange, onInputPlay }) => (
   <div className="mb-4">
-    <label htmlFor="urlInput" className="block text-base font-semibold mb-1 text-white">
+    <label htmlFor="urlInput" className="sr-only">
       Stream URL
     </label>
     <div className="flex">

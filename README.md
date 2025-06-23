@@ -76,21 +76,21 @@ RPlayer is extending [Audio](https://developer.mozilla.org/en-US/docs/Web/HTML/E
 
 Play doesn't work with HLS. 🙁
 
-```
+```javascript
 const audio = new Audio('URL.m3u8');
 audio.play();
 ```
 
 Or
 
-```
+```javascript
 audio.src = 'URL.m3u8';
 audio.play();
 ```
 
 Works with HLS. It's Magic 💪
 
-```
+```javascript
 audio.playSrc('URL.m3u8');
 ```
 
@@ -99,7 +99,7 @@ audio.playSrc('URL.m3u8');
 
 In addition to .m3u8, you can also use .mp3, .aac, .ogg and others. 😮
 
-```
+```javascript
 audio.playSrc('URL.aac');
 ```
 > [!TIP]
@@ -123,25 +123,25 @@ RPlayer automatically saves the volume setting to localStorage and restores it w
 
 ### Stop
 
-```
+```javascript
 audio.stop();
 ```
 
 ### Mute
 
-```
+```javascript
 audio.mute();
 ```
 
 ### Rewind
 
-```
+```javascript
 audio.rewind(10); // seconds
 ```
 
 ### Volume Up
 
-```
+```javascript
 audio.upVolume();
 ```
 
@@ -151,7 +151,7 @@ A way not to make a mistake if the range is not good. 😉
 
 10 levels up and down and blocks both ends. 😁
 
-```
+```javascript
 audio.downVolume();
 ```
 
@@ -162,7 +162,7 @@ audio.downVolume();
 
 The [timeupdate event](http://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/timeupdate_event) is fired when the time indicated by the currentTime attribute has been updated.
 
-```
+```javascript
 audio.ontimeupdate = function() {
   console.log('Time:', audio.currentTime);
 };
@@ -170,7 +170,7 @@ audio.ontimeupdate = function() {
 
 ## Infos
 
-```
+```javascript
 console.log('Source:', audio.url);
 console.log('Playing:', audio.playing);
 console.log('Paused:', audio.paused);
