@@ -1,6 +1,7 @@
 import { defineConfig } from "vite";
+import type { UserConfigExport } from "vite";
 
-export default defineConfig({
+const config: UserConfigExport = defineConfig({
   publicDir: false,
   build: {
     lib: {
@@ -15,7 +16,6 @@ export default defineConfig({
         globals: {
           "hls.js": "Hls",
         },
-        // Simplifier la sortie pour éviter des problèmes
         manualChunks: undefined,
         inlineDynamicImports: true,
         preserveModules: false,
@@ -27,3 +27,5 @@ export default defineConfig({
     emptyOutDir: false, // Ne pas vider le répertoire de sortie pour préserver les fichiers UMD
   },
 });
+
+export default config;

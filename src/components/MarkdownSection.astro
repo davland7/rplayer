@@ -1,13 +1,5 @@
----
-// Composant réutilisable pour afficher une section harmonisée avec du contenu markdown
-// Props :
-// - id (optionnel)
-// - class (optionnel, pour ajouter des classes à la section)
-// - children (slot)
-const { id, class: extraClass = '' } = Astro.props;
----
-<section id={id} class={`max-w-[612px] mx-auto p-0 border-0 rounded-none shadow-none my-8 sm:p-6 sm:bg-black sm:text-white sm:shadow-sm sm:rounded-lg sm:border-2 sm:border-primary ${extraClass}`}>
-  <div class="prose prose-headings:text-primary prose-h3:text-white prose-a:text-primary prose-a:underline prose-a:transition-all prose-a:duration-200 prose-blockquote:border-primary prose-blockquote:text-white prose-strong:text-white prose-code:bg-slate-800 prose-code:text-white prose-code:px-2 prose-code:py-1 prose-code:rounded prose-code:mx-1 prose-code:break-words prose-pre:bg-slate-800 prose-pre:text-white prose-pre:rounded-lg prose-pre:p-4 prose-p:text-white prose-li:text-white prose-ul:text-white prose-ol:text-white">
+<section class="max-w-[612px] mx-auto p-0 border-0 rounded-none shadow-none my-8 sm:p-6 sm:bg-black sm:text-white sm:shadow-sm sm:rounded-lg sm:border-2 sm:border-primary">
+  <div class="prose prose-invert prose-h1:text-primary prose-a:text-primary prose-a:hover:no-underline prose-blockquote:border-primary prose-code:bg-gray-800 prose-pre:bg-gray-800">
     <slot />
   </div>
 </section>

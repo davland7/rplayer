@@ -1,53 +1,35 @@
-# Documentation
+# RPlayer
 
-RPlayer is an audio player for streaming radio that offers the possibility to play different audio formats including HLS streams (.m3u8), MP3 (.mp3), AAC (.aac), and more.
+| [![npm version](https://img.shields.io/npm/v/@davland7/rplayer?style=flat-square)](https://www.npmjs.com/package/@davland7/rplayer) | [![](https://data.jsdelivr.com/v1/package/npm/@davland7/rplayer/badge)](https://www.jsdelivr.com/package/npm/@davland7/rplayer) | [![license](https://img.shields.io/npm/l/@davland7/rplayer?style=flat-square)](./LICENSE) |
+|:-:|:-:|:-:|
 
-## New in Version 3.0.0
+RPlayer est une librairie audio JavaScript/TypeScript pour la lecture de flux radio, compatible avec de nombreux formats : HLS (.m3u8), MP3 (.mp3), AAC (.aac), et plus encore.
 
-- Complete TypeScript rewrite with improved type definitions
-- Enhanced error handling and recovery for HLS streams
-- React component for easy integration
-- Better volume controls with localStorage persistence
-- Advanced streaming statistics monitoring
-- Modern Astro documentation site
-- Improved autoplay handling with browser restrictions
+## Nouveautés 3.0.0
 
-## Browser Autoplay Restrictions
+- Réécriture complète en TypeScript avec typage amélioré
+- Gestion avancée des erreurs et de la reprise pour les flux HLS
+- Lecture de fichiers .m3u (playlist)
+- Meilleure gestion de l'autoplay selon les restrictions navigateur
 
-Most modern browsers have restrictions on autoplay of audio content, requiring user interaction before allowing audio to play. RPlayer now handles these restrictions more elegantly:
+## Restrictions d'autoplay navigateur
 
-- The `loadSrc()` method allows preloading media without attempting autoplay
-- The React component supports an `autoplay` prop to control initial behavior
-- Automatic detection of user interaction to enable playback when allowed
-- Better status indicators showing when media is loaded but waiting for interaction
+La plupart des navigateurs modernes restreignent l'autoplay audio : une interaction utilisateur est souvent requise avant de lancer la lecture. RPlayer gère ces restrictions de façon élégante :
 
-### Using with Astro and Other Frameworks
+- La méthode `loadSrc()` permet de précharger sans lancer la lecture
+- Le composant React accepte la prop `autoplay` pour contrôler le comportement initial
+- Détection automatique de l'interaction utilisateur pour activer la lecture
+- Indicateurs de statut clairs lorsque le média est chargé mais en attente d'interaction
 
-When using RPlayer with Astro or other frameworks with hydration, it's recommended to:
+## Intégration React & frameworks modernes
 
-1. Use `client:only="react"` for audio components in Astro
-2. Set `autoplay={false}` to prevent autoplay blocking issues
-3. Let the user click play to start playback after the page has loaded
+RPlayer fonctionne avec tous les frameworks JavaScript modernes. Pour React, Next.js, Astro, etc., assurez-vous que le composant Player est rendu côté client uniquement (RPlayer dépend des API navigateur comme Audio et MediaSession).
 
-```jsx
-<Player
-  client:only="react"
-  defaultSource="https://example.com/stream.m3u8"
-  stationName="My Radio Station"
-  autoplay={false}
-/>
-```
+- **React** : Importez et utilisez le composant Player normalement.
+- **Next.js** : Utilisez l'import dynamique avec `ssr: false` pour charger le Player côté client.
+- **Astro** : Utilisez `client:only="react"` pour éviter le rendu SSR.
 
-## React, Astro & Next.js Integration
-
-RPlayer works with all modern JavaScript frameworks, mais pour React, Astro et Next.js, il faut s'assurer que le player est rendu uniquement côté client. RPlayer dépend d'API navigateur (Audio, MediaSession), donc il ne peut pas être rendu côté serveur (SSR).
-
-- **Astro** : Utilisez `client:only="react"` lors de l'import du composant Player. Cela évite les erreurs SSR et garantit que le player n'est chargé que dans le navigateur.
-- **Next.js** : Utilisez les imports dynamiques avec `ssr: false` pour charger le Player uniquement côté client.
-
-Si vous essayez d'utiliser le Player sans ces précautions, il ne fonctionnera pas et pourra générer des erreurs d'exécution. Utilisez toujours la directive client ou l'import dynamique pour les composants audio interactifs dépendant de l'environnement navigateur.
-
-## Easy to use
+## Installation
 
 ### NPM
 
@@ -70,56 +52,47 @@ import RPlayer from '@davland7/rplayer';
 const audio = new RPlayer();
 ```
 
-RPlayer is extending [Audio](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/audio) HTMLMediaElement
+RPlayer étend [Audio](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/audio) (HTMLMediaElement).
 
-## Play
+## Lecture
 
-Play doesn't work with HLS. 🙁
+La méthode native `play()` ne fonctionne pas avec HLS :
 
 ```javascript
 const audio = new Audio('URL.m3u8');
-audio.play();
+audio.play(); // Ne fonctionne pas avec HLS
 ```
 
-Or
+Utilisez plutôt :
 
 ```javascript
-audio.src = 'URL.m3u8';
-audio.play();
+audio.playSrc('URL.m3u8'); // Fonctionne avec HLS
 ```
 
-Works with HLS. It's Magic 💪
+> **Important**
+> Pour HLS, utilisez hls.js sur Windows/Android. Sur iPhone/iPad, HLS est natif.
 
-```javascript
-audio.playSrc('URL.m3u8');
-```
-
-> [!IMPORTANT]
-> **RPlayer** is optimized for HLS content. While HLS is native to Apple devices, for Windows and Android, it's crucial to use the hls.js library for proper .m3u8 stream functionality. Please ensure the use of hls.js on devices other than iPhone and iPad.
-
-In addition to .m3u8, you can also use .mp3, .aac, .ogg and others. 😮
+RPlayer gère aussi .mp3, .aac, .ogg, etc. :
 
 ```javascript
 audio.playSrc('URL.aac');
 ```
-> [!TIP]
-> You can use RPlayer without hls.js if you don't need to support HLS formats like .m3u8. Just don't add hls.js to your project.
 
-## Set Volume
+> **Astuce**
+> Vous pouvez utiliser RPlayer sans hls.js si vous ne lisez pas de .m3u8.
 
-The volume must be set between 0 and 1, where 0 is muted and 1 is maximum volume.
+## Volume
+
+Le volume est compris entre 0 (muet) et 1 (max).
 
 ```javascript
-// Set volume to 50%
+// Volume à 50 %
 audio.volume = 0.5;
-
-// Get current volume
+// Lire le volume courant
 const currentVolume = audio.volume;
 ```
 
-RPlayer automatically saves the volume setting to localStorage and restores it when a new player instance is created.
-
-## Extras
+## Fonctions supplémentaires
 
 ### Stop
 
@@ -136,31 +109,25 @@ audio.mute();
 ### Rewind
 
 ```javascript
-audio.rewind(10); // seconds
+audio.rewind(10); // secondes
 ```
 
-### Volume Up
+### Volume +
 
 ```javascript
 audio.upVolume();
 ```
 
-A way not to make a mistake if the range is not good. 😉
-
-### Volume Down
-
-10 levels up and down and blocks both ends. 😁
+### Volume -
 
 ```javascript
 audio.downVolume();
 ```
 
-> [!WARNING]
-> On iOS devices such as iPad and iPhone, the audio level is always controlled by the user physically. This means that the volume property is not adjustable through JavaScript on iOS devices. When you read the volume property on iOS, it will always return 1, reflecting that the user has direct control over the device's volume. Additionally, the library will always return 1 on iOS.
+> **Note iOS**
+> Sur iPhone/iPad, le volume est contrôlé physiquement par l'utilisateur. La propriété volume retourne toujours 1.
 
-## timeupdate event
-
-The [timeupdate event](http://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/timeupdate_event) is fired when the time indicated by the currentTime attribute has been updated.
+## Événement timeupdate
 
 ```javascript
 audio.ontimeupdate = function() {
@@ -168,7 +135,7 @@ audio.ontimeupdate = function() {
 };
 ```
 
-## Infos
+## Infos utiles
 
 ```javascript
 console.log('Source:', audio.url);
