@@ -1,6 +1,6 @@
 import { defineConfig } from 'astro/config';
 import react from '@astrojs/react';
-import tailwindcss from '@tailwindcss/vite';
+import tailwind from '@astrojs/tailwind';
 
 export default defineConfig({
   site: 'https://rplayer.js.org',
@@ -8,11 +8,9 @@ export default defineConfig({
     enabled: false,
   },
   integrations: [
-    react()
+    react(),
+    tailwind()
   ],
-  vite: {
-    plugins: [tailwindcss()],
-  },
   markdown: {
     syntaxHighlight: 'prism',
     remarkPlugins: [],

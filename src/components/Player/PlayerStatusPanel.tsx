@@ -16,7 +16,7 @@ const PlayerStatusPanel: React.FC<PlayerStatusPanelProps> = ({
   source
 }) => {
   return (
-    <div className="bg-gray-800 p-4 rounded-md font-mono text-sm text-white">
+    <div className="bg-secondary p-4 rounded-md font-mono text-sm text-white">
       <div className="flex flex-wrap gap-x-6 gap-y-2 items-center justify-between">
         <div><span className="font-bold text-yellow-400">Status:</span> {status}</div>
         <div><span className="font-bold text-yellow-400">Format:</span> {format}</div>

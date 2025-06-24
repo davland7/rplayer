@@ -1,19 +1,6 @@
-@import "tailwindcss";
-@plugin '@tailwindcss/typography';
-@plugin '@tailwindcss/forms';
-
-@theme {
-  --color-primary: #ffe70b; /* Main yellow */
-  --color-secondary: #e6cf00; /* Darker yellow */
-  --color-tertiary: #f5f5f5;
-}
-
-/* Custom Tailwind colors */
-:root {
-  --primary-color: #ffe70b;
-  --primary-dark: #e6cf00;
-  --primary-light: #fff259;
-}
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 /* Custom styles */
 body {

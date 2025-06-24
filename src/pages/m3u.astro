@@ -5,7 +5,10 @@ import MarkdownSection from '../components/MarkdownSection.astro';
 const title = "M3U Playlist Demo | RPlayer";
 ---
 
-<Layout title={title} themeColor="#000000" lang="en" currentPage="m3u">
+<Layout
+  title={title}
+  currentPage="m3u"
+>
   <MarkdownSection>
     <M3uContent />
   </MarkdownSection>
@@ -22,7 +25,7 @@ const title = "M3U Playlist Demo | RPlayer";
             Stop
           </button>
         </div>
-        <div id="status" class="text-center text-white bg-gray-800 rounded px-3 py-2 font-semibold">
+        <div id="status" class="text-center text-white bg-secondary rounded px-3 py-2 font-semibold">
           Status: Ready
         </div>
         <div id="currentTrack" class="mt-4 text-center font-medium hidden"></div>
@@ -40,7 +43,7 @@ const title = "M3U Playlist Demo | RPlayer";
       </div>
       <div class="mt-6 text-sm w-full flex flex-col gap-4">
         <details class="w-full">
-          <summary class="cursor-pointer hover:text-blue-600 font-medium text-white bg-gray-800 rounded px-5 py-3 select-none w-full focus:outline-none focus:ring-2 focus:ring-blue-400">Edit/View Playlist Content</summary>
+          <summary class="cursor-pointer hover:text-blue-600 font-medium text-white bg-secondary rounded px-5 py-3 select-none w-full focus:outline-none focus:ring-2 focus:ring-blue-400">Edit/View Playlist Content</summary>
           <div class="mt-2 w-full">
             <label for="playlist-content" class="block text-xs font-medium text-gray-300 mb-4">Playlist Content (.m3u)</label>
             <textarea id="playlist-content" rows="8" class="w-full px-4 py-2 rounded bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 border-2 border-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-400 shadow-inner transition-all font-mono text-xs mb-3" aria-label="Playlist content"></textarea>
@@ -48,7 +51,7 @@ const title = "M3U Playlist Demo | RPlayer";
           </div>
         </details>
         <details class="w-full">
-          <summary class="cursor-pointer hover:text-blue-600 font-medium text-white bg-gray-800 rounded px-5 py-3 select-none w-full focus:outline-none focus:ring-2 focus:ring-blue-400">Debug Information</summary>
+          <summary class="cursor-pointer hover:text-blue-600 font-medium text-white bg-secondary rounded px-5 py-3 select-none w-full focus:outline-none focus:ring-2 focus:ring-blue-400">Debug Information</summary>
           <div class="p-2 bg-gray-900 rounded mt-2 overflow-auto max-h-48 w-full">
             <pre id="debug-log"></pre>
           </div>
@@ -58,7 +61,7 @@ const title = "M3U Playlist Demo | RPlayer";
   </section>
 
   <script>
-import RPlayer from '../lib/index';
+import RPlayer from '../lib/index.js';
 
 document.addEventListener('DOMContentLoaded', () => {
   // Get DOM elements

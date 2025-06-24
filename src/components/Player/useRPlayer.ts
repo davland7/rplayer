@@ -1,5 +1,5 @@
 import { useRef, useState, useCallback, useEffect } from 'react';
-import RPlayer from '../../lib';
+import RPlayer from '../../lib/index.js';
 
 export function useRPlayer({
   initialVolume = 0.5,

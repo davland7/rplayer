@@ -1,15 +1,22 @@
 import type { Config } from 'tailwindcss';
 
 const config: Config = {
+  content: [
+    "./src/**/*.{js,ts,jsx,tsx,astro,html}",
+    "./public/index.html"
+  ],
   theme: {
     extend: {
       colors: {
         primary: '#ffe70b',
-        secondary: '#ff8c00',
+        secondary: '#1f2937',
       },
     },
   },
-  plugins: [],
+  plugins: [
+    require('@tailwindcss/forms'),
+    require('@tailwindcss/typography'),
+  ],
 };
 
 export default config;

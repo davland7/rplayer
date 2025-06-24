@@ -1,11 +1,6 @@
 import React, { useState, useEffect } from "react";
-import translations from "./translations";
 
-interface CookieBarProps {
-  lang?: "en" | "fr";
-}
-
-const CookieBar = ({ lang = "en" }: CookieBarProps) => {
+const CookieBar = () => {
   const [cookiesAccepted, setCookiesAccepted] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -44,21 +39,24 @@ const CookieBar = ({ lang = "en" }: CookieBarProps) => {
     return null;
   }
 
-  const t = translations[lang];
-
   return (
     !cookiesAccepted && (
-      <div className="bg-white p-4 text-center">
-        <p className="mb-4 text-sm text-gray-700">
-          {t.message}
-        </p>
-        <button
-          onClick={acceptCookies}
-          className="bg-primary hover:bg-yellow-500 border-none px-4 py-2 rounded cursor-pointer"
-        >
-          {t.cta}
-        </button>
-      </div>
+      <section className="w-full bg-black text-center rounded-lg shadow-lg border-b border-gray-700">
+        <div className="max-w-5xl mx-auto p-4 sm:p-6">
+          <p className="mb-4 text-sm text-gray-100">
+            This site uses Google Analytics to measure audience and improve our
+            service. By clicking "Accept", you help us provide a better experience.
+            We also store your player volume and last stream URL locally for your
+            convenience.
+          </p>
+          <button
+            onClick={acceptCookies}
+            className="border-2 border-primary hover:bg-primary hover:text-black text-primary font-bold px-4 py-2 rounded transition-colors"
+          >
+            Accept
+          </button>
+        </div>
+      </section>
     )
   );
 };

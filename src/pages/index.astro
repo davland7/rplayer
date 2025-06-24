@@ -1,9 +1,8 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import { Content as HomeContent } from '../content/home.md';
-import { Content as AboutContent } from '../content/about.md';
 import MarkdownSection from '../components/MarkdownSection.astro';
-import RadioSearch from '../components/RadioSearch';
+import RadioSearch from '../components/RadioSearch/index.js';
 import "flag-icons/css/flag-icons.min.css";
 
 // Radio Browser API configuration
@@ -93,8 +92,6 @@ const initialTag = 'dance';
 <Layout
   title="RPlayer - Audio Player for Streaming Radio"
   description="RPlayer is a lightweight audio player for streaming radio that supports HLS streams, MP3, AAC and more formats."
-  themeColor="#000000"
-  lang="en"
   currentPage="home"
 >
   <MarkdownSection>

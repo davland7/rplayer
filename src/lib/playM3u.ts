@@ -1,4 +1,4 @@
-import { playHls } from './playHls';
+import { playHls } from './playHls.js';
 
 /**
  * Interface for track information in M3U playlists

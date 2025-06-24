@@ -1,20 +1,19 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import { Content as ReadmeContent } from '../../README.md';
-import Player from '../components/Player/Player';
+import Player from '../components/Player/Player.js';
 import MarkdownSection from '../components/MarkdownSection.astro';
 ---
 
 <Layout
   title="RPlayer Documentation - Complete Guide"
   description="Complete documentation for RPlayer - a lightweight audio library for streaming radio and various audio formats."
-  themeColor="#000000"
-  lang="en"
   currentPage="documentation"
 >
   <MarkdownSection>
     <ReadmeContent />
   </MarkdownSection>
-  <Player client:only="react" />
+  <Player
+    client:only="react"
+  />
 </Layout>
-

@@ -1,9 +1,9 @@
 import { useEffect, useCallback, useState } from 'react';
-import Player from '../Player';
-import Tag from './Tag';
-import StationsTable from './StationsTable';
-import { useSavedStations } from './useSavedStations';
-import { useRadioSearchApi } from './useRadioSearchApi';
+import Player from '../Player/Player.js';
+import Tag from './Tag.js';
+import StationsTable from './StationsTable.js';
+import { useSavedStations } from './useSavedStations.js';
+import { useRadioSearchApi } from './useRadioSearchApi.js';
 
 export interface RadioStation {
   stationuuid: string;
@@ -172,7 +172,7 @@ const RadioSearch = ({
                 <button
                   onClick={() => setVisibleCount((c: number) => c + 10)}
                   disabled={loading}
-                  className="px-6 py-2 bg-gray-900 hover:bg-gray-800 rounded-md text-white border border-gray-700 transition-colors"
+                  className="px-6 py-2 bg-gray-900 hover:bg-secondary rounded-md text-white border border-gray-700 transition-colors"
                 >
                   {loading ? 'Loading...' : 'Load More Results'}
                 </button>

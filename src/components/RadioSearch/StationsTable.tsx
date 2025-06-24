@@ -1,6 +1,6 @@
 import React from 'react';
-import type { RadioStation } from './RadioSearch';
-import Badge from './Badge';
+import type { RadioStation } from './RadioSearch.js';
+import Badge from './Badge.js';
 import { HiPlay, HiBookmark, HiTrash } from 'react-icons/hi2';
 
 interface StationsTableProps {
@@ -26,7 +26,7 @@ const StationsTable: React.FC<StationsTableProps> = ({
   console.log(stations);
 
   return (
-    <div className="overflow-x-auto bg-black rounded-lg border-gray-800 sm:border">
+    <div className="overflow-x-auto bg-black rounded-lg border-secondary sm:border">
       <table className="w-full text-left border-collapse min-w-full bg-black text-white">
         <thead className="bg-gray-900">
           <tr>
@@ -35,9 +35,9 @@ const StationsTable: React.FC<StationsTableProps> = ({
             <th className="px-2 sm:px-4 py-2 text-gray-400 text-sm font-medium text-right whitespace-nowrap">Actions</th>
           </tr>
         </thead>
-        <tbody className="divide-y divide-gray-800">
+        <tbody className="divide-y divide-secondary">
           {stations.map((station) => (
-            <tr key={station.stationuuid} className="hover:bg-gray-800 transition-colors">
+            <tr key={station.stationuuid} className="hover:bg-secondary transition-colors">
               <td className="px-0 sm:px-4 py-3 sm:py-4">
                 <div className="flex items-center">
                   {station.favicon ? (
@@ -90,7 +90,7 @@ const StationsTable: React.FC<StationsTableProps> = ({
                 <div className="flex flex-col sm:flex-row items-center justify-end gap-1 sm:gap-2">
                   <button
                     onClick={() => onPlay(station.url, station.name)}
-                    className="bg-gray-900 text-white px-3 py-2 rounded text-sm hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:ring-opacity-50 flex items-center gap-1"
+                    className="bg-gray-900 text-white px-3 py-2 rounded text-sm hover:bg-secondary focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:ring-opacity-50 flex items-center gap-1"
                     title="Play"
                   >
                     <HiPlay className="w-4 h-4" aria-hidden="true" />
@@ -99,7 +99,7 @@ const StationsTable: React.FC<StationsTableProps> = ({
                   {isSaved(station) ? (
                     <button
                       onClick={() => onRemove(station.stationuuid)}
-                      className="bg-gray-900 text-red-400 px-3 py-2 rounded text-sm hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-red-400 focus:ring-opacity-50 flex items-center gap-1"
+                      className="bg-gray-900 text-red-400 px-3 py-2 rounded text-sm hover:bg-secondary focus:outline-none focus:ring-2 focus:ring-red-400 focus:ring-opacity-50 flex items-center gap-1"
                       title="Remove"
                     >
                       <HiTrash className="w-4 h-4" aria-hidden="true" />
@@ -108,7 +108,7 @@ const StationsTable: React.FC<StationsTableProps> = ({
                   ) : (
                     <button
                       onClick={() => onSave(station)}
-                      className="bg-gray-900 text-blue-300 px-3 py-2 rounded text-sm hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-50 flex items-center gap-1"
+                      className="bg-gray-900 text-blue-300 px-3 py-2 rounded text-sm hover:bg-secondary focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-50 flex items-center gap-1"
                       title="Save"
                     >
                       <HiBookmark className="w-4 h-4" aria-hidden="true" />

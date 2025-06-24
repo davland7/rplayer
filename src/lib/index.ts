@@ -1,5 +1,5 @@
-import { playHls } from './playHls';
-import { playM3u } from './playM3u';
+import { playHls } from './playHls.js';
+import { playM3u } from './playM3u.js';
 
 // Type definitions
 export type PlaybackStatus = 'playing' | 'paused' | 'stopped';
