@@ -116,7 +116,7 @@ const RadioSearch = ({
         stationName={currentPlayingName}
         autoplay={false}
       />
-      <div className="mt-10 max-w-[612px] mx-auto">
+      <div className="mt-10 max-w-content mx-auto">
         <h2 className="text-2xl font-bold mb-6 text-white">Radio Station Search</h2>
         <p className="mb-4 text-gray-400 text-sm">
           Stations are provided by the open <a href="https://www.radio-browser.info/" target="_blank" rel="noopener noreferrer" className="underline hover:text-yellow-400">Radio Browser API</a>.

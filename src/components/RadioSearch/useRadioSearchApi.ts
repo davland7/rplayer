@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react';
-import type { RadioStation, GenreCountryItem } from './RadioSearch';
+import type { RadioStation, GenreCountryItem } from './RadioSearch.js';
 
 interface UseRadioSearchApiOptions {
   apiBase: string;

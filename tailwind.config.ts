@@ -11,6 +11,9 @@ const config: Config = {
         primary: '#ffe70b',
         secondary: '#1f2937',
       },
+      maxWidth: {
+        content: '612px',
+      },
     },
   },
   plugins: [

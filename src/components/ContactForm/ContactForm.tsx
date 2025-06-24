@@ -1,7 +1,7 @@
 import { useEffect, useState, useRef } from "react";
 import { useForm } from "@formspree/react";
 import { load } from "recaptcha-v3";
-import messages from './messages.json';
+import messages from './messages.json' with { type: "json" };
 
 const baseInputClasses =
   "w-full px-4 py-2 rounded bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 border-2 border-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-400 shadow-inner transition-all text-xs";

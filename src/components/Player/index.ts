@@ -1,2 +1,2 @@
-export { default } from './Player';
-export type { PlayerProps } from './Player';
+export { default } from './Player.js';
+export type { PlayerProps } from './Player.js';

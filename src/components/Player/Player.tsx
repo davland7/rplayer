@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { useRPlayer } from './useRPlayer';
-import PlayerControls from './PlayerControls';
-import PlayerStatusPanel from './PlayerStatusPanel';
-import PlayerErrorPanel from './PlayerErrorPanel';
-import PlayerUrlField from './PlayerUrlField';
+import { useRPlayer } from './useRPlayer.js';
+import PlayerControls from './PlayerControls.js';
+import PlayerStatusPanel from './PlayerStatusPanel.js';
+import PlayerErrorPanel from './PlayerErrorPanel.js';
+import PlayerUrlField from './PlayerUrlField.js';
 
 interface PlayerProps {
   initialVolume?: number;
@@ -177,7 +177,7 @@ const Player = ({
   }, [url]);
 
   return (
-    <div className="mt-10 max-w-[612px] mx-auto" ref={playerContainerRef}>
+    <div className="mt-10 max-w-content mx-auto" ref={playerContainerRef}>
       <h2 className="text-2xl font-bold mb-4 text-white">RPlayer in action</h2>
       <PlayerUrlField
         inputUrl={inputUrl}

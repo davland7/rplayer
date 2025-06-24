@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import type { RadioStation } from './RadioSearch';
+import type { RadioStation } from './RadioSearch.js';
 
 /**
  * Custom hook to manage saved stations in localStorage
