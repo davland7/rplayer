@@ -1,13 +1,13 @@
 {
-  "warning": "Veuillez fournir un courriel valide et un message.",
-  "emailRequired": "L'adresse e-mail est requise.",
-  "emailInvalid": "L'adresse e-mail n'est pas valide.",
-  "messageRequired": "Le message ne peut pas être vide.",
-  "success": "Merci ! Votre message a été envoyé avec succès.",
-  "sending": "Envoi en cours...",
-  "submit": "Rejoindre RPlayer",
-  "emailLabel": "* Courriel",
-  "emailPlaceholder": "Entrez votre adresse e-mail.",
-  "messageLabel": "* Message",
-  "messagePlaceholder": "Entrez votre message avec votre nom."
+	"warning": "Veuillez fournir un courriel valide et un message.",
+	"emailRequired": "L'adresse e-mail est requise.",
+	"emailInvalid": "L'adresse e-mail n'est pas valide.",
+	"messageRequired": "Le message ne peut pas être vide.",
+	"success": "Merci ! Votre message a été envoyé avec succès.",
+	"sending": "Envoi en cours...",
+	"submit": "Rejoindre RPlayer",
+	"emailLabel": "* Courriel",
+	"emailPlaceholder": "Entrez votre adresse e-mail.",
+	"messageLabel": "* Message",
+	"messagePlaceholder": "Entrez votre message avec votre nom."
 }

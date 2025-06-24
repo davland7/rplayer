@@ -1,15 +1,11 @@
 ---
-import CookieBar from '../components/CookieBar/CookieBar.js';
-import Sidebar from '../components/Sidebar.astro';
-import '../styles/global.css';
+import "../styles/global.css";
+// biome-ignore lint/correctness/noUnusedImports: Used in Astro template
+import CookieBar from "../components/CookieBar/CookieBar.js";
+// biome-ignore lint/correctness/noUnusedImports: Used in Astro template
+import Sidebar from "../components/Sidebar.astro";
 
-export interface Props {
-  title: string;
-  description?: string;
-  keywords?: string;
-  currentPage: string;
-}
-
+// biome-ignore lint/correctness/noUnusedVariables: Astro props are used in the template
 const { title, description, keywords, currentPage } = Astro.props;
 ---
 
@@ -52,7 +48,10 @@ const { title, description, keywords, currentPage } = Astro.props;
       </ol>
     </nav>
     <div class="max-w-screen-lg mx-auto flex flex-col md:flex-row w-full">
-      <Sidebar currentPage={currentPage} class="mt-0 md:sticky md:top-24" />
+      <Sidebar
+        currentPage={currentPage}
+        class="mt-0 md:sticky md:top-24"
+      />
       <main class="w-full md:flex-1 px-6">
         <slot />
       </main>

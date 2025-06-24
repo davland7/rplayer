@@ -1,12 +1,14 @@
 ---
-import Layout from '../layouts/Layout.astro';
-import { Content as M3uContent } from '../content/m3u.md';
-import MarkdownSection from '../components/MarkdownSection.astro';
-const title = "M3U Playlist Demo | RPlayer";
+// biome-ignore lint/correctness/noUnusedImports: Used in Astro template
+import Layout from "../layouts/Layout.astro";
+// biome-ignore lint/correctness/noUnusedImports: Used in Astro template
+import MarkdownSection from "../components/MarkdownSection.astro";
+// biome-ignore lint/correctness/noUnusedImports: Used in Astro template
+import { Content as M3uContent } from "../content/m3u.md";
 ---
 
 <Layout
-  title={title}
+  title="M3U Playlist Demo | RPlayer"
   currentPage="m3u"
 >
   <MarkdownSection>
