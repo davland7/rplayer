@@ -1,11 +1,15 @@
 {
-	"extends": "astro/tsconfigs/strict",
-	"include": [".astro/types.d.ts", "**/*"],
-	"exclude": ["dist"],
 	"compilerOptions": {
+		"strict": true,
 		"jsx": "react-jsx",
 		"jsxImportSource": "react",
 		"moduleResolution": "nodenext",
-		"module": "NodeNext"
-	}
+		"module": "NodeNext",
+		"esModuleInterop": true,
+		"allowSyntheticDefaultImports": true,
+		"forceConsistentCasingInFileNames": true,
+		"skipLibCheck": true
+	},
+	"include": [".astro/types.d.ts", "**/*"],
+	"exclude": ["dist"]
 }

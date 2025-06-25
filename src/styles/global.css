@@ -1,9 +1,9 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+@plugin "@tailwindcss/forms";
+@plugin "@tailwindcss/typography";
 
-/* Custom styles */
-body {
-	scroll-behavior: smooth;
-	scroll-padding-top: 5rem;
+@theme {
+	--color-primary: #ffe70b;
+	--color-secondary: #1f2937;
+	--max-w-content: 612px;
 }

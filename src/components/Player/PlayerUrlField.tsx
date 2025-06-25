@@ -6,11 +6,7 @@ interface PlayerUrlFieldProps {
 	onInputPlay: () => void;
 }
 
-function PlayerUrlField({
-	inputUrl,
-	onInputUrlChange,
-	onInputPlay,
-}: PlayerUrlFieldProps) {
+function PlayerUrlField({ inputUrl, onInputUrlChange, onInputPlay }: PlayerUrlFieldProps) {
 	const inputId = useId();
 	return (
 		<div className="mb-4">
