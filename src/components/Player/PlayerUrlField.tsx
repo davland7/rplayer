@@ -1,4 +1,4 @@
-import type React from "react";
+import { useId } from "react";
 
 interface PlayerUrlFieldProps {
 	inputUrl: string;
@@ -6,13 +6,11 @@ interface PlayerUrlFieldProps {
 	onInputPlay: () => void;
 }
 
-import { useId } from "react";
-
-const PlayerUrlField: React.FC<PlayerUrlFieldProps> = ({
+function PlayerUrlField({
 	inputUrl,
 	onInputUrlChange,
 	onInputPlay,
-}) => {
+}: PlayerUrlFieldProps) {
 	const inputId = useId();
 	return (
 		<div className="mb-4">
@@ -32,6 +30,6 @@ const PlayerUrlField: React.FC<PlayerUrlFieldProps> = ({
 			</div>
 		</div>
 	);
-};
+}
 
 export default PlayerUrlField;

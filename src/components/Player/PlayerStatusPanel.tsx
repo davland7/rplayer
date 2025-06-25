@@ -1,5 +1,3 @@
-import type React from "react";
-
 interface PlayerStatusPanelProps {
 	status: string;
 	volume: number;
@@ -8,13 +6,13 @@ interface PlayerStatusPanelProps {
 	source: string;
 }
 
-const PlayerStatusPanel: React.FC<PlayerStatusPanelProps> = ({
+function PlayerStatusPanel({
 	status,
 	volume,
 	currentTime,
 	format,
 	source,
-}) => {
+}: PlayerStatusPanelProps) {
 	return (
 		<div className="bg-secondary p-4 rounded-md font-mono text-sm text-white">
 			<div className="flex flex-wrap gap-x-6 gap-y-2 items-center justify-between">
@@ -36,6 +34,6 @@ const PlayerStatusPanel: React.FC<PlayerStatusPanelProps> = ({
 			</div>
 		</div>
 	);
-};
+}
 
 export default PlayerStatusPanel;

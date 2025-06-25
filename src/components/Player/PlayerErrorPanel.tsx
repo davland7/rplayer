@@ -1,10 +1,8 @@
-import type React from "react";
-
 interface PlayerErrorPanelProps {
 	error: string;
 }
 
-const PlayerErrorPanel: React.FC<PlayerErrorPanelProps> = ({ error }) => {
+function PlayerErrorPanel({ error }: PlayerErrorPanelProps) {
 	if (!error) return null;
 	return (
 		<div
@@ -15,6 +13,6 @@ const PlayerErrorPanel: React.FC<PlayerErrorPanelProps> = ({ error }) => {
 			<p>{error}</p>
 		</div>
 	);
-};
+}
 
 export default PlayerErrorPanel;

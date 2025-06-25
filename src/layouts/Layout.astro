@@ -23,13 +23,13 @@ const { title, description, keywords, currentPage } = Astro.props;
     <title>{title}</title>
 	</head>
 	<body class="font-sans antialiased bg-black">
-    <CookieBar client:idle />
     <header class="max-w-screen-lg mx-auto flex items-center p-3 py-4 sticky top-0 z-50 bg-black">
-      <a href="/" class="flex flex-row items-center text-2xl font-bold tracking-tight mx-auto md:ml-0 md:mr-auto">
+      <a href="/" class="flex items-center text-2xl font-bold tracking-tight mx-auto md:ml-0 md:mr-auto">
         <img src="/images/favicon.png" alt="RPlayer Logo" class="w-10 h-10 mr-2 md:w-12 md:h-12" />
         <span class="text-white">R</span><span class="text-primary">Player</span>
       </a>
     </header>
+    <CookieBar client:idle />
     <nav class="max-w-screen-lg mx-auto px-6 pt-2 pb-1" aria-label="Breadcrumb">
       <ol itemscope itemtype="https://schema.org/BreadcrumbList" class="flex flex-wrap gap-2 text-sm text-gray-300">
         <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
@@ -59,14 +59,18 @@ const { title, description, keywords, currentPage } = Astro.props;
     <footer class="max-w-screen-lg mx-auto p-6 mt-6">
       <div class="pt-6 text-center flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2">
         <div>
-          <span class="text-gray-200">© {new Date().getFullYear()} RPlayer</span>
-          <span class="text-gray-300 text-sm ml-3">Version 3.0.0</span>
+          <span class="text-gray-200">© {new Date().getFullYear()} R<span class="text-primary">Player</span></span>
         </div>
-        <div class="flex flex-col sm:flex-row gap-2 sm:gap-4 items-center justify-center">
-          <a href="/privacy" class="text-primary hover:underline text-sm">Privacy Policy</a>
-          <a href="/contact" class="text-primary hover:underline text-sm flex items-center gap-2">
-            Contact
-          </a>
+        <div class="flex flex-col sm:flex-row gap-2 sm:gap-4 items-center justify-center text-white">
+          <ul class="flex flex-row gap-2 sm:gap-4 items-center justify-center list-none p-0 m-0">
+            <li>
+              <a href="/privacy" class="text-primary hover:underline text-sm">Privacy Policy</a>
+            </li>
+            <li aria-hidden="true" class="text-gray-400">|</li>
+            <li>
+              <a href="/contact" class="text-primary hover:underline text-sm flex items-center gap-2">Contact</a>
+            </li>
+          </ul>
         </div>
       </div>
     </footer>

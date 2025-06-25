@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { type JSX, useCallback, useEffect, useRef, useState } from "react";
 import PlayerControls from "./PlayerControls.js";
 import PlayerErrorPanel from "./PlayerErrorPanel.js";
 import PlayerStatusPanel from "./PlayerStatusPanel.js";
@@ -26,7 +26,7 @@ const Player = ({
 	autoplay = false, // Par défaut, pas de lecture automatique
 	onExternalSourceChange = true, // Par défaut, mettre à jour le champ d'entrée quand defaultSource change
 	onStatusChange,
-}: PlayerProps) => {
+}: PlayerProps): JSX.Element => {
 	// Utilisation du hook personnalisé pour la logique RPlayer
 	const {
 		playerRef,

@@ -21,8 +21,6 @@ const StationsTable = ({
 	const isSaved = (station: RadioStation) =>
 		savedStations.some((s) => s.stationuuid === station.stationuuid);
 
-	console.log(stations);
-
 	return (
 		<div className="overflow-x-auto bg-black rounded-lg border-secondary sm:border">
 			<table className="w-full text-left border-collapse min-w-full bg-black text-white">

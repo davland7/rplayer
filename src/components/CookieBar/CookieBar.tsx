@@ -41,7 +41,7 @@ const CookieBar = () => {
 
 	return (
 		!cookiesAccepted && (
-			<section className="w-full bg-black text-center rounded-lg shadow-lg border-b border-gray-700">
+			<section className="w-full bg-black text-center border-t border-secondary flex items-center justify-center shadow-lg">
 				<div className="max-w-5xl mx-auto p-4 sm:p-6">
 					<p className="mb-4 text-sm text-gray-100">
 						This site uses Google Analytics to measure audience and improve our service. By clicking

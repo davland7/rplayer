@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { type JSX, useCallback, useEffect, useState } from "react";
 import Player from "../Player/Player.js";
 import StationsTable from "./StationsTable.js";
 import Tag from "./Tag.js";
@@ -47,7 +47,7 @@ const RadioSearch = ({
 	apiBase,
 	searchParams,
 	initialVisibleCount,
-}: RadioSearchProps) => {
+}: RadioSearchProps): JSX.Element => {
 	// Use the hook for saved stations
 	const { savedStations, saveStation, removeStation, saveMessage } = useSavedStations();
 
