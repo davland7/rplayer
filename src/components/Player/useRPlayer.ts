@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import RPlayer from "../../lib/index.js";
+import { setVolume as setStoredVolume } from "../../utils/storage.js";
 
 export function useRPlayer({
 	initialVolume = 0.5,
@@ -33,6 +34,8 @@ export function useRPlayer({
 			player.onvolumechange = () => {
 				setVolume(Math.round(player.volume * 100));
 				setIsMuted(player.muted);
+				// Store the volume as a value between 0 and 1
+				setStoredVolume(player.volume);
 			};
 			player.onError((err) => {
 				setIsPlaying(false);

@@ -1,12 +1,15 @@
 ---
 import "../styles/global.css";
 // biome-ignore lint/correctness/noUnusedImports: Used in Astro template
-import CookieBar from "../components/CookieBar/CookieBar.js";
-// biome-ignore lint/correctness/noUnusedImports: Used in Astro template
 import Sidebar from "../components/Sidebar.astro";
 
 // biome-ignore lint/correctness/noUnusedVariables: Astro props are used in the template
-const { title, description, keywords, currentPage } = Astro.props;
+const { title, description, keywords } = Astro.props;
+
+// Utilise Astro.url pour obtenir le chemin courant
+const { pathname } = Astro.url; // ex: "/country/the-philippines"
+// biome-ignore lint/correctness/noUnusedVariables: Astro props are used in the template
+const segments = pathname.split("/").filter(Boolean); // ["country", "the-philippines"]
 ---
 
 <!doctype html>
@@ -29,37 +32,50 @@ const { title, description, keywords, currentPage } = Astro.props;
         <span class="text-white">R</span><span class="text-primary">Player</span>
       </a>
     </header>
-    <CookieBar client:idle />
     <nav class="max-w-screen-lg mx-auto px-6 pt-2 pb-1" aria-label="Breadcrumb">
       <ol itemscope itemtype="https://schema.org/BreadcrumbList" class="flex flex-wrap gap-2 text-sm text-gray-300">
         <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
           <a href="/" itemprop="item" class="hover:underline focus-visible:underline text-primary"><span itemprop="name">Home</span></a>
           <meta itemprop="position" content="1" />
         </li>
-        {currentPage !== 'home' && (
+        {segments.map((crumb, idx) => (
           <>
             <li class="flex items-center" aria-hidden="true">›</li>
             <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
-              <span itemprop="name" class="text-white font-semibold">{currentPage.charAt(0).toUpperCase() + currentPage.slice(1).replace(/-/g, ' ')}</span>
-              <meta itemprop="position" content="2" />
+              {idx < segments.length - 1 ? (
+                <a
+                  href={'/' + segments.slice(0, idx + 1).join('/')}
+                  itemprop="item"
+                  class="hover:underline focus-visible:underline text-primary"
+                >
+                  <span itemprop="name">
+                    {crumb.charAt(0).toUpperCase() + crumb.slice(1).replace(/-/g, ' ')}
+                  </span>
+                </a>
+              ) : (
+                <span itemprop="name" class="text-white font-semibold">
+                  {crumb.charAt(0).toUpperCase() + crumb.slice(1).replace(/-/g, ' ')}
+                </span>
+              )}
+              <meta itemprop="position" content={`${idx + 2}`} />
             </li>
           </>
-        )}
+        ))}
       </ol>
     </nav>
-    <div class="max-w-screen-lg mx-auto flex flex-col md:flex-row w-full">
+    <div class="max-w-screen-lg mx-auto px-6 md:p-0 flex flex-col md:flex-row w-full">
       <Sidebar
-        currentPage={currentPage}
+        currentPage={'home'}
         class="mt-0 md:sticky md:top-24"
       />
-      <main class="w-full md:flex-1 px-6">
+      <main class="flex flex-col w-full md:max-w-[612px] mx-auto">
         <slot />
       </main>
     </div>
     <footer class="max-w-screen-lg mx-auto p-6 mt-6">
       <div class="pt-6 text-center flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2">
-        <div>
-          <span class="text-gray-200">© {new Date().getFullYear()} R<span class="text-primary">Player</span></span>
+        <div class="text-white">
+          <span class="text-gray-200">© {new Date().getFullYear()} R<span class="text-primary">Player</span></span> &nbsp;|&nbsp; Thanks <a href="https://js.org/" target="_blank" rel="noopener noreferrer" class="underline hover:text-primary">js.org</a>
         </div>
         <div class="flex flex-col sm:flex-row gap-2 sm:gap-4 items-center justify-center text-white">
           <ul class="flex flex-row gap-2 sm:gap-4 items-center justify-center list-none p-0 m-0">

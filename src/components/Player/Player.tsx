@@ -4,6 +4,7 @@ import PlayerErrorPanel from "./PlayerErrorPanel.js";
 import PlayerStatusPanel from "./PlayerStatusPanel.js";
 import PlayerUrlField from "./PlayerUrlField.js";
 import { useRPlayer } from "./useRPlayer.js";
+import { setLocalStorageItem, getLocalStorageItem, LAST_URL } from "../../utils/storage.js";
 
 interface PlayerProps {
 	initialVolume?: number;
@@ -46,8 +47,12 @@ const Player = ({
 	} = useRPlayer({ initialVolume, onStatusChange });
 
 	// État du lecteur
-	const [url, setUrl] = useState<string>(defaultSource || "");
-	const [inputUrl, setInputUrl] = useState<string>(defaultSource || "");
+	const [url, setUrl] = useState<string>(
+		() => getLocalStorageItem(LAST_URL) || defaultSource || "",
+	);
+	const [inputUrl, setInputUrl] = useState<string>(
+		() => getLocalStorageItem(LAST_URL) || defaultSource || "",
+	);
 	const [internalStationName, setInternalStationName] = useState<string>(stationName || "");
 	const [isSourceLoaded, setIsSourceLoaded] = useState<boolean>(false); // Nouvel état pour suivre si la source est chargée
 
@@ -182,12 +187,17 @@ const Player = ({
 	}, [url, playerRef]);
 
 	return (
-		<div className="mt-10 max-w-content mx-auto" ref={playerContainerRef}>
-			<h2 className="text-2xl font-bold mb-4 text-white">RPlayer in action</h2>
+		<div ref={playerContainerRef}>
 			<PlayerUrlField
 				inputUrl={inputUrl}
-				onInputUrlChange={setInputUrl}
-				onInputPlay={handleInputPlay}
+				onInputUrlChange={(url) => {
+					setInputUrl(url);
+					setLocalStorageItem(LAST_URL, url);
+				}}
+				onInputPlay={() => {
+					handleInputPlay();
+					setLocalStorageItem(LAST_URL, inputUrl);
+				}}
 			/>
 
 			<PlayerControls

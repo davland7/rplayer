@@ -9,14 +9,14 @@ interface PlayerUrlFieldProps {
 function PlayerUrlField({ inputUrl, onInputUrlChange, onInputPlay }: PlayerUrlFieldProps) {
 	const inputId = useId();
 	return (
-		<div className="mb-4">
+		<div className="mt-6">
 			<label htmlFor={inputId} className="sr-only">
 				Stream URL
 			</label>
 			<div className="flex">
 				<input
 					id={inputId}
-					className="w-full px-4 py-2 rounded bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 border-2 border-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-400 shadow-inner transition-all"
+					className="w-full px-4 py-2 bg-white border-2 border-gray-500 rounded text-black transition-colors hover:border-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-opacity-50"
 					type="text"
 					value={inputUrl}
 					onChange={(e) => onInputUrlChange(e.target.value)}

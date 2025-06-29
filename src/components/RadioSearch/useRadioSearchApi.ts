@@ -1,35 +1,30 @@
 import { useCallback, useState } from "react";
-import type { GenreCountryItem, RadioStation } from "./RadioSearch.js";
+import {
+	fetchStationsByTerm,
+	type GenreCountryItem,
+	type RadioStation,
+	SearchType,
+} from "../../api/radio-browser.js";
 
 interface UseRadioSearchApiOptions {
-	apiBase: string;
-	searchParams: Record<string, string>;
 	genresCountries: GenreCountryItem[];
-	savedStations: RadioStation[];
+	favoritesStations: RadioStation[];
 }
 
 export function useRadioSearchApi({
-	apiBase,
-	searchParams,
 	genresCountries,
-	savedStations,
+	favoritesStations,
 }: UseRadioSearchApiOptions) {
 	const [stations, setStations] = useState<RadioStation[]>([]);
 	const [loading, setLoading] = useState<boolean>(false);
 	const [error, setError] = useState<string>("");
 	const [hasMoreResults, setHasMoreResults] = useState<boolean>(true);
 
-	// Search by tag, country or 'Saved'
+	// Search by tag, country or 'Favorites'
 	const searchStations = useCallback(
 		async (itemName: string) => {
-			// Utility function to build query params
-			const buildParams = (params: Record<string, string>) =>
-				Object.entries(params)
-					.map(([k, v]) => `${encodeURIComponent(k)}=${encodeURIComponent(v)}`)
-					.join("&");
-
-			if (itemName === "Saved") {
-				setStations(savedStations);
+			if (itemName === "Favorites") {
+				setStations(favoritesStations);
 				setHasMoreResults(false);
 				setError("");
 				setLoading(false);
@@ -40,17 +35,17 @@ export function useRadioSearchApi({
 			setStations([]);
 			setHasMoreResults(true);
 			try {
+				console.log("ICI");
+
 				const item = genresCountries.find((c) => c.name.toLowerCase() === itemName.toLowerCase());
-				const params = { ...searchParams };
-				let url = "";
-				if (item && item.search === "country") {
-					url = `${apiBase}/stations/bycountry/${encodeURIComponent(item.name)}?${buildParams(params)}`;
+				let data: RadioStation[] = [];
+				if (item) {
+					// Use fetchStationsByTerm utility
+					data = await fetchStationsByTerm({ term: item.name, type: item.type });
 				} else {
-					params.tag = itemName;
-					url = `${apiBase}/stations/search?${buildParams(params)}`;
+					// Fallback: treat as tag
+					data = await fetchStationsByTerm({ term: itemName, type: SearchType.Tag });
 				}
-				const response = await fetch(url);
-				const data = await response.json();
 				if (Array.isArray(data)) {
 					setStations(data);
 					setHasMoreResults(data.length > 10);
@@ -66,7 +61,7 @@ export function useRadioSearchApi({
 				setLoading(false);
 			}
 		},
-		[apiBase, searchParams, genresCountries, savedStations],
+		[genresCountries, favoritesStations],
 	);
 
 	return {

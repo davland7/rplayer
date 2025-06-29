@@ -1,0 +1,99 @@
+---
+// biome-ignore lint/correctness/noUnusedImports: Used in Astro template
+import Layout from "../../layouts/Layout.astro";
+// biome-ignore lint/correctness/noUnusedImports: Used in Astro template
+import RadioSearch from "../../components/RadioSearch/index.js";
+import { fetchPopularTagsSorted, fetchStationsByTerm, SearchType } from "../../api/radio-browser";
+import { capitalizeFirstLetter } from "../../utils/capitalize.js";
+import "flag-icons/css/flag-icons.min.css";
+
+// Construis la pages dans /tags
+export async function getStaticPaths() {
+	const allTags = await fetchPopularTagsSorted();
+	const paths = [];
+
+	for (const item of allTags) {
+		const preloadedStations = await fetchStationsByTerm({
+			term: item.name,
+			type: SearchType.Tag,
+		});
+
+		paths.push({
+			params: { slug: item.slug },
+			props: {
+				initialTag: item.slug,
+				pageName: capitalizeFirstLetter(item.name),
+				preloadedTags: allTags,
+				preloadedStations: preloadedStations,
+			},
+		});
+	}
+
+	return paths;
+}
+
+const {
+	// biome-ignore lint/correctness/noUnusedVariables: Used in Astro template
+	initialTag,
+	pageName,
+	preloadedStations,
+	// biome-ignore lint/correctness/noUnusedVariables: Used in Astro template
+	preloadedTags,
+} = Astro.props;
+
+// biome-ignore lint/correctness/noUnusedVariables: Used in Astro template
+const schemaData = {
+	"@context": "https://schema.org",
+	"@type": "ItemList",
+	name: `Radio stations for ${pageName}`,
+	itemListElement: preloadedStations.map((station, idx) => ({
+		"@type": "ListItem",
+		position: idx + 1,
+		name: station.name,
+		url: station.url,
+	})),
+};
+---
+
+<Layout
+  currentPage={initialTag}
+  title={`RPlayer in action – ${pageName} radio stations`}
+  description={`Discover and listen to the best online radio stations for the genre ${pageName}. Enjoy live music, talk, and more by ${pageName} from around the world.`}
+>
+  <script
+    is:inline
+    type="application/ld+json"
+    set:html={JSON.stringify(schemaData)}
+  />
+  <section class="p-0 border-0 rounded-none shadow-none my-8 sm:p-6 sm:bg-black sm:text-white sm:rounded-lg sm:border-2 sm:border-primary">
+    <h1 class="font-bold mb-0 text-primary text-4xl">{pageName} stations</h1>
+    <p class="my-8">
+      Try <span class="font-semibold">R<span class="text-primary">Player</span></span> in action! Instantly listen to online radio stations in your favorite genre: <span class="text-primary font-semibold">{pageName}</span>. Explore, play, and discover how RPlayer makes radio streaming simple and enjoyable.
+    </p>
+  </section>
+
+  <h2 class="text-2xl font-bold text-white">R<span class="text-primary font-semibold">Player</span> in action</h2>
+  <RadioSearch
+    client:only="react"
+    initialTag={initialTag}
+    initialVisibleCount={10}
+    preloadedGenresCountries={[]}
+    preloadedStations={preloadedStations}
+  />
+
+  <footer class="mt-12">
+    <p class="mb-2 text-gray-400 text-sm">Browse other genres and listen to even more stations:</p>
+    <ul class="flex flex-wrap gap-2">
+      {preloadedTags.map(tag => (
+        <li>
+          <a
+            href={`/tag/${tag.slug}`}
+            class="inline-block px-3 py-1 rounded bg-gray-800 text-primary hover:bg-primary hover:text-black transition"
+          >
+            {tag.name}
+          </a>
+        </li>
+      ))}
+    </ul>
+  </footer>
+</Layout>

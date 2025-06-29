@@ -3,6 +3,8 @@
 import ContactForm from "../components/ContactForm/ContactForm.js";
 // biome-ignore lint/correctness/noUnusedImports: Used in Astro template
 import Layout from "../layouts/Layout.astro";
+// biome-ignore lint/correctness/noUnusedImports: Used in Astro template
+import CookieConsent from "../components/CookieConsent/CookieConsent";
 ---
 
 <Layout
@@ -10,10 +12,12 @@ import Layout from "../layouts/Layout.astro";
   description="Contact us about RPlayer, the JavaScript library for playing radio streams"
   currentPage="contact"
 >
-  <section class="max-w-[560px] mx-auto p-0 border-0 rounded-none shadow-none my-8 sm:p-0 sm:bg-black sm:text-white sm:shadow-sm sm:rounded-lg">
-    <h1 class="text-3xl font-bold mb-0 text-primary">Contact</h1>
+
+  <CookieConsent client:idle />
+  <section class="p-0 border-0 rounded-none shadow-none my-8 sm:p-6 sm:bg-black sm:text-white sm:shadow-sm sm:rounded-lg sm:border-2 sm:border-primary">
+    <h1 class="font-bold mb-0 text-primary text-4xl">Contact</h1>
     <p class="my-8">
-      Do you have questions, suggestions, or comments about RPlayer? Feel free to contact us using the form below.
+      Do you have questions, suggestions, or comments about <span class="font-semibold">R<span class="text-primary">Player</span></span>? Feel free to contact us using the form below.
     </p>
     <ContactForm
       client:only

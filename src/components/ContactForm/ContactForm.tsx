@@ -1,30 +1,17 @@
-import { useForm } from "@formspree/react";
-import { useEffect, useId, useRef, useState } from "react";
+// Make sure to run npm install @formspree/react
+/** biome-ignore-all lint/nursery/useUniqueElementIds: Required by @formspree/react for accessibility and error association. The ids are static and unique within the form. */
+// For more help visit https://formspr.ee/react-help
+import { useForm, ValidationError } from "@formspree/react";
+import { useEffect } from "react";
+import { PUBLIC_FORMSPREE_FORM_ID, PUBLIC_RECAPTCHA_SITE_KEY } from "astro:env/client";
 import { load } from "recaptcha-v3";
-import messages from "./messages.json" with { type: "json" };
-
-const baseInputClasses =
-	"w-full px-4 py-2 rounded bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 border-2 border-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-400 shadow-inner transition-all text-xs";
 
 const ContactForm = () => {
-	const [state, handleSubmit] = useForm("mzzdajna");
-	const [errorMessages, setErrorMessages] = useState({
-		email: "",
-		message: "",
-	});
-	const [focus, setFocus] = useState({
-		email: false,
-		message: false,
-	});
-	const [success, setSuccess] = useState(false);
-	const emailRef = useRef(null);
-	const messageRef = useRef(null);
-	const emailId = useId();
-	const messageId = useId();
+	const [state, handleSubmit] = useForm(PUBLIC_FORMSPREE_FORM_ID);
 
 	useEffect(() => {
 		const executeRecaptcha = async () => {
-			const recaptcha = await load("6LdtNQIrAAAAAJfT4whJXAhzuzKwDpFS7RZbpwuw");
+			const recaptcha = await load(PUBLIC_RECAPTCHA_SITE_KEY);
 			const token = await recaptcha.execute("submit");
 			const recaptchaInput = document.createElement("input");
 			recaptchaInput.type = "hidden";
@@ -35,106 +22,51 @@ const ContactForm = () => {
 		executeRecaptcha();
 	}, []);
 
-	useEffect(() => {
-		if (state.succeeded) {
-			setSuccess(true);
-		}
-		if (state.errors) {
-			const errorMessage = state.errors.getAllFieldErrors();
-			const newErrorMessages = { email: "", message: "" };
-			for (const error of errorMessage) {
-				if (error[0] === "email") {
-					if (error[1][0].code === "TYPE_EMAIL") {
-						newErrorMessages.email = messages.emailInvalid;
-					} else {
-						newErrorMessages.email = messages.emailRequired;
-					}
-				} else if (error[0] === "message") {
-					newErrorMessages.message = "Le message est requis.";
-				}
-			}
-			setErrorMessages(newErrorMessages);
-		}
-	}, [state.errors, state.succeeded]);
-
-	// Détermine la couleur de bordure/ring selon l'état du champ
-	function getInputClasses(field: "email" | "message") {
-		let classes = baseInputClasses;
-		if (field === "message") classes += " font-mono";
-		if (errorMessages[field]) {
-			classes += " border-red-500 ring-2 ring-red-400";
-		} else if (success && field === "email") {
-			classes += " border-green-500 ring-2 ring-green-400";
-		} else if (focus[field]) {
-			classes += " border-blue-500 ring-2 ring-blue-400";
-		} else {
-			classes += " ring-2 ring-gray-600";
-		}
-		return classes;
-	}
-
-	if (success) {
+	if (state.succeeded) {
 		return (
-			<p className="text-green-400 bg-gray-900 border-2 border-green-500 p-4 rounded text-center">
-				{messages.success}
+			<p>
+				Thanks for taking the time to write to us! Your feedback is invaluable in helping us improve{" "}
+				<span className="font-semibold">
+					R<span className="text-primary">Player</span>
+				</span>
+				.
 			</p>
 		);
 	}
-
-	// Affichage d'un message unique (avertissement ou erreur)
-	let infoText = messages.warning;
-	let infoColor = "text-yellow-300 border-yellow-500";
-	if (errorMessages.email) {
-		infoText = errorMessages.email;
-		infoColor = "text-red-400 border-red-500";
-	} else if (errorMessages.message) {
-		infoText = errorMessages.message;
-		infoColor = "text-orange-300 border-orange-500";
-	}
-
 	return (
-		<>
-			<p className={`${infoColor} mb-8 p-4 bg-gray-900 border-2 rounded text-center font-semibold`}>
-				{infoText}
-			</p>
-			<form onSubmit={handleSubmit} noValidate className="flex flex-col gap-6 w-full max-w-xs">
-				<input type="hidden" name="_language" value="fr" />
-				<label htmlFor={emailId} className="text-gray-300 text-sm font-semibold">
-					{messages.emailLabel}
-				</label>
-				<input
-					id={emailId}
-					type="email"
-					name="email"
-					placeholder={messages.emailPlaceholder}
-					className={getInputClasses("email")}
-					required
-					ref={emailRef}
-					onFocus={() => setFocus((f) => ({ ...f, email: true }))}
-					onBlur={() => setFocus((f) => ({ ...f, email: false }))}
-				/>
-				<label htmlFor={messageId} className="text-gray-300 text-sm font-semibold">
-					{messages.messageLabel}
-				</label>
-				<textarea
-					id={messageId}
-					name="message"
-					placeholder={messages.messagePlaceholder}
-					className={getInputClasses("message")}
-					required
-					ref={messageRef}
-					onFocus={() => setFocus((f) => ({ ...f, message: true }))}
-					onBlur={() => setFocus((f) => ({ ...f, message: false }))}
-				/>
-				<button
-					type="submit"
-					disabled={state.submitting}
-					className="border-2 border-primary hover:bg-yellow-500 hover:text-black text-primary font-bold px-4 py-2 rounded transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
-				>
-					{state.submitting ? messages.sending : messages.submit}
-				</button>
-			</form>
-		</>
+		<form className="flex flex-col gap-6" onSubmit={handleSubmit}>
+			<label htmlFor="email">Email Address</label>
+			<input
+				className="w-full px-4 py-2 bg-white border-2 border-gray-500 rounded text-black transition-colors hover:border-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-opacity-50"
+				id="email"
+				type="email"
+				name="email"
+			/>
+			<ValidationError
+				className="text-red-500"
+				prefix="Email"
+				field="email"
+				errors={state.errors}
+			/>
+			<textarea
+				className="w-full px-4 py-2 bg-white border-2 border-gray-500 rounded text-black transition-colors hover:border-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-opacity-50"
+				id="message"
+				name="message"
+			/>
+			<ValidationError
+				className="text-red-500"
+				prefix="Message"
+				field="message"
+				errors={state.errors}
+			/>
+			<button
+				className="px-4 py-2 border-2 rounded font-bold transition-colors cursor-pointer border-primary-500 text-primary-400 hover:bg-primary-600 hover:text-black focus:outline-none focus:ring-2 focus:ring-primary-400 focus:ring-opacity-50 w-fit"
+				type="submit"
+				disabled={state.submitting}
+			>
+				Submit
+			</button>
+		</form>
 	);
 };
 

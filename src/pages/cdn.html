@@ -5,18 +5,22 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>RPlayer CDN Demo</title>
   <link rel="icon" href="/favicon.svg" type="image/x-icon">
-  <!-- Tailwind CSS CDN -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  <!-- HLS.js CDN -->
   <script src="https://cdn.jsdelivr.net/npm/hls.js@1.6.1/dist/hls.min.js"></script>
-  <!-- RPlayer CDN -->
   <script src="/lib/rplayer.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  <style type="text/tailwindcss">
+    @theme {
+       --color-primary-400: #fff066;
+      --color-primary-500: #ffe70b;
+      --color-primary-600: #e0cc00;
+    }
+  </style>
   <meta name="description" content="RPlayer CDN demo: test live or on-demand audio streaming (MP3, HLS) instantly with a minimal, accessible, mobile-first interface. Try RPlayer in your browser—no installation required!">
 </head>
 <body class="bg-black min-h-screen flex items-center justify-center">
   <div class="w-full max-w-xs flex flex-col gap-12">
     <div class="flex justify-between gap-2">
-      <a href="/" class="border-2 border-white hover:bg-white hover:text-black text-white font-bold px-4 py-2 rounded transition-colors flex items-center">Home</a>
+      <a href="/" class="px-4 py-2 border-2 rounded font-bold transition-colors border-primary-500 text-primary-400 hover:bg-[#e0cc00] hover:text-black focus:outline-none focus:ring-2 focus:ring-[#fff066] focus:ring-opacity-50">Home</a>
       <a href="/documentation" class="border-2 border-yellow-200 hover:bg-yellow-200 hover:text-black text-yellow-200 font-bold px-4 py-2 rounded transition-colors flex items-center">Documentation</a>
     </div>
     <h1 class="text-2xl font-bold text-white text-center">R<span style="color: #ffe70b">Player</span> CDN Demo</h1>

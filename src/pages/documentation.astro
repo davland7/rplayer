@@ -7,6 +7,8 @@ import MarkdownSection from "../components/MarkdownSection.astro";
 import Player from "../components/Player/Player.js";
 // biome-ignore lint/correctness/noUnusedImports: Used in Astro template
 import { Content as ReadmeContent } from "../../README.md";
+// biome-ignore lint/correctness/noUnusedImports: Used in Astro template
+import CookieConsent from "../components/CookieConsent/CookieConsent";
 ---
 
 <Layout
@@ -17,6 +19,10 @@ import { Content as ReadmeContent } from "../../README.md";
   <MarkdownSection>
     <ReadmeContent />
   </MarkdownSection>
+
+  <CookieConsent client:idle />
+
+  <h2 class="text-2xl font-bold text-white">RPlayer in action</h2>
   <Player
     client:only="react"
   />

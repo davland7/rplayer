@@ -1,0 +1,46 @@
+---
+import {
+	fetchPopularTagsSorted,
+	fetchStationsByTerm,
+	SearchType,
+} from "../../api/radio-browser.js";
+// biome-ignore lint/correctness/noUnusedImports: Used in Astro template
+import Layout from "../../layouts/Layout.astro";
+// biome-ignore lint/correctness/noUnusedImports: Used in Astro template
+import RadioSearch from "../../components/RadioSearch/index.js";
+
+const preloadedGenres = await fetchPopularTagsSorted();
+const initialTag = preloadedGenres[0].name;
+// biome-ignore lint/correctness/noUnusedVariables: Used in Astro template
+const preloadedStations = await fetchStationsByTerm({
+	term: initialTag,
+	type: SearchType.Tag,
+});
+---
+
+<Layout
+  currentPage="tag"
+  title="All Genres"
+  description="Browse all radio genres."
+>
+  <h1 class="text-2xl font-bold mb-4">Genres</h1>
+
+  <RadioSearch
+    client:only="react"
+    initialTag={initialTag}
+    initialVisibleCount={10}
+    preloadedGenresCountries={preloadedGenres}
+    preloadedStations={preloadedStations}
+  />
+  <ul class="grid grid-cols-2 md:grid-cols-4 gap-2">
+    {preloadedGenres.map(tag => (
+      <li
+        class="text-primary-500"
+      >
+        <a href={`/tag/${tag.slug}`} class="hover:underline">
+          {tag.name}
+        </a>
+      </li>
+    ))}
+  </ul>
+</Layout>

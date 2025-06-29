@@ -1,0 +1,41 @@
+---
+import {
+	fetchPopularCountriesSorted,
+	fetchStationsByTerm,
+	SearchType,
+} from "../../api/radio-browser.js";
+// biome-ignore lint/correctness/noUnusedImports: Used in Astro template
+import Layout from "../../layouts/Layout.astro";
+// biome-ignore lint/correctness/noUnusedImports: Used in Astro template
+import RadioSearch from "../../components/RadioSearch/index.js";
+import "flag-icons/css/flag-icons.min.css";
+
+const preloadedCountries = await fetchPopularCountriesSorted();
+const initialCountry = preloadedCountries[0].name;
+// biome-ignore lint/correctness/noUnusedVariables: Used in Astro template
+const preloadedStations = await fetchStationsByTerm({
+	term: initialCountry,
+	type: SearchType.Country,
+});
+---
+
+<Layout
+  currentPage="country"
+  title="All Countries"
+  description="Browse all radio countries."
+>
+  <h1 class="text-2xl font-bold mb-4">Countries</h1>
+
+  <RadioSearch
+    client:only="react"
+    initialTag={initialCountry}
+    initialVisibleCount={10}
+    preloadedGenresCountries={preloadedCountries}
+    preloadedStations={preloadedStations}
+  />
+  <ul class="grid grid-cols-2 md:grid-cols-4 gap-2">
+    {preloadedCountries.map(country => (
+      <li class="text-primary-500"><a href={`/country/${country.slug}`} class="hover:underline">{country.name}</a></li>
+    ))}
+  </ul>
+</Layout>

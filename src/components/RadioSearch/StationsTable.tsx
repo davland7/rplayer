@@ -1,6 +1,7 @@
-import { HiBookmark, HiPlay, HiTrash } from "react-icons/hi2";
+import { HiOutlineStar, HiPlay, HiStar } from "react-icons/hi2";
 import Badge from "./Badge.js";
-import type { RadioStation } from "./RadioSearch.js";
+import { isCookiesAccepted } from "../../utils/storage.js";
+import type { RadioStation } from "../../api/radio-browser.js";
 
 interface StationsTableProps {
 	stations: RadioStation[];
@@ -112,21 +113,24 @@ const StationsTable = ({
 										<button
 											type="button"
 											onClick={() => onRemove(station.stationuuid)}
-											className="bg-gray-900 text-red-400 px-3 py-2 rounded text-sm hover:bg-secondary focus:outline-none focus:ring-2 focus:ring-red-400 focus:ring-opacity-50 flex items-center gap-1"
-											title="Remove"
+											className="bg-gray-900 text-yellow-400 px-3 py-2 rounded text-sm hover:bg-secondary focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:ring-opacity-50 flex items-center gap-1"
+											title="Remove from Favorites"
 										>
-											<HiTrash className="w-4 h-4" aria-hidden="true" />
-											<span className="sr-only">Remove</span>
+											<HiStar className="w-4 h-4 fill-yellow-400" aria-hidden="true" />
+											<span className="sr-only">Remove from Favorites</span>
 										</button>
 									) : (
 										<button
 											type="button"
 											onClick={() => onSave(station)}
-											className="bg-gray-900 text-blue-300 px-3 py-2 rounded text-sm hover:bg-secondary focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-50 flex items-center gap-1"
-											title="Save"
+											className="bg-gray-900 text-yellow-400 px-3 py-2 rounded text-sm hover:bg-secondary focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:ring-opacity-50 flex items-center gap-1 disabled:opacity-50 disabled:cursor-not-allowed"
+											title={
+												isCookiesAccepted() ? "Add to Favorites" : "Accept cookies to save stations"
+											}
+											disabled={!isCookiesAccepted()}
 										>
-											<HiBookmark className="w-4 h-4" aria-hidden="true" />
-											<span className="sr-only">Save</span>
+											<HiOutlineStar className="w-4 h-4" aria-hidden="true" />
+											<span className="sr-only">Add to Favorites</span>
 										</button>
 									)}
 								</div>
