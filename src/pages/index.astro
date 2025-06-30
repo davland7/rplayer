@@ -9,21 +9,17 @@ import MarkdownSection from "../components/MarkdownSection.astro";
 import RadioSearch from "../components/RadioSearch/index.js";
 // biome-ignore lint/correctness/noUnusedImports: Used in Astro template
 import { Content as HomeContent } from "../content/home.md";
-import type { RadioStation, GenreCountryItem } from "../api/radio-browser.js";
-import { fetchPopularGenresAndCountriesSorted, SearchType } from "../api/radio-browser.js";
+import type { RadioStation } from "../api/radio-browser.js";
+import { fetchPopularGenresAndCountriesSorted } from "../api/radio-browser.js";
+import { SpecialTag } from "../components/RadioSearch/SpecialTag.js";
 import "flag-icons/css/flag-icons.min.css";
 
 // biome-ignore lint/correctness/noUnusedVariables: Used in Astro template
-const initialTag = "favorites";
+const initialTag = SpecialTag.Favorites;
 // biome-ignore lint/correctness/noUnusedVariables: Used in Astro template
 const preloadedStations: RadioStation[] = [];
+// biome-ignore lint/correctness/noUnusedVariables: Used in Astro template
 const preloadedGenresCountries = await fetchPopularGenresAndCountriesSorted();
-
-const SAVED_TAG: GenreCountryItem = { name: "Favorites", slug: "favorites", type: SearchType.Tag };
-let genresCountries = preloadedGenresCountries || [];
-if (!genresCountries.some((tag) => tag.slug === "favorites")) {
-	genresCountries = [SAVED_TAG, ...genresCountries];
-}
 ---
 
 <Layout
@@ -42,7 +38,7 @@ if (!genresCountries.some((tag) => tag.slug === "favorites")) {
     client:only="react"
     initialTag={initialTag}
     initialVisibleCount={10}
-    preloadedGenresCountries={genresCountries}
+    preloadedGenresCountries={preloadedGenresCountries}
     preloadedStations={preloadedStations}
   />
 </Layout>

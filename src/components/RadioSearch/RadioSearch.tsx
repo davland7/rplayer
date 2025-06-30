@@ -4,17 +4,27 @@ import StationsTable from "./StationsTable.js";
 import PopularTags from "./PopularTags.js";
 import { useRadioSearchApi } from "./useRadioSearchApi.js";
 import { useFavoritesStations } from "./useFavoritesStations.js";
-import type { GenreCountryItem, RadioStation } from "../../api/radio-browser.js";
+import { type GenreCountryItem, type RadioStation, SearchType } from "../../api/radio-browser.js";
 import { SpecialTag } from "./SpecialTag.js";
 import NoStationsFound from "./NoStationsFound.js";
 import LoadingIndicator from "./LoadingIndicator.js";
 import SaveMessage from "./SaveMessage.js";
+import LoadMoreStations from "./LoadMoreStations.js";
+import StationNameFilter from "./StationNameFilter.js";
 
 export interface RadioSearchProps {
 	initialTag: string;
 	initialVisibleCount: number;
 	preloadedGenresCountries?: GenreCountryItem[];
 	preloadedStations: RadioStation[];
+}
+
+export type TagType = SearchType | SpecialTag.Favorites;
+export interface TagUI {
+  name: string;
+  slug: string;
+  type: TagType;
+  code?: string;
 }
 
 /**
@@ -38,6 +48,7 @@ const RadioSearch = ({
 		});
 	const [currentPlayingUrl, setCurrentPlayingUrl] = useState<string>("");
 	const [currentPlayingName, setCurrentPlayingName] = useState<string>("");
+	const [filterText, setFilterText] = useState<string>("");
 
 	useEffect(() => {
 		if (selectedTag === SpecialTag.Favorites) {
@@ -89,6 +100,54 @@ const RadioSearch = ({
 	const displayedStations =
 		selectedTag === SpecialTag.Favorites ? favoritesStations : stations.slice(0, visibleCount);
 
+	const filteredStations = filterText.trim()
+		? displayedStations.filter(station =>
+			station.name.toLowerCase().includes(filterText.trim().toLowerCase())
+		)
+		: displayedStations;
+
+	// --- PAGE TYPE DETECTION ---
+	// Detects if we are on the homepage, a detail page, or a category page
+	const isHomePage = initialTag === SpecialTag.Favorites;
+	const isDetailPage = Array.isArray(preloadedGenresCountries) && preloadedGenresCountries.length === 0;
+	const isCategoryPage = !isHomePage && Array.isArray(preloadedGenresCountries) && preloadedGenresCountries.length > 0;
+
+	// Add the "Favorites" tag at the start of the list for PopularTags (homepage only)
+	const tagsWithFavorites: TagUI[] = isHomePage
+  ? [
+      {
+        name: "Favorites",
+        slug: "favorites",
+        type: SpecialTag.Favorites,
+      },
+      ...preloadedGenresCountries,
+    ]
+  : preloadedGenresCountries;
+
+	// --- LOAD MORE LOGIC ---
+	// Controls the "Load More" button and result limits for each page type
+	const isLimited = (isCategoryPage || isHomePage) && initialVisibleCount > 0;
+	const MAX_RESULTS = isDetailPage ? Infinity : initialVisibleCount * 2;
+	const showLoadMore = (isCategoryPage || isHomePage)
+  ? hasMoreResults && visibleCount < Math.min(stations.length, MAX_RESULTS)
+  : isDetailPage && hasMoreResults && visibleCount < stations.length;
+	const showSeeMoreLink = isLimited && visibleCount >= MAX_RESULTS && stations.length > MAX_RESULTS;
+
+	// --- UTILS ---
+	// Utility functions for "See More" navigation
+	function getSeeMoreItem() {
+		return preloadedGenresCountries.find(t => t.slug === selectedTag || t.name === selectedTag);
+	}
+	function getSeeMoreHref() {
+		const item = getSeeMoreItem();
+		if (!item) return "#";
+		return `/${item.type === SearchType.Country ? "country" : "tag"}/${item.slug}`;
+	}
+	function getSeeMoreLabel() {
+		const item = getSeeMoreItem();
+		return item?.name || selectedTag;
+	}
+
 	return (
 		<>
 			<Player
@@ -98,9 +157,9 @@ const RadioSearch = ({
 				autoplay={false}
 			/>
 			<div className="mt-6">
-				{preloadedGenresCountries && (
+				{(isCategoryPage || isHomePage) && (
 					<PopularTags
-						preloadedGenresCountries={preloadedGenresCountries}
+						tags={tagsWithFavorites}
 						selectedTag={selectedTag}
 						initialVisibleCount={initialVisibleCount}
 						setSelectedTag={handleTagSelect}
@@ -117,27 +176,38 @@ const RadioSearch = ({
 				{/* Search Results */}
 				{stations.length > 0 ? (
 					<>
-						<StationsTable
-							stations={displayedStations}
-							savedStations={favoritesStations}
-							onPlay={handlePlay}
-							onSave={saveStation}
-							onRemove={handleRemoveStation}
-							showCodec={true}
-						/>
-						{/* Load more results button */}
-						{hasMoreResults && visibleCount < stations.length && (
-							<div className="mt-6 text-center">
-								<button
-									type="button"
-									onClick={() => setVisibleCount((c: number) => c + 10)}
-									disabled={loading}
-									className="px-6 py-2 bg-gray-900 hover:bg-secondary rounded-md text-white border border-gray-700 transition-colors"
-								>
-									{loading ? "Loading..." : "Load More Results"}
-								</button>
-							</div>
+						{/* Only show the filter on detail pages (e.g. /tag/dance) */}
+						{isDetailPage && (
+							<StationNameFilter
+              value={filterText}
+              onChange={setFilterText}
+            />
 						)}
+
+						{/* Show a message if the filter returns no results on a detail page */}
+						{isDetailPage && filteredStations.length === 0 && filterText.trim() ? (
+							<div className="text-center text-gray-400 my-8">No stations match your search.</div>
+						) : (
+							<StationsTable
+								stations={filteredStations}
+								savedStations={favoritesStations}
+								onPlay={handlePlay}
+								onSave={saveStation}
+								onRemove={handleRemoveStation}
+								showCodec={true}
+							/>
+						)}
+
+            {/* Show the LoadMoreStations button on all pages, but on detail pages only if there are more results */}
+            <LoadMoreStations
+              showLoadMore={showLoadMore}
+              showSeeMoreLink={showSeeMoreLink}
+              onLoadMore={() => setVisibleCount((c: number) => Math.min(c + initialVisibleCount, MAX_RESULTS))}
+              disabled={loading}
+              loading={loading}
+              seeMoreHref={getSeeMoreHref()}
+              seeMoreLabel={getSeeMoreLabel()}
+            />
 					</>
 				) : (
 					!loading && !error && <NoStationsFound />

@@ -1,8 +1,8 @@
-import type { GenreCountryItem } from "../../api/radio-browser.js";
+import type { TagUI } from "./RadioSearch.js";
 import Tag from "./Tag.js";
 
 interface PopularTagsProps {
-	preloadedGenresCountries: GenreCountryItem[];
+	tags: TagUI[];
 	selectedTag: string;
 	initialVisibleCount: number;
 	setSelectedTag: (tag: string) => void;
@@ -11,7 +11,7 @@ interface PopularTagsProps {
 }
 
 const PopularTags = ({
-	preloadedGenresCountries,
+	tags,
 	selectedTag,
 	initialVisibleCount,
 	setSelectedTag,
@@ -30,18 +30,19 @@ const PopularTags = ({
 			</a>
 		</div>
 		<div className="flex flex-wrap gap-2">
-			{preloadedGenresCountries.map((item) => (
+			{tags.map((item) => (
 				<Tag
 					key={item.code ? `country-${item.code}` : `tag-${item.slug}`}
 					name={item.name}
 					type={item.type}
 					code={item.code}
+					slug={item.slug}
+					isActive={selectedTag.toLowerCase() === item.slug.toLowerCase()}
 					onClick={() => {
 						setSelectedTag(item.slug);
 						setVisibleCount(initialVisibleCount);
 						searchStations(item.name);
 					}}
-					selected={selectedTag.toLowerCase() === item.slug.toLowerCase()}
 				/>
 			))}
 		</div>

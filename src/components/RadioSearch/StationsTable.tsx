@@ -48,12 +48,12 @@ const StationsTable = ({
 											title={station.name}
 											className="w-8 h-8 mr-2 rounded-full bg-gray-100 object-contain"
 											onError={(e) => {
-												(e.target as HTMLImageElement).src = "/images/favicon.png";
+												(e.target as HTMLImageElement).src = "/images/play-button.png";
 											}}
 										/>
 									) : (
 										<img
-											src="/images/favicon.png"
+											src="/images/play-button.png"
 											alt={station.name}
 											title={station.name}
 											className="w-8 h-8 mr-2 rounded-full bg-gray-100 object-contain"

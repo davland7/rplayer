@@ -1,39 +1,54 @@
 import { HiMusicalNote, HiStar } from "react-icons/hi2";
 import { SearchType } from "../../api/radio-browser.js";
 import { SpecialTag } from "./SpecialTag.js";
+import type { TagUI } from "./RadioSearch.js";
 
-interface TagProps {
-	name: string;
-	type: SearchType | SpecialTag.Favorites;
-	code?: string;
-	onClick: (tag: string) => void;
-	selected?: boolean; // Prop for selected state
+interface TagProps extends TagUI {
+	isActive: boolean;
+	onClick: (slug: string) => void;
 }
 
-const Tag = ({ name, type, code, onClick, selected = false }: TagProps) => {
+const Tag = ({ name, slug, type, code, isActive, onClick }: TagProps) => {
 	const handleClick = () => {
-		onClick(name);
+		onClick(slug);
 	};
 
-	const selectedClass = selected
-		? "bg-black text-yellow-400 border-yellow-400 font-bold shadow cursor-default"
-		: "hover:bg-yellow-500 hover:text-black focus:bg-yellow-500 focus:text-black";
+	console.log("TYPE:", type);
 
-	const iconClass = `inline-block w-5 h-5 mr-2 align-middle ${selected ? "text-yellow-400" : "text-white group-hover:text-black group-focus:text-black"}`;
-	const starIconClass = `inline-block w-5 h-5 mr-2 align-middle ${selected ? "text-yellow-400" : "text-yellow-400 group-hover:text-black group-focus:text-black"}`;
+	const selectedClass = isActive
+		? "bg-black text-primary-500 border-primary-500 font-bold shadow cursor-default"
+		: "hover:bg-primary-600 hover:text-black focus:bg-primary-600 focus:text-black";
+
+	const iconClass = `inline-block w-5 h-5 mr-2 align-middle ${
+		isActive ? "text-primary-500" : "text-white group-hover:text-black group-focus:text-black"
+	}`;
+	const starIconClass = `inline-block w-5 h-5 mr-2 align-middle ${
+		isActive ? "text-primary-500" : "text-primary-500 group-hover:text-black group-focus:text-black"
+	}`;
+
+	const getIcon = () => {
+		if (type === SpecialTag.Favorites) {
+			return <HiStar className={starIconClass} aria-hidden="true" />;
+		}
+		if (type === SearchType.Country && code) {
+			return <span className={`fi fi-${code.toLowerCase()}`}></span>;
+		}
+		if (type === SearchType.Tag) {
+			return <HiMusicalNote className={iconClass} aria-hidden="true" />;
+		}
+		return null;
+	};
 
 	return (
 		<button
 			type="button"
 			className={`flex items-center gap-1 bg-gray-900 text-gray-100 border border-gray-700 px-3 py-1 text-sm transition-colors rounded-md cursor-pointer group ${selectedClass}`}
 			onClick={handleClick}
-			disabled={selected}
+			disabled={isActive}
 			aria-label={name}
 		>
-			{type === SearchType.Country && code && <span className={`fi fi-${code}`}></span>}
-			{type === SpecialTag.Favorites && <HiStar className={starIconClass} aria-hidden="true" />}
-			{type === SearchType.Tag && <HiMusicalNote className={iconClass} aria-hidden="true" />}
-			<span className={selected ? "font-bold" : "font-normal"} style={{ letterSpacing: "0.01em" }}>
+			{getIcon()}
+			<span className={isActive ? "font-bold" : "font-normal"} style={{ letterSpacing: "0.01em" }}>
 				{name}
 			</span>
 		</button>

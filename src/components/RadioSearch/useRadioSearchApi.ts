@@ -1,10 +1,5 @@
 import { useCallback, useState } from "react";
-import {
-	fetchStationsByTerm,
-	type GenreCountryItem,
-	type RadioStation,
-	SearchType,
-} from "../../api/radio-browser.js";
+import { fetchStationsByTerm, type GenreCountryItem, type RadioStation, SearchType } from "../../api/radio-browser.js";
 
 interface UseRadioSearchApiOptions {
 	genresCountries: GenreCountryItem[];
@@ -35,8 +30,6 @@ export function useRadioSearchApi({
 			setStations([]);
 			setHasMoreResults(true);
 			try {
-				console.log("ICI");
-
 				const item = genresCountries.find((c) => c.name.toLowerCase() === itemName.toLowerCase());
 				let data: RadioStation[] = [];
 				if (item) {
