@@ -13,17 +13,20 @@ import "flag-icons/css/flag-icons.min.css";
 export async function getStaticPaths() {
 	const allTags = await fetchPopularTagsSorted(32);
 	const paths = [];
+  const limit = 32;
 
 	for (const item of allTags) {
 		const preloadedStations = await fetchStationsByTerm({
 			term: item.name,
 			type: SearchType.Tag,
+      limit,
 		});
 
 		paths.push({
 			params: { slug: item.slug },
 			props: {
 				initialTag: item.slug,
+        limit,
 				pageName: capitalizeFirstLetter(item.name),
 				preloadedTags: allTags,
 				preloadedStations: preloadedStations,
@@ -37,6 +40,8 @@ export async function getStaticPaths() {
 const {
 	// biome-ignore lint/correctness/noUnusedVariables: Used in Astro template
 	initialTag,
+  // biome-ignore lint/correctness/noUnusedVariables: Used in Astro template
+  limit,
 	pageName,
 	preloadedStations,
 	// biome-ignore lint/correctness/noUnusedVariables: Used in Astro template
@@ -58,7 +63,6 @@ const schemaData = {
 ---
 
 <Layout
-  currentPage={initialTag}
   title={`RPlayer in action – ${pageName} radio stations`}
   description={`Discover and listen to the best online radio stations for the genre ${pageName}. Enjoy live music, talk, and more by ${pageName} from around the world.`}
 >
@@ -79,7 +83,8 @@ const schemaData = {
     client:only="react"
     initialTag={initialTag}
     initialVisibleCount={8}
-    preloadedGenresCountries={[]}
+    limit={limit}
+    preloadedTags={[]}
     preloadedStations={preloadedStations}
   />
 

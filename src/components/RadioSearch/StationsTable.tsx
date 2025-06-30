@@ -25,7 +25,7 @@ const StationsTable = ({
 	return (
 		<div className="overflow-x-auto bg-black rounded-lg border-secondary sm:border">
 			<table className="w-full text-left border-collapse min-w-full bg-black text-white">
-				<thead className="bg-gray-900">
+				<thead className="bg-secondary-600">
 					<tr>
 						<th className="px-2 sm:px-4 py-2 text-gray-400 text-sm font-medium">Station</th>
 						<th className="px-2 sm:px-4 py-2 text-gray-400 text-sm font-medium text-right whitespace-nowrap">

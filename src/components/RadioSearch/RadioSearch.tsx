@@ -1,11 +1,11 @@
 import { type JSX, useCallback, useEffect, useState } from "react";
 import Player from "../Player/Player.js";
 import StationsTable from "./StationsTable.js";
-import PopularTags from "./PopularTags.js";
+import Tag, { SpecialTag } from "./Tag.js";
 import { useRadioSearchApi } from "./useRadioSearchApi.js";
 import { useFavoritesStations } from "./useFavoritesStations.js";
-import { type GenreCountryItem, type RadioStation, SearchType } from "../../api/radio-browser.js";
-import { SpecialTag } from "./SpecialTag.js";
+import { useStationsFilter } from "./useStationsFilter.js";
+import type { GenreCountryItem, RadioStation, SearchType } from "../../api/radio-browser.js";
 import NoStationsFound from "./NoStationsFound.js";
 import LoadingIndicator from "./LoadingIndicator.js";
 import SaveMessage from "./SaveMessage.js";
@@ -15,8 +15,9 @@ import StationNameFilter from "./StationNameFilter.js";
 export interface RadioSearchProps {
 	initialTag: string;
 	initialVisibleCount: number;
-	preloadedGenresCountries?: GenreCountryItem[];
+	preloadedTags?: GenreCountryItem[];
 	preloadedStations: RadioStation[];
+	limit: number;
 }
 
 export type TagType = SearchType | SpecialTag.Favorites;
@@ -36,34 +37,56 @@ const RadioSearch = ({
 	initialTag,
 	initialVisibleCount,
 	preloadedStations,
-	preloadedGenresCountries = [],
+	preloadedTags = [],
+	limit,
 }: RadioSearchProps): JSX.Element => {
 	const { favoritesStations, saveStation, removeStation, saveMessage } = useFavoritesStations();
 	const [visibleCount, setVisibleCount] = useState<number>(initialVisibleCount);
 	const [selectedTag, setSelectedTag] = useState<string>(initialTag);
-	const { stations, loading, error, hasMoreResults, searchStations, setStations } =
+	const { stations, loading, error, searchStations, setStations } =
 		useRadioSearchApi({
-			genresCountries: preloadedGenresCountries,
+			preloadedTags,
 			favoritesStations,
+			limit,
 		});
 	const [currentPlayingUrl, setCurrentPlayingUrl] = useState<string>("");
 	const [currentPlayingName, setCurrentPlayingName] = useState<string>("");
 	const [filterText, setFilterText] = useState<string>("");
+
+	// --- PAGE TYPE DETECTION ---
+	// Detects if we are on the homepage, a detail page, or a category page
+	const isHomePage = initialTag === SpecialTag.Favorites;
+	const isCategoryPage = !isHomePage && Array.isArray(preloadedTags) && preloadedTags.length > 0;
+	const isDetailPage = Array.isArray(preloadedTags) && preloadedTags.length === 0;
 
 	useEffect(() => {
 		if (selectedTag === SpecialTag.Favorites) {
 			setStations(favoritesStations);
 			setVisibleCount(initialVisibleCount);
 		}
-		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [selectedTag, favoritesStations, initialVisibleCount, setStations]);
 
-	// biome-ignore lint/correctness/useExhaustiveDependencies: searchStations and setStations are stable from custom hook, dependencies intentionally omitted to avoid unwanted reloads
 	useEffect(() => {
 		if (selectedTag !== SpecialTag.Favorites) {
-			if (!preloadedStations || preloadedStations.length === 0) {
-				if (preloadedGenresCountries.length > 0) {
-					searchStations(selectedTag);
+			// Guard: never fetch client-side on a detail page if preloadedStations is provided
+			if (
+				isDetailPage &&
+				Array.isArray(preloadedStations) &&
+				preloadedStations.length > 0
+			) {
+				setStations(preloadedStations);
+				setVisibleCount(initialVisibleCount);
+			} else if (!preloadedStations || preloadedStations.length === 0) {
+				if (preloadedTags.length > 0) {
+					if (isDetailPage) {
+						// Guard: should never happen
+						console.warn(
+							"[RadioSearch] SSR expected preloadedStations for detail page, but got none. Preventing client fetch."
+						);
+						setStations([]);
+					} else {
+						searchStations(selectedTag);
+					}
 				} else {
 					setStations([]);
 				}
@@ -72,15 +95,7 @@ const RadioSearch = ({
 				setVisibleCount(initialVisibleCount);
 			}
 		}
-	}, [selectedTag, preloadedStations, preloadedGenresCountries.length, initialVisibleCount]);
-
-	const handleTagSelect = useCallback(
-		(tag: string) => {
-			setSelectedTag(tag);
-			setVisibleCount(initialVisibleCount);
-		},
-		[initialVisibleCount],
-	);
+	}, [selectedTag, preloadedStations, preloadedTags.length, initialVisibleCount, isDetailPage, searchStations, setStations]);
 
 	const handlePlay = useCallback((stationUrl: string, name: string = "") => {
 		setCurrentPlayingUrl(stationUrl);
@@ -97,20 +112,17 @@ const RadioSearch = ({
 		}
 	};
 
-	const displayedStations =
-		selectedTag === SpecialTag.Favorites ? favoritesStations : stations.slice(0, visibleCount);
-
-	const filteredStations = filterText.trim()
-		? displayedStations.filter(station =>
-			station.name.toLowerCase().includes(filterText.trim().toLowerCase())
-		)
-		: displayedStations;
-
-	// --- PAGE TYPE DETECTION ---
-	// Detects if we are on the homepage, a detail page, or a category page
-	const isHomePage = initialTag === SpecialTag.Favorites;
-	const isDetailPage = Array.isArray(preloadedGenresCountries) && preloadedGenresCountries.length === 0;
-	const isCategoryPage = !isHomePage && Array.isArray(preloadedGenresCountries) && preloadedGenresCountries.length > 0;
+	const {
+		filteredStations,
+		displayedStations,
+		showLoadMoreButton,
+	} = useStationsFilter({
+		stations,
+		favoritesStations,
+		selectedTag,
+		filterText,
+		visibleCount,
+	});
 
 	// Add the "Favorites" tag at the start of the list for PopularTags (homepage only)
 	const tagsWithFavorites: TagUI[] = isHomePage
@@ -120,28 +132,25 @@ const RadioSearch = ({
         slug: "favorites",
         type: SpecialTag.Favorites,
       },
-      ...preloadedGenresCountries,
+      ...preloadedTags,
     ]
-  : preloadedGenresCountries;
+  : preloadedTags;
 
 	// --- LOAD MORE LOGIC ---
 	// Controls the "Load More" button and result limits for each page type
 	const isLimited = (isCategoryPage || isHomePage) && initialVisibleCount > 0;
 	const MAX_RESULTS = isDetailPage ? Infinity : initialVisibleCount * 2;
-	const showLoadMore = (isCategoryPage || isHomePage)
-  ? hasMoreResults && visibleCount < Math.min(stations.length, MAX_RESULTS)
-  : isDetailPage && hasMoreResults && visibleCount < stations.length;
 	const showSeeMoreLink = isLimited && visibleCount >= MAX_RESULTS && stations.length > MAX_RESULTS;
 
 	// --- UTILS ---
 	// Utility functions for "See More" navigation
 	function getSeeMoreItem() {
-		return preloadedGenresCountries.find(t => t.slug === selectedTag || t.name === selectedTag);
+		return preloadedTags.find(t => t.slug === selectedTag || t.name === selectedTag);
 	}
 	function getSeeMoreHref() {
 		const item = getSeeMoreItem();
 		if (!item) return "#";
-		return `/${item.type === SearchType.Country ? "country" : "tag"}/${item.slug}`;
+		return `/${item.type === "country" ? "country" : "tag"}/${item.slug}`;
 	}
 	function getSeeMoreLabel() {
 		const item = getSeeMoreItem();
@@ -158,14 +167,35 @@ const RadioSearch = ({
 			/>
 			<div className="mt-6">
 				{(isCategoryPage || isHomePage) && (
-					<PopularTags
-						tags={tagsWithFavorites}
-						selectedTag={selectedTag}
-						initialVisibleCount={initialVisibleCount}
-						setSelectedTag={handleTagSelect}
-						setVisibleCount={setVisibleCount}
-						searchStations={searchStations}
-					/>
+          <>
+            <div className="mb-2 text-gray-300 font-medium">
+              Popular{" "}
+              <a href="/tag" className="text-primary-500 underline hover:no-underline">
+                genres
+              </a>{" "}
+              &{" "}
+              <a href="/country" className="text-primary-500 underline hover:no-underline">
+                countries
+              </a>
+            </div>
+            <div className="flex flex-wrap gap-2 mb-6">
+              {tagsWithFavorites.map((item) => (
+                <Tag
+                  key={`${item.type}-${item.slug}`}
+                  name={item.name}
+                  type={item.type}
+                  code={item.code}
+                  slug={item.slug}
+                  isActive={selectedTag.toLowerCase() === item.slug.toLowerCase()}
+                  onClick={() => {
+                    setSelectedTag(item.slug);
+                    setVisibleCount(initialVisibleCount);
+                    searchStations(item.name);
+                  }}
+                />
+              ))}
+            </div>
+          </>
 				)}
 				{/* Error display */}
 				{error && (
@@ -189,7 +219,7 @@ const RadioSearch = ({
 							<div className="text-center text-gray-400 my-8">No stations match your search.</div>
 						) : (
 							<StationsTable
-								stations={filteredStations}
+								stations={displayedStations}
 								savedStations={favoritesStations}
 								onPlay={handlePlay}
 								onSave={saveStation}
@@ -199,15 +229,17 @@ const RadioSearch = ({
 						)}
 
             {/* Show the LoadMoreStations button on all pages, but on detail pages only if there are more results */}
-            <LoadMoreStations
-              showLoadMore={showLoadMore}
-              showSeeMoreLink={showSeeMoreLink}
-              onLoadMore={() => setVisibleCount((c: number) => Math.min(c + initialVisibleCount, MAX_RESULTS))}
-              disabled={loading}
-              loading={loading}
-              seeMoreHref={getSeeMoreHref()}
-              seeMoreLabel={getSeeMoreLabel()}
-            />
+            {showLoadMoreButton && (
+              <LoadMoreStations
+                showLoadMore={true}
+                showSeeMoreLink={showSeeMoreLink}
+                onLoadMore={() => setVisibleCount((c: number) => Math.min(c + initialVisibleCount, filteredStations.length))}
+                disabled={loading}
+                loading={loading}
+                seeMoreHref={showSeeMoreLink ? getSeeMoreHref() : undefined}
+                seeMoreLabel={showSeeMoreLink ? getSeeMoreLabel() : undefined}
+              />
+            )}
 					</>
 				) : (
 					!loading && !error && <NoStationsFound />

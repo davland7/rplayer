@@ -14,10 +14,13 @@ import "flag-icons/css/flag-icons.min.css";
 
 const preloadedCountries = await fetchPopularCountriesSorted(32);
 const initialCountry = preloadedCountries[0].name;
+const limit = 16;
+
 // biome-ignore lint/correctness/noUnusedVariables: Used in Astro template
 const preloadedStations = await fetchStationsByTerm({
 	term: initialCountry,
 	type: SearchType.Country,
+  limit,
 });
 // biome-ignore lint/correctness/noUnusedVariables: Used in Astro template
 const schemaData = {
@@ -51,7 +54,8 @@ const schemaData = {
     client:only="react"
     initialTag={initialCountry}
     initialVisibleCount={8}
-    preloadedGenresCountries={preloadedCountries}
+    limit={limit}
+    preloadedTags={preloadedCountries}
     preloadedStations={preloadedStations}
   />
 

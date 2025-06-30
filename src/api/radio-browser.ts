@@ -45,7 +45,7 @@ export interface GenreCountryItem {
 export interface StationsByTerm {
 	term: string;
 	type: SearchType.Country | SearchType.Tag;
-	limit?: number;
+	limit: number;
 }
 
 export async function fetchPopularCountries(limit: number = 20): Promise<Country[]> {
@@ -55,8 +55,11 @@ export async function fetchPopularCountries(limit: number = 20): Promise<Country
 		);
 		const countries = await response.json();
 		return countries.map((c: Country) => ({
-			...c,
+			code: c.iso_3166_1 ? c.iso_3166_1.toLowerCase() : undefined,
+			name: c.name,
+			type: SearchType.Country,
 			slug: slugify(c.name),
+			stationcount: c.stationcount,
 		}));
 	} catch (error) {
 		console.error("Failed to load countries:", error);
@@ -116,7 +119,7 @@ export async function fetchPopularGenresAndCountriesSorted(
 export async function fetchStationsByTerm({
 	term,
 	type,
-	limit = 30,
+	limit,
 }: StationsByTerm): Promise<RadioStation[]> {
 	const searchParams: Record<string, string> = {
 		order: "clickcount",
@@ -125,6 +128,8 @@ export async function fetchStationsByTerm({
 		hidebroken: "true",
 		offset: "0",
 	};
+
+  console.log(limit, 'fetchStationsByTerm');
 
 	try {
 		const response = await fetch(

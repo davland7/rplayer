@@ -16,17 +16,20 @@ import "flag-icons/css/flag-icons.min.css";
 export async function getStaticPaths() {
 	const allCountries = await fetchPopularCountriesSorted(32);
 	const paths = [];
+  const limit = 128;
 
 	for (const item of allCountries) {
 		const preloadedStations = await fetchStationsByTerm({
 			term: item.name,
 			type: SearchType.Country,
+	    limit,
 		});
 
 		paths.push({
 			params: { slug: item.slug },
 			props: {
 				initialCountry: item.slug,
+        limit,
 				pageName: capitalizeFirstLetter(item.name),
 				preloadedCountries: allCountries,
 				preloadedStations: preloadedStations,
@@ -44,6 +47,8 @@ const {
 	preloadedStations,
 	// biome-ignore lint/correctness/noUnusedVariables: Used in Astro template
 	preloadedCountries,
+  // biome-ignore lint/correctness/noUnusedVariables: Used in Astro template
+  limit,
 } = Astro.props;
 
 // biome-ignore lint/correctness/noUnusedVariables: Used in Astro template
@@ -85,7 +90,8 @@ const dataUpdated = new Date().toISOString().slice(0, 10); // format YYYY-MM-DD
     client:only="react"
     initialTag={initialCountry}
     initialVisibleCount={8}
-    preloadedGenresCountries={[]}
+    limit={limit}
+    preloadedTags={[]}
     preloadedStations={preloadedStations}
   />
 

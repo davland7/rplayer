@@ -2,18 +2,22 @@ import { useCallback, useState } from "react";
 import { fetchStationsByTerm, type GenreCountryItem, type RadioStation, SearchType } from "../../api/radio-browser.js";
 
 interface UseRadioSearchApiOptions {
-	genresCountries: GenreCountryItem[];
+	preloadedTags: GenreCountryItem[];
 	favoritesStations: RadioStation[];
+	limit: number;
 }
 
 export function useRadioSearchApi({
-	genresCountries,
+	preloadedTags,
 	favoritesStations,
+	limit,
 }: UseRadioSearchApiOptions) {
 	const [stations, setStations] = useState<RadioStation[]>([]);
 	const [loading, setLoading] = useState<boolean>(false);
 	const [error, setError] = useState<string>("");
 	const [hasMoreResults, setHasMoreResults] = useState<boolean>(true);
+
+	console.log(limit, 'useRadioSearchApi');
 
 	// Search by tag, country or 'Favorites'
 	const searchStations = useCallback(
@@ -30,14 +34,14 @@ export function useRadioSearchApi({
 			setStations([]);
 			setHasMoreResults(true);
 			try {
-				const item = genresCountries.find((c) => c.name.toLowerCase() === itemName.toLowerCase());
+				const item = preloadedTags.find((c) => c.name.toLowerCase() === itemName.toLowerCase());
 				let data: RadioStation[] = [];
 				if (item) {
 					// Use fetchStationsByTerm utility
-					data = await fetchStationsByTerm({ term: item.name, type: item.type });
+					data = await fetchStationsByTerm({ term: item.name, type: item.type, limit });
 				} else {
 					// Fallback: treat as tag
-					data = await fetchStationsByTerm({ term: itemName, type: SearchType.Tag });
+					data = await fetchStationsByTerm({ term: itemName, type: SearchType.Tag, limit });
 				}
 				if (Array.isArray(data)) {
 					setStations(data);
@@ -54,7 +58,7 @@ export function useRadioSearchApi({
 				setLoading(false);
 			}
 		},
-		[genresCountries, favoritesStations],
+		[preloadedTags, favoritesStations, limit],
 	);
 
 	return {

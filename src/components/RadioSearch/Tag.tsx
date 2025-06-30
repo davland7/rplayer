@@ -1,7 +1,10 @@
+import type { TagUI } from "./RadioSearch.js";
 import { HiMusicalNote, HiStar } from "react-icons/hi2";
 import { SearchType } from "../../api/radio-browser.js";
-import { SpecialTag } from "./SpecialTag.js";
-import type { TagUI } from "./RadioSearch.js";
+
+export enum SpecialTag {
+	Favorites = "favorites",
+}
 
 interface TagProps extends TagUI {
 	isActive: boolean;
@@ -13,7 +16,7 @@ const Tag = ({ name, slug, type, code, isActive, onClick }: TagProps) => {
 		onClick(slug);
 	};
 
-	console.log("TYPE:", type);
+  console.log(name, slug, type, code, isActive);
 
 	const selectedClass = isActive
 		? "bg-black text-primary-500 border-primary-500 font-bold shadow cursor-default"

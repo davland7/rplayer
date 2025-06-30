@@ -17,6 +17,7 @@ const LoadMoreStations: React.FC<LoadMoreStationsProps> = ({
   seeMoreHref = "#",
   seeMoreLabel = "See more",
 }) => {
+  // If neither button nor link should be shown, render nothing
   if (!showLoadMore && !showSeeMoreLink) return null;
   return (
     <div className="mt-6 text-center">
