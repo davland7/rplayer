@@ -9,16 +9,6 @@ import MarkdownSection from "../components/MarkdownSection.astro";
 import RadioSearch from "../components/RadioSearch/index.js";
 // biome-ignore lint/correctness/noUnusedImports: Used in Astro template
 import { Content as HomeContent } from "../content/home.md";
-import type { RadioStation } from "../api/radio-browser.js";
-import { fetchPopularGenresAndCountriesSorted } from "../api/radio-browser.js";
-// biome-ignore lint/correctness/noUnusedImports: Used in Astro template
-import { SpecialTag } from "../components/RadioSearch/Tag.js";
-import "flag-icons/css/flag-icons.min.css";
-
-// biome-ignore lint/correctness/noUnusedVariables: Used in Astro template
-const preloadedStations: RadioStation[] = [];
-// biome-ignore lint/correctness/noUnusedVariables: Used in Astro template
-const preloadedGenresCountries = await fetchPopularGenresAndCountriesSorted(8);
 ---
 
 <Layout
@@ -35,10 +25,8 @@ const preloadedGenresCountries = await fetchPopularGenresAndCountriesSorted(8);
   <h2 class="text-2xl font-bold text-white"><span class="font-semibold">R<span class="text-primary">Player</span></span> in action</h2>
   <RadioSearch
     client:only="react"
-    initialTag={SpecialTag.Favorites}
     initialVisibleCount={6}
-    limit={12}
-    preloadedTags={preloadedGenresCountries}
-    preloadedStations={preloadedStations}
+    preloadedStations={[]}
+    showFavoritesOnly={true}
   />
 </Layout>

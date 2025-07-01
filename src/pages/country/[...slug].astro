@@ -1,0 +1,81 @@
+---
+
+export const prerender = true;
+import Layout from "../../layouts/Layout.astro";
+import RadioSearch from "../../components/RadioSearch/RadioSearch.js";
+import ItemLinks from "../../components/ItemLinks.js";
+import { fetchPopularCountriesSorted, fetchStationsByTerm, SearchType } from "../../api/radio-browser";
+import MarkdownSection from "../../components/MarkdownSection.astro";
+import { Content as CountryContent } from "../../content/country.md";
+
+export async function getStaticPaths() {
+  const limit = 4; // Limite le nombre de pays/pages générées
+  const stationLimit = 4; // Limite le nombre de stations par page
+  const allCountries = await fetchPopularCountriesSorted(limit);
+  const paths = [];
+
+  // Page d'accueil des pays (route: /country)
+  paths.push({ params: { slug: undefined }, props: {
+    preloadedCountries: allCountries,
+    initialCountry: "",
+    preloadedStations: [],
+    pageName: "",
+    isIndex: true,
+  }});
+
+  // Pages détail pour chaque pays (route: /country/[slug])
+  for (const country of allCountries) {
+    const preloadedStations = await fetchStationsByTerm({
+      term: country.name,
+      type: SearchType.Country,
+      limit: stationLimit,
+    });
+    paths.push({
+      params: { slug: country.slug },
+      props: {
+        preloadedCountries: allCountries,
+        initialCountry: country.slug,
+        preloadedStations,
+        pageName: country.name,
+        limit: stationLimit,
+        isIndex: false,
+      }
+    });
+  }
+  return paths;
+}
+
+const { preloadedCountries = [], initialCountry, preloadedStations, pageName, isIndex } = Astro.props;
+---
+
+<Layout title={isIndex ? "Browse radio countries" : `RPlayer in action – ${pageName} radio stations`}>
+  {isIndex ? (
+    <MarkdownSection>
+      <CountryContent />
+    </MarkdownSection>
+  ) : (
+    <>
+      <section class="p-0 border-0 rounded-none shadow-none my-8 sm:p-6 sm:bg-black sm:text-white sm:rounded-lg sm:border-2 sm:border-primary">
+        <h1 class="font-bold mb-0 text-primary text-4xl">{pageName} stations</h1>
+        <p class="mt-6">
+          Try <span class="font-semibold">R<span class="text-primary">Player</span></span> in action! Instantly listen to online radio stations from <span class="text-primary font-semibold">{pageName}</span>. Explore, play, and discover how RPlayer makes radio streaming simple and enjoyable for every country.
+        </p>
+      </section>
+
+      <RadioSearch
+        client:only="react"
+        initialVisibleCount={8}
+        preloadedStations={preloadedStations}
+        activeSection="country"
+      />
+    </>
+  )}
+  <footer class="mt-12">
+    <p class="mb-2 text-gray-400 text-sm">
+      {isIndex
+        ? "Browse countries and discover thousands of radio stations by location."
+        : `Explore more countries and listen to even more stations!`}
+    </p>
+    <ItemLinks items={preloadedCountries} basePath="country" activeSlug={initialCountry} />
+  </footer>
+</Layout>
