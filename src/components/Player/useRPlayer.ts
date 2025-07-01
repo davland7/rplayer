@@ -2,13 +2,15 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import RPlayer from "../../lib/index.js";
 import { setVolume as setStoredVolume } from "../../utils/storage.js";
 
+export interface UseRPlayerOptions {
+  initialVolume?: number;
+  onStatusChange?: (isPlaying: boolean, isPaused: boolean) => void;
+}
+
 export function useRPlayer({
-	initialVolume = 0.5,
-	onStatusChange,
-}: {
-	initialVolume?: number;
-	onStatusChange?: (isPlaying: boolean, isPaused: boolean) => void;
-}) {
+  initialVolume = 0.5,
+  onStatusChange,
+}: UseRPlayerOptions) {
 	const playerRef = useRef<RPlayer | null>(null);
 	const [isPlaying, setIsPlaying] = useState(false);
 	const [isPaused, setIsPaused] = useState(false);

@@ -2,7 +2,7 @@
 // biome-ignore lint/correctness/noUnusedImports: Used in Astro template
 import Layout from "../layouts/Layout.astro";
 // biome-ignore lint/correctness/noUnusedImports: Used in Astro template
-import CookieConsent from "../components/CookieConsent/CookieConsent";
+import Breadcrumb from "../components/Breadcrumb.astro";
 // biome-ignore lint/correctness/noUnusedImports: Used in Astro template
 import MarkdownSection from "../components/MarkdownSection.astro";
 // biome-ignore lint/correctness/noUnusedImports: Used in Astro template
@@ -15,12 +15,11 @@ import M3uPlayer from "../components/M3uPlayer.astro";
   title="M3U Playlist Demo | RPlayer"
   currentPage="m3u"
 >
+  <Breadcrumb items={[{ label: "M3U Demo" }]} />
+
   <MarkdownSection>
     <M3uContent />
   </MarkdownSection>
 
-  <CookieConsent client:only="react" />
-
   <M3uPlayer />
-
 </Layout>

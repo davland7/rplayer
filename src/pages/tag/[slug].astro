@@ -2,6 +2,8 @@
 // biome-ignore lint/correctness/noUnusedImports: Used in Astro template
 import Layout from "../../layouts/Layout.astro";
 // biome-ignore lint/correctness/noUnusedImports: Used in Astro template
+import Breadcrumb from "../../components/Breadcrumb.astro";
+// biome-ignore lint/correctness/noUnusedImports: Used in Astro template
 import RadioSearch from "../../components/RadioSearch/index.js";
 // biome-ignore lint/correctness/noUnusedImports: Used in Astro template
 import ItemLinks from "../../components/ItemLinks.js";
@@ -66,11 +68,13 @@ const schemaData = {
   title={`RPlayer in action – ${pageName} radio stations`}
   description={`Discover and listen to the best online radio stations for the genre ${pageName}. Enjoy live music, talk, and more by ${pageName} from around the world.`}
 >
-  <script
-    is:inline
-    type="application/ld+json"
-    set:html={JSON.stringify(schemaData)}
-  />
+  <script is:inline type="application/ld+json" set:html={JSON.stringify(schemaData)} />
+
+  <Breadcrumb items={[
+    { label: "Tag", url: "/tag" },
+    { label: pageName }
+  ]} />
+
   <section class="p-0 border-0 rounded-none shadow-none my-8 sm:p-6 sm:bg-black sm:text-white sm:rounded-lg sm:border-2 sm:border-primary">
     <h1 class="font-bold mb-0 text-primary text-4xl">{pageName} stations</h1>
     <p class="my-8">

@@ -1,5 +1,4 @@
 import { buildParams } from "../utils/url.js";
-import { capitalizeFirstLetter } from "../utils/string.js";
 import { slugify } from "../utils/slugify.js";
 
 const API_BASE = "https://de1.api.radio-browser.info/json";
@@ -55,11 +54,9 @@ export async function fetchPopularCountries(limit: number = 20): Promise<Country
 		);
 		const countries = await response.json();
 		return countries.map((c: Country) => ({
-			code: c.iso_3166_1 ? c.iso_3166_1.toLowerCase() : undefined,
-			name: c.name,
-			type: SearchType.Country,
+			...c,
+			// On ne met pas code ici, on garde iso_3166_1
 			slug: slugify(c.name),
-			stationcount: c.stationcount,
 		}));
 	} catch (error) {
 		console.error("Failed to load countries:", error);
@@ -99,7 +96,7 @@ export async function fetchPopularGenresAndCountriesSorted(
 		}));
 
 		const tagItems: GenreCountryItem[] = (tags || []).map((t) => ({
-			name: capitalizeFirstLetter(t.name),
+			name: t.name,
 			type: SearchType.Tag,
 			slug: slugify(t.name),
 			stationcount: t.stationcount,
@@ -129,8 +126,6 @@ export async function fetchStationsByTerm({
 		offset: "0",
 	};
 
-  console.log(limit, 'fetchStationsByTerm');
-
 	try {
 		const response = await fetch(
 			`${API_BASE}/stations/search?${`${type}=${term}`}&${buildParams(searchParams)}`,
@@ -152,6 +147,7 @@ export async function fetchPopularCountriesSorted(limit: number = 20) {
 				...country,
 				slug,
 				type: SearchType.Country as const,
+				code: country.iso_3166_1 ? country.iso_3166_1.toLowerCase() : undefined,
 			};
 		})
 		.sort((a, b) => a.name.localeCompare(b.name));

@@ -5,6 +5,7 @@ import Layout from "../layouts/Layout.astro";
 import MarkdownSection from "../components/MarkdownSection.astro";
 // biome-ignore lint/correctness/noUnusedImports: Used in Astro template
 import { Content as NotFoundContent } from "../content/404.md";
+import Breadcrumb from "../components/Breadcrumb.astro";
 ---
 
 <Layout
@@ -13,6 +14,8 @@ import { Content as NotFoundContent } from "../content/404.md";
   keywords="404, page not found, error, RPlayer, audio player"
   currentPage="404"
 >
+  <Breadcrumb items={[{ label: "Error 404" }]} />
+
   <MarkdownSection>
     <NotFoundContent />
   </MarkdownSection>

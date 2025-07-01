@@ -9,6 +9,8 @@ import Player from "../components/Player/Player.js";
 import { Content as ReadmeContent } from "../../README.md";
 // biome-ignore lint/correctness/noUnusedImports: Used in Astro template
 import CookieConsent from "../components/CookieConsent/CookieConsent";
+// biome-ignore lint/correctness/noUnusedImports: Used in Astro template
+import Breadcrumb from "../components/Breadcrumb.astro";
 ---
 
 <Layout
@@ -16,6 +18,8 @@ import CookieConsent from "../components/CookieConsent/CookieConsent";
   description="Complete documentation for RPlayer - a lightweight audio library for streaming radio and various audio formats."
   currentPage="documentation"
 >
+  <Breadcrumb items={[{ label: "Documentation" }]} />
+
   <MarkdownSection>
     <ReadmeContent />
   </MarkdownSection>

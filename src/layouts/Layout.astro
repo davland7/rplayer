@@ -5,11 +5,6 @@ import Sidebar from "../components/Sidebar.astro";
 
 // biome-ignore lint/correctness/noUnusedVariables: Astro props are used in the template
 const { title, description, keywords } = Astro.props;
-
-// Utilise Astro.url pour obtenir le chemin courant
-const { pathname } = Astro.url; // ex: "/country/the-philippines"
-// biome-ignore lint/correctness/noUnusedVariables: Astro props are used in the template
-const segments = pathname.split("/").filter(Boolean); // ["country", "the-philippines"]
 ---
 
 <!doctype html>
@@ -26,43 +21,14 @@ const segments = pathname.split("/").filter(Boolean); // ["country", "the-philip
     <title>{title}</title>
 	</head>
 	<body class="font-sans antialiased bg-black">
-    <header class="max-w-screen-lg mx-auto flex items-center p-3 py-4 sticky top-0 z-50 bg-black">
-      <a href="/" class="flex items-center text-2xl font-bold tracking-tight mx-auto md:ml-0 md:mr-auto">
-        <img src="/images/favicon.png" alt="RPlayer Logo" class="w-10 h-10 mr-2 md:w-12 md:h-12" />
-        <span class="text-white">R</span><span class="text-primary">Player</span>
-      </a>
+    <header class="w-full flex items-center justify-end p-3 py-4 sticky top-0 z-50 bg-black">
+      <div class="flex flex-col w-full md:max-w-[612px] mx-auto">
+        <a href="/" class="flex items-center text-2xl font-bold tracking-tight mx-auto">
+          <img src="/images/favicon.png" alt="RPlayer Logo" class="w-10 h-10 mr-2 md:w-12 md:h-12" />
+          <span class="text-white">R</span><span class="text-primary">Player</span>
+        </a>
+      </div>
     </header>
-    <nav class="max-w-screen-lg mx-auto px-6 pt-2 pb-1" aria-label="Breadcrumb">
-      <ol itemscope itemtype="https://schema.org/BreadcrumbList" class="flex flex-wrap gap-2 text-sm text-gray-300">
-        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
-          <a href="/" itemprop="item" class="hover:underline focus-visible:underline text-primary"><span itemprop="name">Home</span></a>
-          <meta itemprop="position" content="1" />
-        </li>
-        {segments.map((crumb, idx) => (
-          <>
-            <li class="flex items-center" aria-hidden="true">›</li>
-            <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
-              {idx < segments.length - 1 ? (
-                <a
-                  href={'/' + segments.slice(0, idx + 1).join('/')}
-                  itemprop="item"
-                  class="hover:underline focus-visible:underline text-primary"
-                >
-                  <span itemprop="name">
-                    {crumb.charAt(0).toUpperCase() + crumb.slice(1).replace(/-/g, ' ')}
-                  </span>
-                </a>
-              ) : (
-                <span itemprop="name" class="text-white font-semibold">
-                  {crumb.charAt(0).toUpperCase() + crumb.slice(1).replace(/-/g, ' ')}
-                </span>
-              )}
-              <meta itemprop="position" content={`${idx + 2}`} />
-            </li>
-          </>
-        ))}
-      </ol>
-    </nav>
     <div class="max-w-screen-lg mx-auto px-6 md:p-0 flex flex-col md:flex-row w-full">
       <Sidebar
         currentPage={'home'}

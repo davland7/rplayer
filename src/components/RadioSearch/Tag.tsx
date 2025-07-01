@@ -16,8 +16,6 @@ const Tag = ({ name, slug, type, code, isActive, onClick }: TagProps) => {
 		onClick(slug);
 	};
 
-  console.log(name, slug, type, code, isActive);
-
 	const selectedClass = isActive
 		? "bg-black text-primary-500 border-primary-500 font-bold shadow cursor-default"
 		: "hover:bg-primary-600 hover:text-black focus:bg-primary-600 focus:text-black";

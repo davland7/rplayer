@@ -10,7 +10,8 @@ interface PlayerProps {
 	initialVolume?: number;
 	defaultSource?: string;
 	stationName?: string;
-	autoplay?: boolean; // Nouvelle prop pour contrôler la lecture automatique
+	autoplay?: boolean; // Control initial autoplay
+	shouldPlay?: boolean; // If true, play immediately when defaultSource changes
 	onStatusChange?: (isPlaying: boolean, isPaused: boolean) => void;
 	onExternalSourceChange?: boolean; // Nouvelle prop pour mettre à jour le champ d'entrée quand defaultSource change
 }
@@ -25,6 +26,7 @@ const Player = ({
 	defaultSource = "",
 	stationName = "",
 	autoplay = false, // Par défaut, pas de lecture automatique
+	shouldPlay = false,
 	onExternalSourceChange = true, // Par défaut, mettre à jour le champ d'entrée quand defaultSource change
 	onStatusChange,
 }: PlayerProps): JSX.Element => {
@@ -158,6 +160,20 @@ const Player = ({
 			setInputUrl(defaultSource);
 		}
 	}, [defaultSource, onExternalSourceChange, inputUrl]);
+
+	// Play on source change if shouldPlay is true
+	useEffect(() => {
+		if (shouldPlay && defaultSource) {
+			hasInteracted.current = true;
+			const playSrcFn = playSrc;
+			if (playerRef.current && typeof playSrcFn === "function") {
+				(playSrcFn as (src: string) => Promise<void>)(defaultSource).catch((err: unknown) => {
+					console.warn("Auto play on source change failed:", err);
+				});
+			}
+		}
+	// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [shouldPlay, defaultSource]);
 
 	const handleInputPlay = useCallback(() => {
 		if (!playerRef.current || !inputUrl) return;

@@ -18,7 +18,7 @@ import "flag-icons/css/flag-icons.min.css";
 // biome-ignore lint/correctness/noUnusedVariables: Used in Astro template
 const preloadedStations: RadioStation[] = [];
 // biome-ignore lint/correctness/noUnusedVariables: Used in Astro template
-const preloadedGenresCountries = await fetchPopularGenresAndCountriesSorted();
+const preloadedGenresCountries = await fetchPopularGenresAndCountriesSorted(8);
 ---
 
 <Layout
@@ -36,8 +36,8 @@ const preloadedGenresCountries = await fetchPopularGenresAndCountriesSorted();
   <RadioSearch
     client:only="react"
     initialTag={SpecialTag.Favorites}
-    initialVisibleCount={8}
-    limit={16}
+    initialVisibleCount={6}
+    limit={12}
     preloadedTags={preloadedGenresCountries}
     preloadedStations={preloadedStations}
   />

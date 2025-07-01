@@ -17,8 +17,6 @@ export function useRadioSearchApi({
 	const [error, setError] = useState<string>("");
 	const [hasMoreResults, setHasMoreResults] = useState<boolean>(true);
 
-	console.log(limit, 'useRadioSearchApi');
-
 	// Search by tag, country or 'Favorites'
 	const searchStations = useCallback(
 		async (itemName: string) => {
@@ -36,11 +34,15 @@ export function useRadioSearchApi({
 			try {
 				const item = preloadedTags.find((c) => c.name.toLowerCase() === itemName.toLowerCase());
 				let data: RadioStation[] = [];
+        console.log(item);
 				if (item) {
 					// Use fetchStationsByTerm utility
 					data = await fetchStationsByTerm({ term: item.name, type: item.type, limit });
-				} else {
+          console.log(item.name, item.type, limit);
+          console.log('IF', data);
+        } else {
 					// Fallback: treat as tag
+          console.log('ELSE', data);
 					data = await fetchStationsByTerm({ term: itemName, type: SearchType.Tag, limit });
 				}
 				if (Array.isArray(data)) {

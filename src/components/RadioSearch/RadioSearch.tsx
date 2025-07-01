@@ -52,6 +52,7 @@ const RadioSearch = ({
 	const [currentPlayingUrl, setCurrentPlayingUrl] = useState<string>("");
 	const [currentPlayingName, setCurrentPlayingName] = useState<string>("");
 	const [filterText, setFilterText] = useState<string>("");
+	const [shouldPlay, setShouldPlay] = useState(false);
 
 	// --- PAGE TYPE DETECTION ---
 	// Detects if we are on the homepage, a detail page, or a category page
@@ -100,10 +101,18 @@ const RadioSearch = ({
 	const handlePlay = useCallback((stationUrl: string, name: string = "") => {
 		setCurrentPlayingUrl(stationUrl);
 		setCurrentPlayingName(name);
+		setShouldPlay(true);
 		if (stationUrl) {
 			document.querySelector(".player-section")?.scrollIntoView({ behavior: "smooth" });
 		}
 	}, []);
+
+	// Reset shouldPlay to false after each play trigger
+	useEffect(() => {
+		if (shouldPlay) {
+			setShouldPlay(false);
+		}
+	}, [shouldPlay]);
 
 	const handleRemoveStation = (stationUuid: string) => {
 		removeStation(stationUuid);
@@ -128,7 +137,7 @@ const RadioSearch = ({
 	const tagsWithFavorites: TagUI[] = isHomePage
   ? [
       {
-        name: "Favorites",
+        name: "My playlist", // Change this to "My playlist" if you prefer
         slug: "favorites",
         type: SpecialTag.Favorites,
       },
@@ -160,43 +169,43 @@ const RadioSearch = ({
 	return (
 		<>
 			<Player
-				initialVolume={0.2}
 				defaultSource={currentPlayingUrl ?? preloadedStations[0]?.url ?? ""}
 				stationName={currentPlayingName}
 				autoplay={false}
+				shouldPlay={shouldPlay}
 			/>
 			<div className="mt-6">
-				{(isCategoryPage || isHomePage) && (
-          <>
-            <div className="mb-2 text-gray-300 font-medium">
-              Popular{" "}
-              <a href="/tag" className="text-primary-500 underline hover:no-underline">
-                genres
-              </a>{" "}
-              &{" "}
-              <a href="/country" className="text-primary-500 underline hover:no-underline">
-                countries
-              </a>
-            </div>
-            <div className="flex flex-wrap gap-2 mb-6">
-              {tagsWithFavorites.map((item) => (
-                <Tag
-                  key={`${item.type}-${item.slug}`}
-                  name={item.name}
-                  type={item.type}
-                  code={item.code}
-                  slug={item.slug}
-                  isActive={selectedTag.toLowerCase() === item.slug.toLowerCase()}
-                  onClick={() => {
-                    setSelectedTag(item.slug);
-                    setVisibleCount(initialVisibleCount);
-                    searchStations(item.name);
-                  }}
-                />
-              ))}
-            </div>
-          </>
-				)}
+				<nav aria-label="Main tag navigation" className="mb-2 text-gray-300 font-medium">
+          <span>Popular{' '}</span>
+          <a href="/tag" className="text-primary-500 underline hover:no-underline" aria-label="Browse by genres">genres</a>{' '}
+          &{' '}
+          <a href="/country" className="text-primary-500 underline hover:no-underline" aria-label="Browse by countries">countries</a>
+          {!isHomePage && (
+            <>
+              {' '}|{' '}
+              <a href="/" className="text-primary-500 underline hover:no-underline" aria-label="Go to favorites">Favorites</a>
+            </>
+          )}
+        </nav>
+        {(isCategoryPage || isHomePage) && (
+          <div className="flex flex-wrap gap-2 mb-6">
+            {tagsWithFavorites.map((item) => (
+              <Tag
+                key={`${item.type}-${item.slug}`}
+                name={item.name}
+                type={item.type}
+                code={item.code}
+                slug={item.slug}
+                isActive={selectedTag.toLowerCase() === item.slug.toLowerCase()}
+                onClick={() => {
+                  setSelectedTag(item.slug);
+                  setVisibleCount(initialVisibleCount);
+                  searchStations(item.name);
+                }}
+              />
+            ))}
+          </div>
+        )}
 				{/* Error display */}
 				{error && (
 					<div className="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-8">

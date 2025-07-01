@@ -4,7 +4,7 @@ import ContactForm from "../components/ContactForm/ContactForm.js";
 // biome-ignore lint/correctness/noUnusedImports: Used in Astro template
 import Layout from "../layouts/Layout.astro";
 // biome-ignore lint/correctness/noUnusedImports: Used in Astro template
-import CookieConsent from "../components/CookieConsent/CookieConsent";
+import Breadcrumb from "../components/Breadcrumb.astro";
 ---
 
 <Layout
@@ -12,8 +12,8 @@ import CookieConsent from "../components/CookieConsent/CookieConsent";
   description="Contact us about RPlayer, the JavaScript library for playing radio streams"
   currentPage="contact"
 >
+  <Breadcrumb items={[{ label: "Contact" }]} />
 
-  <CookieConsent client:idle />
   <section class="p-0 border-0 rounded-none shadow-none my-8 sm:p-6 sm:bg-black sm:text-white sm:shadow-sm sm:rounded-lg sm:border-2 sm:border-primary">
     <h1 class="font-bold mb-0 text-primary text-4xl">Contact</h1>
     <p class="my-8">
