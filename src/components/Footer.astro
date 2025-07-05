@@ -1,0 +1,45 @@
+---
+// Props attendus : items, activeSlug, isIndex, basePath, activeSection
+const { items = [], activeSlug, isIndex, basePath = "tag", activeSection = "tag" } = Astro.props;
+import ItemLinks from "../components/ItemLinks.js";
+---
+<footer class="mt-12">
+  <nav class="mb-4 flex flex-wrap gap-4 text-sm" aria-label="Footer menu">
+    <a
+      href="/tag"
+      class={[
+        "hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-primary text-primary",
+        activeSection === "tag" ? "font-bold underline" : ""
+      ].join(" ")}
+      aria-current={activeSection === "tag" ? "page" : undefined}
+    >
+      Genres
+    </a>
+    <a
+      href="/country"
+      class={[
+        "hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-primary text-primary",
+        activeSection === "country" ? "font-bold underline" : ""
+      ].join(" ")}
+      aria-current={activeSection === "country" ? "page" : undefined}
+    >
+      Countries
+    </a>
+    <a
+      href="/"
+      class="hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-primary text-primary"
+    >
+      Favorites
+    </a>
+  </nav>
+  <p class="mb-2 text-gray-400 text-sm">
+    {isIndex
+      ? (basePath === "country"
+          ? "Browse countries and discover thousands of radio stations by location."
+          : "Browse genres and discover thousands of radio stations by music style.")
+      : (basePath === "country"
+          ? "Explore more countries and listen to even more stations!"
+          : "Explore more genres and listen to even more stations!")}
+  </p>
+  <ItemLinks items={items} basePath={basePath} activeSlug={activeSlug} />
+</footer>

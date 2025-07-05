@@ -13,7 +13,6 @@ export interface RadioSearchProps {
   initialVisibleCount: number;
   preloadedStations: RadioStation[];
   showFavoritesOnly?: boolean;
-  activeSection?: "tag" | "country";
 }
 
 /**
@@ -26,7 +25,6 @@ const RadioSearch = ({
   initialVisibleCount,
   preloadedStations = [],
   showFavoritesOnly = false,
-  activeSection,
 }: RadioSearchProps): JSX.Element => {
   const { favoritesStations, saveStation, removeStation, saveMessage } = useFavoritesStations();
   const [visibleCount, setVisibleCount] = useState<number>(initialVisibleCount);
@@ -84,51 +82,30 @@ return (
       shouldPlay={shouldPlay}
     />
     <div className="mt-6">
-      <nav aria-label="Main tag navigation" className="mb-2 text-gray-300 font-medium">
-        <span>Popular{' '}</span>
-        <a
-          href="/tag"
-          className={
-            `underline hover:no-underline px-1 ${activeSection === "tag" ? "font-bold text-primary-500" : "text-primary-500"}`
-          }
-          aria-label="Browse by genres"
-          aria-current={activeSection === "tag" ? "page" : undefined}
-        >
-          genres
-        </a>{' '}
-        &{' '}
-        <a
-          href="/country"
-          className={
-            `underline hover:no-underline px-1 ${activeSection === "country" ? "font-bold text-primary-500" : "text-primary-500"}`
-          }
-          aria-label="Browse by countries"
-          aria-current={activeSection === "country" ? "page" : undefined}
-        >
-          countries
-        </a>
-      </nav>
+      {/* Show the filter only if there are enough stations or a filter is active */}
+      {(stations.length > initialVisibleCount || filterText.trim()) && (
+        <StationNameFilter
+          value={filterText}
+          onChange={setFilterText}
+        />
+      )}
       {/* Search Results */}
-      {filteredStations.length > 0 ? (
+      {filteredStations.length === 0 ? (
+        filterText.trim() ? (
+          <div className="text-center text-gray-400 my-8">No stations match your search.</div>
+        ) : (
+          <NoStationsFound />
+        )
+      ) : (
         <>
-          {/* Always show the filter */}
-          <StationNameFilter
-            value={filterText}
-            onChange={setFilterText}
+          <StationsTable
+            stations={displayedStations}
+            savedStations={favoritesStations}
+            onPlay={handlePlay}
+            onSave={saveStation}
+            onRemove={handleRemoveStation}
+            showCodec={true}
           />
-          {/* Show a message if the filter returns no results and filter is active */}
-          {filteredStations.length === 0 && filterText.trim() ? (
-            <div className="text-center text-gray-400 my-8">No stations match your search.</div>
-          ) : (
-            <StationsTable
-              stations={displayedStations}
-              savedStations={favoritesStations}
-              onPlay={handlePlay}
-              onSave={saveStation}
-              onRemove={handleRemoveStation}
-              showCodec={true}
-            />
-          )}
           {/* Show the LoadMoreStations button on all pages */}
           {showLoadMoreButton && (
             <LoadMoreStations
@@ -139,8 +116,6 @@ return (
             />
           )}
         </>
-      ) : (
-        <NoStationsFound />
       )}
       {/* Save confirmation message */}
       {saveMessage && <SaveMessage message={saveMessage} />}

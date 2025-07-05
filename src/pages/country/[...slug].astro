@@ -2,11 +2,13 @@
 
 export const prerender = true;
 import Layout from "../../layouts/Layout.astro";
+import Footer from "../../components/Footer.astro";
 import RadioSearch from "../../components/RadioSearch/RadioSearch.js";
-import ItemLinks from "../../components/ItemLinks.js";
+// import ItemLinks from "../../components/ItemLinks.js";
 import { fetchPopularCountriesSorted, fetchStationsByTerm, SearchType } from "../../api/radio-browser";
 import MarkdownSection from "../../components/MarkdownSection.astro";
 import { Content as CountryContent } from "../../content/country.md";
+import CookieConsent from "../../components/CookieConsent/CookieConsent.js";
 
 export async function getStaticPaths() {
   const limit = 4; // Limite le nombre de pays/pages générées
@@ -55,6 +57,8 @@ const { preloadedCountries = [], initialCountry, preloadedStations, pageName, is
     </MarkdownSection>
   ) : (
     <>
+      <CookieConsent client:only="react" />
+
       <section class="p-0 border-0 rounded-none shadow-none my-8 sm:p-6 sm:bg-black sm:text-white sm:rounded-lg sm:border-2 sm:border-primary">
         <h1 class="font-bold mb-0 text-primary text-4xl">{pageName} stations</h1>
         <p class="mt-6">
@@ -66,16 +70,14 @@ const { preloadedCountries = [], initialCountry, preloadedStations, pageName, is
         client:only="react"
         initialVisibleCount={8}
         preloadedStations={preloadedStations}
-        activeSection="country"
       />
     </>
   )}
-  <footer class="mt-12">
-    <p class="mb-2 text-gray-400 text-sm">
-      {isIndex
-        ? "Browse countries and discover thousands of radio stations by location."
-        : `Explore more countries and listen to even more stations!`}
-    </p>
-    <ItemLinks items={preloadedCountries} basePath="country" activeSlug={initialCountry} />
-  </footer>
+  <Footer
+    items={preloadedCountries}
+    activeSlug={initialCountry}
+    isIndex={isIndex}
+    basePath="country"
+    activeSection="country"
+  />
 </Layout>

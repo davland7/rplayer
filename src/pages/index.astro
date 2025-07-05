@@ -16,10 +16,6 @@ import { Content as HomeContent } from "../content/home.md";
   description="RPlayer is a lightweight audio player for streaming radio that supports HLS streams, MP3, AAC and more formats."
   currentPage="home"
 >
-  <MarkdownSection>
-    <HomeContent />
-  </MarkdownSection>
-
   <CookieConsent client:only="react" />
 
   <h2 class="text-2xl font-bold text-white"><span class="font-semibold">R<span class="text-primary">Player</span></span> in action</h2>
@@ -29,4 +25,8 @@ import { Content as HomeContent } from "../content/home.md";
     preloadedStations={[]}
     showFavoritesOnly={true}
   />
+
+  <MarkdownSection>
+    <HomeContent />
+  </MarkdownSection>
 </Layout>

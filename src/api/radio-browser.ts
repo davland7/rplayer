@@ -119,7 +119,7 @@ export async function fetchStationsByTerm({
 	limit,
 }: StationsByTerm): Promise<RadioStation[]> {
 	const searchParams: Record<string, string> = {
-		order: "clickcount",
+		order: "lastchecktime",
 		limit: String(limit),
 		reverse: "true",
 		hidebroken: "true",
@@ -131,7 +131,7 @@ export async function fetchStationsByTerm({
 			`${API_BASE}/stations/search?${`${type}=${term}`}&${buildParams(searchParams)}`,
 		);
 		if (!response.ok) throw new Error(`Failed to load stations for ${term}`);
-		return await response.json();
+	  return await response.json();
 	} catch (error) {
 		console.error(`Failed to load stations for ${term}:`, error);
 		return [];

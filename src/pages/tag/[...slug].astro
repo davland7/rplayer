@@ -2,15 +2,16 @@
 export const prerender = true;
 
 import Layout from "../../layouts/Layout.astro";
+import Footer from "../../components/Footer.astro";
 import RadioSearch from "../../components/RadioSearch/RadioSearch.js";
-import ItemLinks from "../../components/ItemLinks.js";
 import { fetchPopularTagsSorted, fetchStationsByTerm, SearchType } from "../../api/radio-browser";
 import MarkdownSection from "../../components/MarkdownSection.astro";
 import { Content as TagContent } from "../../content/tag.md";
+import CookieConsent from "../../components/CookieConsent/CookieConsent.js";
 
 export async function getStaticPaths() {
-  const limit = 4; // Limite le nombre de tags/pages générées
-  const stationLimit = 4; // Limite le nombre de stations par page
+  const limit = 16; // Limite le nombre de tags/pages générées
+  const stationLimit = 16; // Limite le nombre de stations par page
   const allTags = await fetchPopularTagsSorted(limit);
   const paths = [];
 
@@ -55,7 +56,9 @@ const { preloadedTags = [], initialTag, preloadedStations, pageName, isIndex } =
     </MarkdownSection>
   ) : (
     <>
-      <section class="p-0 border-0 rounded-none shadow-none my-8 sm:p-6 sm:bg-black sm:text-white sm:rounded-lg sm:border-2 sm:border-primary">
+      <CookieConsent client:only="react" />
+
+      <section class="p-0 border-0 rounded-none shadow-none my-8 sm:p-6 text-white sm:rounded-lg sm:border-2 sm:border-primary">
         <h1 class="font-bold mb-0 text-primary text-4xl">{pageName} stations</h1>
         <p class="mt-6">
           Try <span class="font-semibold">R<span class="text-primary">Player</span></span> in action! Instantly listen to online radio stations from <span class="text-primary font-semibold">{pageName}</span>. Explore, play, and discover how RPlayer makes radio streaming simple and enjoyable for every country.
@@ -66,16 +69,14 @@ const { preloadedTags = [], initialTag, preloadedStations, pageName, isIndex } =
         client:only="react"
         initialVisibleCount={8}
         preloadedStations={preloadedStations}
-        activeSection="tag"
       />
     </>
   )}
-  <footer class="mt-12">
-    <p class="mb-2 text-gray-400 text-sm">
-      {isIndex
-        ? "Browse genres and discover thousands of radio stations by music style."
-        : `Explore more genres and listen to even more stations!`}
-    </p>
-    <ItemLinks items={preloadedTags} basePath="tag" activeSlug={initialTag} />
-  </footer>
+  <Footer
+    items={preloadedTags}
+    activeSlug={initialTag}
+    isIndex={isIndex}
+    basePath="tag"
+    activeSection="tag"
+  />
 </Layout>

@@ -4,10 +4,10 @@
 const { currentPage } = Astro.props;
 ---
 
-<!-- Sidebar responsive avec menu hamburger -->
+<!-- Responsive sidebar with hamburger menu -->
 <>
-  <!-- Hamburger pour mobile -->
-  <button id="sidebar-toggle" class="md:hidden fixed top-4 left-4 z-50 bg-black bg-opacity-80 text-primary p-2 rounded focus:outline-none" aria-label="Ouvrir le menu">
+  <!-- Hamburger for mobile -->
+  <button id="sidebar-toggle" class="md:hidden fixed top-4 left-4 z-50 bg-black bg-opacity-80 text-primary p-2 rounded focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-black" aria-label="Open menu">
     <svg id="sidebar-hamburger" class="h-7 w-7 block" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
       <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
     </svg>
@@ -15,11 +15,11 @@ const { currentPage } = Astro.props;
       <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
     </svg>
   </button>
-  <!-- Overlay mobile -->
-  <div id="sidebar-overlay" class="fixed left-0 right-0 top-16 bottom-0 bg-black bg-opacity-60 z-40 hidden md:hidden"></div>
+  <!-- Mobile overlay -->
+  <div id="sidebar-overlay" class="fixed left-0 right-0 top-0 bottom-0 bg-black bg-opacity-60 z-40 hidden md:hidden"></div>
   <!-- Sidebar -->
-  <aside id="sidebar" class="fixed left-0 top-16 h-[calc(100vh-4rem)] w-64 bg-black text-white shadow-lg z-50 transform -translate-x-full md:translate-x-0 md:sticky md:top-24 md:w-56 md:block transition-transform duration-200" tabindex="-1" aria-label="Main navigation">
-    <div class="flex flex-col h-full p-6 gap-6 relative">
+  <aside id="sidebar" class="fixed left-0 top-16 h-[calc(100vh-4rem)] w-64 bg-black text-white shadow-lg z-50 transform -translate-x-full md:relative md:top-auto md:w-full md:translate-x-0 md:block transition-transform duration-200 md:h-auto md:z-30 md:pt-4" tabindex="-1" aria-label="Main navigation">
+    <div class="flex flex-col h-full p-6 gap-6 relative overflow-y-auto">
       <nav aria-label="Main navigation">
         <ul class="flex flex-col gap-4 text-lg font-medium list-none p-0 m-0">
           <li>
@@ -71,31 +71,34 @@ const { currentPage } = Astro.props;
 </>
 
 <script is:inline>
-  // Mobile sidebar logic
-  const sidebar = document.getElementById('sidebar');
-  const overlay = document.getElementById('sidebar-overlay');
-  const toggle = document.getElementById('sidebar-toggle');
-  const hamburger = document.getElementById('sidebar-hamburger');
-  const closeX = document.getElementById('sidebar-close-x');
-  function closeSidebar() {
-    sidebar.classList.add('-translate-x-full');
-    overlay.classList.add('hidden');
-    // Affiche hamburger, cache X
-    hamburger.classList.remove('hidden');
-    closeX.classList.add('hidden');
-    // Rendre le focus au bouton hamburger
-    toggle && toggle.focus();
-  }
-  function openSidebar() {
-    sidebar.classList.remove('-translate-x-full');
-    overlay.classList.remove('hidden');
-    // Affiche X, cache hamburger
-    hamburger.classList.add('hidden');
-    closeX.classList.remove('hidden');
-    // Focus sur le bouton pour accessibilité
-    toggle && toggle.focus();
-  }
-  if (toggle && sidebar && overlay && hamburger && closeX) {
+  document.addEventListener('DOMContentLoaded', function() {
+    // Common elements
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('sidebar-overlay');
+    const toggle = document.getElementById('sidebar-toggle');
+    const hamburger = document.getElementById('sidebar-hamburger');
+    const closeX = document.getElementById('sidebar-close-x');
+
+    if (!sidebar || !overlay || !toggle || !hamburger || !closeX) return;
+
+    // Functions for mobile menu management
+    function closeSidebar() {
+      sidebar.classList.add('-translate-x-full');
+      overlay.classList.add('hidden');
+      hamburger.classList.remove('hidden');
+      closeX.classList.add('hidden');
+      toggle.focus();
+    }
+
+    function openSidebar() {
+      sidebar.classList.remove('-translate-x-full');
+      overlay.classList.remove('hidden');
+      hamburger.classList.add('hidden');
+      closeX.classList.remove('hidden');
+      toggle.focus();
+    }
+
+    // Mobile menu configuration
     toggle.onclick = () => {
       if (sidebar.classList.contains('-translate-x-full')) {
         openSidebar();
@@ -103,16 +106,19 @@ const { currentPage } = Astro.props;
         closeSidebar();
       }
     };
+
     overlay.onclick = closeSidebar;
-    // Fermer le menu sur navigation
+
+    // Close menu on navigation
     sidebar.querySelectorAll('a').forEach(link => {
       link.addEventListener('click', closeSidebar);
     });
-    // Fermer avec la touche ESC
+
+    // Close with ESC key
     document.addEventListener('keydown', (e) => {
       if (!sidebar.classList.contains('-translate-x-full') && (e.key === 'Escape' || e.key === 'Esc')) {
         closeSidebar();
       }
     });
-  }
+  });
 </script>
