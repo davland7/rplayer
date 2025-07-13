@@ -1,4 +1,4 @@
 User-agent: *
 Disallow:
 
-Sitemap: https://rplayer.js.org/sitemap.xml
+Sitemap: https://rplayer.js.org/sitemap-index.xml

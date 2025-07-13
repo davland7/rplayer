@@ -173,7 +173,7 @@ const Player = ({
 			}
 		}
 	// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [shouldPlay, defaultSource]);
+	}, [shouldPlay, defaultSource, playSrc, playerRef.current]);
 
 	const handleInputPlay = useCallback(() => {
 		if (!playerRef.current || !inputUrl) return;

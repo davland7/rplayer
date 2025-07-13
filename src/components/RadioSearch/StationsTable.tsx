@@ -47,7 +47,7 @@ const StationsTable = ({
 											src={station.favicon}
 											alt={station.name}
 											title={station.name}
-											className="w-8 h-8 mr-2 rounded-full bg-gray-100 object-contain"
+											className="w-8 h-8 mr-2 rounded-full object-contain"
 											onError={(e) => {
 												(e.target as HTMLImageElement).src = "/images/play-button.png";
 											}}

@@ -5,9 +5,9 @@ const NoStationsFound = () => (
 		<p>
 			Hey, want to try <span className="font-semibold">R<span className="text-primary">Player</span></span>? Good news: you can search by genre, or browse all available
 			{' '}
-			<a href="/tag" className="text-primary underline hover:no-underline focus:outline-none focus-visible:ring-2 focus-visible:ring-primary">Genres</a>
+			<a href="/search/tag" className="text-primary underline hover:no-underline focus:outline-none focus-visible:ring-2 focus-visible:ring-primary">Genres</a>
 			{' '}or{' '}
-			<a href="/country" className="text-primary underline hover:no-underline focus:outline-none focus-visible:ring-2 focus-visible:ring-primary">Countries</a>
+			<a href="/search/country" className="text-primary underline hover:no-underline focus:outline-none focus-visible:ring-2 focus-visible:ring-primary">Countries</a>
 			{' '}to discover online radio stations. You can also add stations to your Favorites for quick access.
 			{!isCookiesAccepted() && (
 				<span className="text-xs text-gray-500 block mt-2">

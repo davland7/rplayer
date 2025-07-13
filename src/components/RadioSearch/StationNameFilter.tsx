@@ -9,7 +9,7 @@ interface StationNameFilterProps {
 const StationNameFilter = ({ value, onChange, placeholder = "Filter by station name..." }: StationNameFilterProps) => {
   const inputId = useId();
   return (
-    <div className="mb-6 relative flex items-center gap-2">
+    <div className="mb-4 relative flex items-center gap-2">
       <label htmlFor={inputId} className="sr-only">
         Filter stations by name
       </label>

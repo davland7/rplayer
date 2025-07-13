@@ -1,6 +1,9 @@
 import { buildParams } from "./url.js";
 import { slugify } from "./slugify.js";
 
+import customStationsJson from './customStations.json' with { type: 'json' };
+const customStations: RadioStation[] = customStationsJson as RadioStation[];
+
 const API_BASE = "https://de1.api.radio-browser.info/json";
 const SORT_BY_STATION_COUNT_DESC = `order=stationcount&reverse=true`;
 
@@ -114,11 +117,30 @@ export async function fetchTerms(
   }
 }
 
+// List of banned stations by their UUIDs stationuuid
+const bannedStationUuids = new Set<string>([
+  // Exemple : "custom-1", "stationuuid-api-123"
+]);
+
+function filterCustomStations(term: string, type: SearchType): RadioStation[] {
+  if (type === SearchType.Country) {
+    return customStations.filter((s: RadioStation) =>
+      s.country.toLowerCase() === term.toLowerCase()
+    );
+  } else if (type === SearchType.Tag) {
+    return customStations.filter((s: RadioStation) =>
+      s.tags.toLowerCase().split(/[, ]+/).includes(term.toLowerCase())
+    );
+  }
+  return [];
+}
+
 export async function fetchStationsByTerm({
   term,
   type,
   limit = 128,
 }: StationsByTerm): Promise<RadioStation[]> {
+  const filteredCustom = filterCustomStations(term, type);
   const searchParams: Record<string, string> = {
     order: "lastchecktime",
     limit: String(limit),
@@ -132,9 +154,12 @@ export async function fetchStationsByTerm({
       `${API_BASE}/stations/search?${`${type}=${term}`}&${buildParams(searchParams)}`,
     );
     if (!response.ok) throw new Error(`Failed to load stations for ${term}`);
-    return await response.json();
+    let apiRadioBrowser: RadioStation[] = await response.json();
+    apiRadioBrowser = apiRadioBrowser.filter(s => !bannedStationUuids.has(s.stationuuid));
+
+    return [...filteredCustom, ...apiRadioBrowser];
   } catch (error) {
     console.error(`Failed to load stations for ${term}:`, error);
-    return [];
+    return [...filteredCustom];
   }
 }

@@ -55,13 +55,13 @@ export async function getStaticPaths() {
     { type: SearchType.Tag, name: 'Tag', slug: 'tag' }
   ];
 
-  const limitStations = 16; // Limit the number of stations per page
+  const limitStations = 128; // Limit the number of stations per page
   const paths = [];
   const indexBreadcrumb = [
     { label: 'Search' }
   ];
   // Fetch all category data in a single request
-  const categoriesData = await fetchTerms(2);
+  const categoriesData = await fetchTerms(16);
 
   // 1. Main index page (route: /search)
   paths.push({
@@ -169,7 +169,7 @@ const schemaType = getSchemaType();
             <SearchContent />
           </MarkdownSection>
           {preloadedCategories.length > 0 && (
-            <div class="mt-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            <div class="mt-6 grid grid-cols-2 gap-4">
               <div itemscope itemtype="https://schema.org/ItemList" style="display: none;">
                 <meta itemprop="numberOfItems" content={preloadedCategories.length.toString()} />
               </div>

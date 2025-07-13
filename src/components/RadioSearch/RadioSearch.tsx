@@ -1,4 +1,4 @@
-import { type JSX, useCallback, useEffect, useState } from "react";
+import { type JSX, useCallback, useEffect, useState, useMemo } from "react";
 import Player from "../Player/Player.js";
 import StationsTable from "./StationsTable.js";
 import { useFavoritesStations } from "./useFavoritesStations.js";
@@ -28,114 +28,113 @@ const RadioSearch = ({
 }: RadioSearchProps): JSX.Element => {
   const { favoritesStations, saveStation, removeStation, saveMessage } = useFavoritesStations();
   const [visibleCount, setVisibleCount] = useState<number>(initialVisibleCount);
-  const stations = showFavoritesOnly ? favoritesStations : preloadedStations;
-  // removed unused loading and error state
   const [currentPlayingUrl, setCurrentPlayingUrl] = useState<string>("");
   const [currentPlayingName, setCurrentPlayingName] = useState<string>("");
   const [filterText, setFilterText] = useState<string>("");
   const [shouldPlay, setShouldPlay] = useState(false);
+  const [showOnlyHls, setShowOnlyHls] = useState(false);
 
+  const stations = showFavoritesOnly ? favoritesStations : preloadedStations;
 
-useEffect(() => {
-  setVisibleCount(initialVisibleCount);
-}, [initialVisibleCount]);
+  useEffect(() => {
+    setVisibleCount(initialVisibleCount);
+  }, [initialVisibleCount]);
 
-const handlePlay = useCallback((stationUrl: string, name: string = "") => {
-  setCurrentPlayingUrl(stationUrl);
-  setCurrentPlayingName(name);
-  setShouldPlay(true);
-  if (stationUrl) {
-    document.querySelector(".player-section")?.scrollIntoView({ behavior: "smooth" });
-  }
-}, []);
+  const handlePlay = useCallback((stationUrl: string, name: string = "") => {
+    setCurrentPlayingUrl(stationUrl);
+    setCurrentPlayingName(name);
+    setShouldPlay(true);
+    if (stationUrl) {
+      document.querySelector(".player-section")?.scrollIntoView({ behavior: "smooth" });
+    }
+  }, []);
 
-// Reset shouldPlay to false after each play trigger
-useEffect(() => {
-  if (shouldPlay) {
-    setShouldPlay(false);
-  }
-}, [shouldPlay]);
+  // Reset shouldPlay to false after each play trigger
+  useEffect(() => {
+    if (shouldPlay) {
+      setShouldPlay(false);
+    }
+  }, [shouldPlay]);
 
-const handleRemoveStation = (stationUuid: string) => {
-  removeStation(stationUuid);
-};
+  const handleRemoveStation = (stationUuid: string) => {
+    removeStation(stationUuid);
+  };
 
-const {
-  filteredStations,
-  displayedStations,
-  showLoadMoreButton,
-} = useStationsFilter({
-  stations,
-  filterText,
-  visibleCount,
-});
+  const {
+    filteredStations: baseFilteredStations,
+  } = useStationsFilter({
+    stations,
+    filterText,
+    visibleCount,
+  });
 
-const MAX_RESULTS = initialVisibleCount * 2;
-const showSeeMoreLink = visibleCount >= MAX_RESULTS && stations.length > MAX_RESULTS;
+  const filteredStations = showOnlyHls
+    ? baseFilteredStations.filter(station => station.url.endsWith('.m3u8'))
+    : baseFilteredStations;
 
-return (
-  <>
-    <Player
-      defaultSource={currentPlayingUrl ?? preloadedStations[0]?.url ?? ""}
-      stationName={currentPlayingName}
-      autoplay={false}
-      shouldPlay={shouldPlay}
-    />
-    <div className="mt-6">
-      {/* Show the filter only if there are enough stations or a filter is active */}
-      {(stations.length > initialVisibleCount || filterText.trim()) && (
-        <StationNameFilter
-          value={filterText}
-          onChange={setFilterText}
-        />
-      )}
-      {/* Search Results */}
-      {filteredStations.length === 0 ? (
-        filterText.trim() ? (
-          <div className="text-center text-gray-400 my-8">No stations match your search.</div>
-        ) : (
-          <NoStationsFound />
-        )
-      ) : (
-        <>
-          <StationsTable
-            stations={displayedStations}
-            savedStations={favoritesStations}
-            onPlay={handlePlay}
-            onSave={saveStation}
-            onRemove={handleRemoveStation}
-            showCodec={true}
-          />
-          {/* Show the LoadMoreStations button on all pages */}
-          {showLoadMoreButton && (
-            <LoadMoreStations
-              showLoadMore={true}
-              showSeeMoreLink={showSeeMoreLink}
-              onLoadMore={() => setVisibleCount((c: number) => Math.min(c + initialVisibleCount, filteredStations.length))}
-              // removed loading prop, always enabled
+  const displayedStations = filteredStations.slice(0, visibleCount);
+  const showLoadMoreButton = filteredStations.length > visibleCount;
+  const MAX_RESULTS = initialVisibleCount * 2;
+  const showSeeMoreLink = visibleCount >= MAX_RESULTS && stations.length > MAX_RESULTS;
+
+  return (
+    <>
+      <Player
+        defaultSource={currentPlayingUrl ?? preloadedStations[0]?.url ?? ""}
+        stationName={currentPlayingName}
+        autoplay={false}
+        shouldPlay={shouldPlay}
+      />
+      <div className="mt-4">
+        {(stations.length > initialVisibleCount || filterText.trim()) && (
+          <div className="flex flex-col w-full">
+            <StationNameFilter
+              value={filterText}
+              onChange={setFilterText}
             />
-          )}
-        </>
-      )}
-      {/* Save confirmation message */}
-      {saveMessage && <SaveMessage message={saveMessage} />}
-    </div>
-    {!showFavoritesOnly && (
-      <p className="mt-12 text-center text-gray-400 text-sm">
-        Stations are provided by the open{" "}
-        <a
-          href="https://www.radio-browser.info/"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="underline hover:text-primary-500"
-        >
-          Radio Browser API
-        </a>
-        .
-      </p>
-    )}
-  </>
-);
+            <label className="flex justify-end mb-4 gap-2 text-sm">
+              <input
+                type="checkbox"
+                checked={showOnlyHls}
+                onChange={e => setShowOnlyHls(e.target.checked)}
+              />
+              HLS only (.m3u8)
+            </label>
+          </div>
+        )}
+        {/* Search Results */}
+        {filteredStations.length === 0 ? (
+          filterText.trim() ? (
+            <div className="text-center text-gray-400 my-8">No stations match your search.</div>
+          ) : (
+            <NoStationsFound />
+          )
+        ) : (
+          <>
+            <StationsTable
+              stations={displayedStations}
+              savedStations={favoritesStations}
+              onPlay={handlePlay}
+              onSave={saveStation}
+              onRemove={handleRemoveStation}
+              showCodec={true}
+            />
+            {/* Show the LoadMoreStations button on all pages */}
+            {showLoadMoreButton && (
+              <LoadMoreStations
+                showLoadMore={true}
+                showSeeMoreLink={showSeeMoreLink}
+                onLoadMore={() => setVisibleCount((c: number) => Math.min(c + initialVisibleCount, filteredStations.length))}
+                // removed loading prop, always enabled
+              />
+            )}
+          </>
+        )}
+        {/* Save confirmation message */}
+        {saveMessage && <SaveMessage message={saveMessage} />}
+      </div>
+    </>
+  );
 };
 
 export default RadioSearch;
