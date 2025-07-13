@@ -79,7 +79,7 @@ export async function fetchPopularTags(limit: number = 20): Promise<Tag[]> {
 }
 
 export async function fetchPopularGenresAndCountriesSorted(
-	limit: number = 20,
+	limit: number = 16,
 ): Promise<GenreCountryItem[]> {
 	try {
 		const [tags, countries] = await Promise.all([

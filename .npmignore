@@ -2,3 +2,16 @@ src/
 .vscode/
 node_modules/
 dist/
+build.ts
+api.http
+*.log
+coverage/
+.git/
+.github/
+astro.config.*
+tsconfig.json
+biome.json
+*.md
+!README.md
+*.http
+*.test.*

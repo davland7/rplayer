@@ -8,5 +8,6 @@ insert_final_newline = true
 trim_trailing_whitespace = true
 end_of_line = lf
 
-[*.{md,mdx}]
+[*.md]
 trim_trailing_whitespace = false
+insert_final_newline = true

@@ -1,44 +1,56 @@
 <section class="">
-  <div id="player-container" class="flex flex-col gap-4 items-center justify-center bg-black text-white">
-    <h2 class="text-lg font-semibold text-white text-center">mini-radio Playlist Demo</h3>
-    <p class="text-sm text-gray-300 text-center">This player uses RPlayer to play a .m3u playlist of Canadian radio stations.</p>
-    <div class="p-0 bg-black shadow-none rounded-none w-full max-w-md mx-auto">
-      <div class="flex items-center justify-center mb-4 gap-4">
-        <button id="playButton" class="border-2 border-green-500 hover:bg-green-600 hover:text-white text-green-400 font-bold px-4 py-2 rounded transition-colors bg-black">
+  <div id="player-container" class="flex flex-col gap-4 items-center justify-center">
+    <h2 class="text-lg font-semibold text-white text-center">
+      mini-radio Playlist Demo
+    </h3>
+    <p class="text-sm text-gray-300 text-center">
+      This player uses RPlayer to play a .m3u playlist of Canadian radio stations.
+    </p>
+    <div class="w-full max-w-md mx-auto">
+      <div class="flex items-center justify-center my-4 gap-4">
+        <button
+          id="playButton"
+          class="px-4 py-2 rounded border-2 font-bold transition-colors cursor-pointer border-green-500 text-green-400 hover:bg-green-600 hover:text-black focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-opacity-50">
           Play mini-radio.m3u
         </button>
-        <button id="stopButton" class="border-2 border-red-500 hover:bg-red-600 hover:text-white text-red-400 font-bold px-4 py-2 rounded ml-4 transition-colors focus:outline-none focus:ring-2 focus:ring-red-400 focus:ring-opacity-50">
+        <button
+          id="stopButton"
+          class="px-4 py-2 rounded border-2 font-bold transition-colors cursor-pointer border-red-500 text-red-400 hover:bg-red-600 hover:text-black focus:outline-none focus:ring-2 focus:ring-red-400 focus:ring-opacity-50">
           Stop
         </button>
       </div>
-      <div id="status" class="text-center text-white bg-secondary rounded px-3 py-2 font-semibold">
+      <div id="status" class="text-center text-white bg-secondary rounded p-4 font-semibold">
         Status: Ready
       </div>
       <div id="currentTrack" class="mt-4 text-center font-medium hidden"></div>
       <div id="station-controls" class="mt-4 hidden">
         <div class="flex justify-center space-x-4 items-center gap-4">
-          <button id="prevButton" class="border-2 border-pink-500 hover:bg-pink-600 hover:text-white text-pink-400 font-bold px-3 py-1.5 rounded transition-colors focus:outline-none focus:ring-2 focus:ring-pink-400">
+          <button
+            id="prevButton"
+            class="px-4 py-2 rounded border-2 font-bold transition-colors cursor-pointer border-pink-500 text-pink-400 hover:bg-pink-600 hover:text-black focus:outline-none focus:ring-2 focus:ring-pink-400 focus:ring-opacity-50">
             Previous
           </button>
           <div id="station-count" class="text-sm font-medium"></div>
-          <button id="nextButton" class="border-2 border-purple-500 hover:bg-purple-600 hover:text-white text-purple-400 font-bold px-3 py-1.5 rounded transition-colors focus:outline-none focus:ring-2 focus:ring-purple-400">
+          <button
+            id="nextButton"
+            class="px-4 py-2 rounded border-2 font-bold transition-colors cursor-pointer border-purple-500 text-purple-400 hover:bg-purple-600 hover:text-black focus:outline-none focus:ring-2 focus:ring-purple-400 focus:ring-opacity-50">
             Next
           </button>
         </div>
       </div>
     </div>
-    <div class="mt-6 text-sm w-full flex flex-col gap-4">
+    <div class="mt-4 text-sm w-full flex flex-col gap-4">
       <details class="w-full">
-        <summary class="cursor-pointer hover:text-blue-600 font-medium text-white bg-secondary rounded px-5 py-3 select-none w-full focus:outline-none focus:ring-2 focus:ring-blue-400">Edit/View Playlist Content</summary>
+        <summary class="cursor-pointer hover:text-primary-600 font-medium text-white bg-secondary rounded p-4 select-none w-full focus:outline-none focus:ring-2 focus:ring-blue-400">Edit/View Playlist Content</summary>
         <div class="mt-2 w-full">
           <label for="playlist-content" class="block text-xs font-medium text-gray-300 mb-4">Playlist Content (.m3u)</label>
-          <textarea id="playlist-content" rows="8" class="w-full px-4 py-2 rounded bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 border-2 border-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-400 shadow-inner transition-all font-mono text-xs mb-3" aria-label="Playlist content"></textarea>
-          <button id="loadContentButton" class="px-4 py-2 border-2 border-blue-500 hover:bg-blue-600 hover:text-white text-blue-400 font-bold rounded transition-colors focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-50">Load Content</button>
+          <textarea id="playlist-content" rows="8" class="w-full p-4 rounded bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 border-2 border-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-400 shadow-inner transition-all font-mono text-xs mb-3" aria-label="Playlist content"></textarea>
+          <button id="loadContentButton" class="p-4 border-2 border-blue-500 hover:bg-blue-600 hover:text-white text-blue-400 font-bold rounded transition-colors focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-50">Load Content</button>
         </div>
       </details>
       <details class="w-full">
-        <summary class="cursor-pointer hover:text-blue-600 font-medium text-white bg-secondary rounded px-5 py-3 select-none w-full focus:outline-none focus:ring-2 focus:ring-blue-400">Debug Information</summary>
-        <div class="p-2 bg-gray-900 rounded mt-2 overflow-auto max-h-48 w-full">
+        <summary class="cursor-pointer hover:text-primary-600 font-medium text-white bg-secondary rounded p-4 select-none w-full focus:outline-none focus:ring-2 focus:ring-blue-400">Debug Information</summary>
+        <div class="p-4 bg-gray-900 rounded mt-4 overflow-auto max-h-48 w-full">
           <pre id="debug-log"></pre>
         </div>
       </details>
@@ -217,7 +229,9 @@ document.addEventListener('DOMContentLoaded', () => {
           artist: 'Mini Radio Playlist',
           album: 'Mini Radio',
           artwork: [
-            { src: '/src/assets/mini-radio-logo.png', sizes: '192x192', type: 'image/png' }
+            { src: '/images/mini-radio-256x256.png', sizes: '256x256', type: 'image/png' },
+            { src: '/images/mini-radio-96x96.png', sizes: '96x96', type: 'image/png' },
+            { src: '/images/mini-radio-128x128.png', sizes: '128x128', type: 'image/png' }
           ]
         });
         // Add MediaSession navigation actions

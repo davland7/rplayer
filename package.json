@@ -1,5 +1,5 @@
 {
-	"name": "rplayer",
+	"name": "@davland7/rplayer",
 	"type": "module",
 	"version": "3.0.0",
 	"description": "RPlayer is an audio player for streaming radio that offers the possibility to play different audio formats including HLS streams (.m3u8), MP3, AAC and more.",
@@ -49,6 +49,7 @@
 	"author": "David Landry",
 	"license": "MIT",
 	"dependencies": {
+		"@astrojs/check": "^0.9.4",
 		"astro": "^5.10.1",
 		"flag-icons": "^7.5.0",
 		"hls.js": "^1.6.5",

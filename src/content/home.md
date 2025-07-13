@@ -1,4 +1,4 @@
-# RPlayer 3
+# RPlayer 3 coming soon
 
 [![npm version](https://img.shields.io/npm/v/@davland7/rplayer?style=flat-square)](https://www.npmjs.com/package/@davland7/rplayer)
 

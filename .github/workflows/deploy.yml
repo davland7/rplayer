@@ -1,12 +1,17 @@
-name: Deploy to GitHub Pages
+name: Deploy RPlayer
 
 on:
-  # Trigger the workflow every time you push to the `main` branch
-  # Using a different branch name? Replace `main` with your branch’s name
-  push:
-    branches: [main]
-  # Allows you to run this workflow manually from the Actions tab on GitHub.
+  # Manual trigger only for more control
   workflow_dispatch:
+    inputs:
+      deploy_type:
+        description: 'What to deploy'
+        required: true
+        default: 'site'
+        type: choice
+        options:
+          - site
+          - lib-and-npm
 
 # Allow this job to clone the repo and create a page deployment
 permissions:
@@ -15,10 +20,40 @@ permissions:
   id-token: write
 
 jobs:
-  build:
+  build-lib:
     runs-on: ubuntu-latest
+    if: github.event.inputs.deploy_type == 'lib-and-npm'
     steps:
-      - name: Checkout your repository using git
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '21'
+          registry-url: 'https://registry.npmjs.org'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build library (ES and UMD modules)
+        run: npm run build:lib
+
+      - name: Publish to npm
+        run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+  build-site:
+    runs-on: ubuntu-latest
+    if: github.event.inputs.deploy_type == 'site'
+    env:
+      PUBLIC_FORMSPREE_FORM_ID: ${{ secrets.PUBLIC_FORMSPREE_FORM_ID }}
+      PUBLIC_GOOGLE_ANALYTICS_ID: ${{ secrets.PUBLIC_GOOGLE_ANALYTICS_ID }}
+      PUBLIC_RECAPTCHA_SITE_KEY: ${{ secrets.PUBLIC_RECAPTCHA_SITE_KEY }}
+    steps:
+      - name: Checkout repository
         uses: actions/checkout@v4
 
       - name: Setup Node.js
@@ -36,14 +71,15 @@ jobs:
       - name: Build Astro site
         run: npm run build
 
-      - name: Upload artifact
+      - name: Upload pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
           path: ./dist
 
-  deploy:
-    needs: build
+  deploy-site:
+    needs: build-site
     runs-on: ubuntu-latest
+    if: github.event.inputs.deploy_type == 'site'
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}

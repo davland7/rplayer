@@ -4,11 +4,11 @@
 
 @theme {
 	--color-primary: #ffe70b;
-	--color-primary-400: #fff066; /* Nuance plus claire pour le texte ou ring */
-	--color-primary-500: #ffe70b; /* Ton jaune de base */
-	--color-primary-600: #e0cc00; /* Nuance plus foncée pour le hover */
+	--color-primary-400: #fff066;
+	--color-primary-500: #ffe70b;
+	--color-primary-600: #e0cc00;
 	--color-secondary: #1f2937;
-	--color-secondary-400: #374151; /* Plus clair que secondary-500 */
-	--color-secondary-500: #1f2937; /* Ton gris foncé de base */
-	--color-secondary-600: #171f27; /* Plus foncé que secondary-500 */
+	--color-secondary-400: #374151;
+	--color-secondary-500: #1f2937;
+	--color-secondary-600: #171f27;
 }

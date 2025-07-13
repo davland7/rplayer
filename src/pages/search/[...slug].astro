@@ -1,0 +1,176 @@
+---
+export const prerender = false;
+import Layout from '../../layouts/Layout.astro';
+import { fetchPopularGenresAndCountriesSorted, fetchStationsByTerm, RadioStation, SearchType } from "../../api/radio-browser";
+import MarkdownSection from '../../components/MarkdownSection.astro';
+import { Content as SearchContent } from '../../content/search.md';
+import { Content as CountryContent } from '../../content/country.md';
+import { Content as TagContent } from '../../content/tag.md';
+import RadioSearch from '../../components/RadioSearch/RadioSearch';
+
+interface SearchPageProps {
+  type: string;
+  title: string;
+  description: string;
+  keywords: string;
+  preloadedCategories?: Array<{ name: string; slug: string; type: SearchType }>;
+  preloadedStations?: RadioStation[];
+}
+
+// 1. getStaticPaths s'exécute lors de la compilation (build)
+export async function getStaticPaths() {
+  // Définition des catégories disponibles
+  const categories = [
+    { type: SearchType.Country, name: 'Country', slug: 'country' },
+    { type: SearchType.Tag, name: 'Tag', slug: 'tag' }
+  ];
+
+  const limit = 16; // Limite le nombre de stations par page
+  const paths = [];
+
+  // Récupération de toutes les données de catégorie en une seule requête
+  const categoriesData = await fetchPopularGenresAndCountriesSorted(2);
+
+  // 1. Page d'index principale (route: /search)
+  paths.push({
+    params: { slug: undefined },
+    props: {
+      type: 'index',
+      title: 'RPlayer - Explorez les stations de radio',
+      description: 'Découvrez des stations de radio par pays et tags',
+      keywords: 'radio, streaming, pays, tags, stations',
+      preloadedCategories: categories,
+      preloadedStations: []
+    }
+  });
+
+  // 2. Traitement pour chaque type de catégorie
+  for (const category of categories) {
+    const { slug, type, name } = category;
+    // Filtrage des catégories par type (Country ou Tag)
+    const filteredCategories = categoriesData.filter(item => item.type === type);
+
+    // Page d'index de catégorie (route: /search/country ou /search/tag)
+    paths.push({
+      params: { slug },
+      props: {
+        type,
+        title: `Stations by ${name} - RPlayer`,
+        description: `Explorez les stations de radio par ${name}`,
+        keywords: `radio, streaming, ${name}, stations`,
+        preloadedCategories: filteredCategories,
+        preloadedStations: []
+      }
+    });
+
+    // 3. Pages de détail pour chaque élément de la catégorie
+    // (route: /search/country/[slug] ou /search/tag/[slug])
+    for (const item of filteredCategories) {
+      const preloadedStations = await fetchStationsByTerm({
+        term: item.name,
+        type,
+        limit
+      });
+
+      paths.push({
+        params: { slug: `${slug}/${item.slug}` },
+        props: {
+          type: 'stations',
+          title: `Stations by ${item.name} - RPlayer`,
+          description: `Explorez les stations de radio par ${item.name}`,
+          keywords: `radio, streaming, ${item.name}, stations`,
+          preloadedCategories: filteredCategories,
+          preloadedStations
+        }
+      });
+    }
+  }
+
+  return paths;
+}
+
+// Extraction des props de la page
+const { type, title, description, keywords, preloadedCategories = [], preloadedStations = [] } = Astro.props;
+---
+
+<Layout
+  title={title}
+  description={description}
+  keywords={keywords}
+  currentPage="search"
+>
+  {/* Page d'index principale avec les types de catégories (Country et Tag) */}
+  {type === 'index' && (
+    <>
+      <MarkdownSection>
+        <SearchContent />
+      </MarkdownSection>
+      {preloadedCategories.length > 0 && (
+        <div class="mt-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          {preloadedCategories.map(category => (
+            <a href={`/search/${category.slug}`} class="block p-4 bg-gray-800 rounded-lg hover:bg-gray-700 transition-colors">
+              <h2 class="text-lg font-semibold text-white">{category.name}</h2>
+              <p class="text-gray-400">Explorez les stations de radio par {category.name}</p>
+            </a>
+          ))}
+        </div>
+      )}
+    </>
+  )}
+
+  {/* Page d'index de catégorie pays */}
+  {type === SearchType.Country && (
+    <>
+      <MarkdownSection>
+        <CountryContent />
+      </MarkdownSection>
+      <ul class="flex flex-wrap gap-2" aria-label="Countries">
+        {preloadedCategories.map(country => (
+          <li>
+            <a href={`/search/country/${country.slug}`} class="block p-4 bg-gray-800 rounded-lg hover:bg-gray-700 transition-colors">
+              {country.name}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </>
+  )}
+
+  {/* Page d'index de catégorie tag */}
+  {type === SearchType.Tag && (
+    <>
+      <MarkdownSection>
+        <TagContent />
+      </MarkdownSection>
+      <ul class="flex flex-wrap gap-2" aria-label="Tags">
+        {preloadedCategories.map(tag => (
+          <li>
+            <a href={`/search/tag/${tag.slug}`} class="block p-4 bg-gray-800 rounded-lg hover:bg-gray-700 transition-colors">
+              {tag.name}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </>
+  )}
+
+  {/* Page de détail avec stations */}
+  {type === 'stations' && (
+    <>
+      <section class="p-0 border-0 rounded-none shadow-none my-8 sm:p-6 sm:bg-black sm:text-white sm:rounded-lg sm:border-2 sm:border-primary">
+        <h1 class="font-bold mb-0 text-primary text-4xl">Stations</h1>
+        <p class="mt-6">
+          Try <span class="font-semibold">R<span class="text-primary">Player</span></span> in action! Instantly listen to online radio stations.
+          Explore, play, and discover how RPlayer makes radio streaming simple and enjoyable.
+        </p>
+      </section>
+
+      {/* Composant React avec hydration côté client uniquement */}
+      <RadioSearch
+        client:only="react"
+        initialVisibleCount={8}
+        preloadedStations={preloadedStations}
+      />
+    </>
+  )}
+</Layout>
