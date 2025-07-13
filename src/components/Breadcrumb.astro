@@ -1,9 +1,9 @@
 ---
 /**
- * items: Array<{ label: string, url?: string }>
- * Example usage:
- * <Breadcrumb items={[
- *   { label: "Country", url: "/country" },
+ * items: Array<{ label: string, href?: string }>
+ * Exemple d'utilisation :
+ * <Breadcrumb items=[
+ *   { label: "Country", href: "/country" },
  *   { label: "France" }
  * ]} />
  */
@@ -18,12 +18,12 @@ const { items = [] } = Astro.props;
       </a>
       <meta itemprop="position" content="1" />
     </li>
-    {items.map((item: { label: string; url?: string }, idx: number) => (
+    {items.map((item: { label: string; href?: string }, idx: number) => (
       <>
         <li class="flex items-center" aria-hidden="true">›</li>
         <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
-          {item.url ? (
-            <a href={item.url} itemprop="item" class="hover:underline focus-visible:underline text-primary-500">
+          {item.href ? (
+            <a href={item.href} itemprop="item" class="hover:underline focus-visible:underline text-primary-500">
               <span itemprop="name">{item.label}</span>
             </a>
           ) : (

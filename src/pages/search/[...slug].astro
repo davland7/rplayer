@@ -26,6 +26,7 @@ import {
   type RadioStation,
   SearchType
 } from "../../utils/api.js";
+import Breadcrumb from '../../components/Breadcrumb.astro';
 
 interface SearchPageProps {
   type: string;
@@ -34,7 +35,7 @@ interface SearchPageProps {
   keywords: string;
   preloadedCategories?: Term[];
   preloadedStations?: RadioStation[];
-  limitVisibleStations?: number; // Optional prop to control initial visible stations
+  breadcrumbItems?: Array<{ label: string; href: string }>;
 }
 
 // Enable prerendering for this page
@@ -50,9 +51,10 @@ export async function getStaticPaths() {
   ];
 
   const limitStations = 16; // Limit the number of stations per page
-  const limitVisibleStations = 8; // Limit the number of stations visible initially
   const paths = [];
-
+  const indexBreadcrumb = [
+    { label: 'Search' }
+  ];
   // Fetch all category data in a single request
   const categoriesData = await fetchTerms(2);
 
@@ -65,7 +67,8 @@ export async function getStaticPaths() {
       description: 'Discover radio stations by country and tags',
       keywords: 'radio, streaming, country, tags, stations',
       preloadedCategories: categories,
-      preloadedStations: []
+      preloadedStations: [],
+      breadcrumbItems: indexBreadcrumb
     }
   });
 
@@ -74,6 +77,11 @@ export async function getStaticPaths() {
     const { slug, type, name } = category;
     // Filter categories by type (Country or Tag)
     const filteredCategories = categoriesData.filter(item => item.type === type);
+
+    const categoryBreadcrumb = [
+      { label: 'Search', href: '/search' },
+      { label: name }
+    ];
 
     // Category index page (route: /search/country or /search/tag)
     paths.push({
@@ -84,7 +92,8 @@ export async function getStaticPaths() {
         description: `Browse radio stations by ${name}`,
         keywords: `radio, streaming, ${name}, stations`,
         preloadedCategories: filteredCategories,
-        preloadedStations: []
+        preloadedStations: [],
+        breadcrumbItems: categoryBreadcrumb
       }
     });
 
@@ -97,6 +106,11 @@ export async function getStaticPaths() {
         limit: limitStations
       });
 
+      const detailBreadcrumb = [
+        { label: 'Search', href: '/search' },
+        { label: name, href: `/search/${slug}` },
+        { label: item.name }
+      ];
       paths.push({
         params: { slug: `${slug}/${item.slug}` },
         props: {
@@ -106,7 +120,7 @@ export async function getStaticPaths() {
           keywords: `radio, streaming, ${item.name}, stations`,
           preloadedCategories: filteredCategories,
           preloadedStations,
-          limitVisibleStations
+          breadcrumbItems: detailBreadcrumb
         }
       });
     }
@@ -115,7 +129,16 @@ export async function getStaticPaths() {
   return paths;
 }
 
-const { type, title, description, keywords, preloadedCategories = [], preloadedStations = [], limitVisibleStations = 8 }: SearchPageProps = Astro.props;
+const { type, title, description, keywords, preloadedCategories = [], preloadedStations = [], breadcrumbItems }: SearchPageProps = Astro.props;
+
+// Determine the schema type based on the page type
+const getSchemaType = () => {
+  if (type === 'stations') return 'MusicPlaylist';
+  if (type === SearchType.Country || type === SearchType.Tag) return 'CollectionPage';
+  return 'WebPage';
+};
+
+const schemaType = getSchemaType();
 ---
 
 <Layout
@@ -124,66 +147,96 @@ const { type, title, description, keywords, preloadedCategories = [], preloadedS
   keywords={keywords}
   currentPage="search"
 >
-  {/* Main index page with category types (Country and Tag) */}
-  {type === 'index' && (
-    <>
-      <MarkdownSection>
-        <SearchContent />
-      </MarkdownSection>
-      {preloadedCategories.length > 0 && (
-        <div class="mt-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-          {preloadedCategories.map(category => (
-            <CategoryCard
-              name={category.name}
-              slug={category.slug}
-              basePath="/search"
-            />
-          ))}
+  <Breadcrumb items={breadcrumbItems} />
+
+  {/* Schema.org structured data */}
+  <div itemscope itemtype={`https://schema.org/${schemaType}`}>
+    {/* Add generic WebPage properties */}
+    <meta itemprop="name" content={title} />
+    <meta itemprop="description" content={description} />
+    <meta itemprop="keywords" content={keywords} />
+
+    {/* Main index page with category types (Country and Tag) */}
+    {type === 'index' && (
+      <>
+        <div itemscope itemtype="https://schema.org/WebPage">
+          <MarkdownSection>
+            <SearchContent />
+          </MarkdownSection>
+          {preloadedCategories.length > 0 && (
+            <div class="mt-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+              <div itemscope itemtype="https://schema.org/ItemList" style="display: none;">
+                <meta itemprop="numberOfItems" content={preloadedCategories.length.toString()} />
+              </div>
+              {preloadedCategories.map((category, index) => (
+                <div itemscope itemtype="https://schema.org/SiteNavigationElement">
+                  <meta itemprop="position" content={(index + 1).toString()} />
+                  <CategoryCard
+                    name={category.name}
+                    slug={category.slug}
+                    basePath="/search"
+                  />
+                  <meta itemprop="name" content={category.name} />
+                </div>
+              ))}
+            </div>
+          )}
         </div>
-      )}
-    </>
-  )}
+      </>
+    )}
 
-  {/* Country category index page */}
-  {type === SearchType.Country && (
-    <>
-      <MarkdownSection>
-        <CountryContent />
-      </MarkdownSection>
-      <ItemsList
-        items={preloadedCategories}
-        basePath="/search/country"
-        ariaLabel="Countries"
-      />
-    </>
-  )}
+    {/* Country category index page */}
+    {type === SearchType.Country && (
+      <>
+        <MarkdownSection>
+          <CountryContent />
+        </MarkdownSection>
+        <div itemprop="mainEntity" itemscope itemtype="https://schema.org/ItemList">
+          <meta itemprop="name" content="Countries List" />
+          <meta itemprop="numberOfItems" content={preloadedCategories.length.toString()} />
+          <ItemsList
+            items={preloadedCategories}
+            basePath="/search/country"
+            ariaLabel="Countries"
+          />
+        </div>
+      </>
+    )}
 
-  {/* Tag category index page */}
-  {type === SearchType.Tag && (
-    <>
-      <MarkdownSection>
-        <TagContent />
-      </MarkdownSection>
-      <ItemsList
-        items={preloadedCategories}
-        basePath="/search/tag"
-        ariaLabel="Tags"
-      />
-    </>
-  )}
+    {/* Tag category index page */}
+    {type === SearchType.Tag && (
+      <>
+        <MarkdownSection>
+          <TagContent />
+        </MarkdownSection>
+        <div itemprop="mainEntity" itemscope itemtype="https://schema.org/ItemList">
+          <meta itemprop="name" content="Tags List" />
+          <meta itemprop="numberOfItems" content={preloadedCategories.length.toString()} />
+          <ItemsList
+            items={preloadedCategories}
+            basePath="/search/tag"
+            ariaLabel="Tags"
+          />
+        </div>
+      </>
+    )}
 
-  {/* Detail page with stations */}
-  {type === 'stations' && (
-    <>
-      <MarkdownSection>
-        <StationsContent />
-      </MarkdownSection>
-      {/* React component with client-side hydration only */}
-      <RadioSearch
-        client:only="react"
-        initialVisibleCount={limitVisibleStations}
-        preloadedStations={preloadedStations}
-      />
-    </>
-  )}
+    {/* Detail page with stations */}
+    {type === 'stations' && (
+      <>
+        <MarkdownSection>
+          <StationsContent />
+        </MarkdownSection>
+        <div itemprop="mainEntity">
+          {/* React component with client-side hydration only */}
+          <meta itemprop="numTracks" content={preloadedStations.length.toString()} />
+          <RadioSearch
+            client:only="react"
+            initialVisibleCount={8}
+            preloadedStations={preloadedStations}
+          />
+        </div>
+      </>
+    )}
+  </div>
 </Layout>

@@ -9,24 +9,51 @@ import MarkdownSection from "../components/MarkdownSection.astro";
 import RadioSearch from "../components/RadioSearch/index.js";
 // biome-ignore lint/correctness/noUnusedImports: Used in Astro template
 import { Content as HomeContent } from "../content/home.md";
+
+// Définir les données structurées pour la page d'accueil
+const pageTitle = "RPlayer - Audio Player for Streaming Radio in action";
+const pageDescription = "RPlayer is a lightweight audio player for streaming radio that supports HLS streams, MP3, AAC and more formats.";
+const pageUrl = "https://rplayer.js.org/"; // Remplacez par votre URL réelle
 ---
 
 <Layout
-  title="RPlayer - Audio Player for Streaming Radio in action"
-  description="RPlayer is a lightweight audio player for streaming radio that supports HLS streams, MP3, AAC and more formats."
+  title={pageTitle}
+  description={pageDescription}
   currentPage="home"
 >
-  <CookieConsent client:only="react" />
+  <div itemscope itemtype="https://schema.org/WebPage">
+    <meta itemprop="name" content={pageTitle} />
+    <meta itemprop="description" content={pageDescription} />
+    <meta itemprop="url" content={pageUrl} />
+    <meta itemprop="inLanguage" content="en" />
+    <meta itemprop="dateModified" content={new Date().toISOString().split('T')[0]} />
 
-  <h2 class="text-2xl font-bold text-white"><span class="font-semibold">R<span class="text-primary">Player</span></span> in action</h2>
-  <RadioSearch
-    client:only="react"
-    initialVisibleCount={6}
-    preloadedStations={[]}
-    showFavoritesOnly={true}
-  />
+    <CookieConsent client:only="react" />
 
-  <MarkdownSection>
-    <HomeContent />
-  </MarkdownSection>
+    <h2 class="text-2xl font-bold text-white" itemprop="headline"><span class="font-semibold">R<span class="text-primary">Player</span></span> in action</h2>
+
+    {/* Section du lecteur audio avec données structurées */}
+    <div itemscope itemtype="https://schema.org/MusicPlaylist">
+      <meta itemprop="name" content="Favorite Radio Stations" />
+      <meta itemprop="description" content="Listen to your favorite radio stations" />
+
+      <div itemprop="potentialAction" itemscope itemtype="https://schema.org/ListenAction">
+        <meta itemprop="target" content={pageUrl} />
+      </div>
+
+      <RadioSearch
+        client:only="react"
+        initialVisibleCount={8}
+        preloadedStations={[]}
+        showFavoritesOnly={true}
+      />
+    </div>
+
+    {/* Section de contenu principal */}
+    <div itemprop="mainContentOfPage">
+      <MarkdownSection>
+        <HomeContent />
+      </MarkdownSection>
+    </div>
+  </div>
 </Layout>

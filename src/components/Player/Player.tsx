@@ -203,7 +203,11 @@ const Player = ({
 	}, [url, playerRef]);
 
 	return (
-		<div ref={playerContainerRef}>
+		<div ref={playerContainerRef} itemScope itemType="https://schema.org/AudioObject">
+			{internalStationName && <meta itemProp="name" content={internalStationName} />}
+			{url && <meta itemProp="contentUrl" content={url} />}
+			<meta itemProp="encodingFormat" content={getAudioFormat()} />
+
 			<PlayerUrlField
 				inputUrl={inputUrl}
 				onInputUrlChange={(url) => {

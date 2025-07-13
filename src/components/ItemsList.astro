@@ -11,10 +11,11 @@ const { items, basePath, ariaLabel } = Astro.props;
 ---
 
 <ul class="flex flex-wrap gap-2" aria-label={ariaLabel}>
-  {items.map(item => (
-    <li>
-      <a href={`${basePath}/${item.slug}`} class="block p-4 bg-gray-800 rounded-lg hover:bg-gray-700 transition-colors">
-        {item.name}
+  {items.map((item, index) => (
+    <li itemscope itemtype="https://schema.org/ListItem">
+      <meta itemprop="position" content={(index + 1).toString()} />
+      <a href={`${basePath}/${item.slug}`} class="block p-4 bg-gray-800 rounded-lg hover:bg-gray-700 transition-colors" itemprop="url">
+        <span itemprop="name">{item.name}</span>
       </a>
     </li>
   ))}
