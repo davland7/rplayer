@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { FAVORITES_KEY, getLocalStorageItem, setLocalStorageItem } from "../../utils/storage.js";
-import type { RadioStation } from "../../api/radio-browser.js";
+import type { RadioStation } from "../../utils/api.js";
 
 /**
  * Custom hook to manage favorite stations in localStorage

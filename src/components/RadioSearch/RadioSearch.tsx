@@ -3,7 +3,7 @@ import Player from "../Player/Player.js";
 import StationsTable from "./StationsTable.js";
 import { useFavoritesStations } from "./useFavoritesStations.js";
 import { useStationsFilter } from "./useStationsFilter.js";
-import type { RadioStation } from "../../api/radio-browser.js";
+import type { RadioStation } from "../../utils/api.js";
 import NoStationsFound from "./NoStationsFound.js";
 import SaveMessage from "./SaveMessage.js";
 import LoadMoreStations from "./LoadMoreStations.js";

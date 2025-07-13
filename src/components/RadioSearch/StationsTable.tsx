@@ -1,7 +1,7 @@
 import { HiOutlineStar, HiPlay, HiStar } from "react-icons/hi2";
 import Badge from "./Badge.js";
 import { isCookiesAccepted } from "../../utils/storage.js";
-import type { RadioStation } from "../../api/radio-browser.js";
+import type { RadioStation } from "../../utils/api.js";
 
 interface StationsTableProps {
 	stations: RadioStation[];

@@ -1,0 +1,16 @@
+---
+// Définition des props du composant
+export interface Props {
+  name: string;
+  slug: string;
+  basePath: string;
+}
+
+// Récupération des props passées au composant
+const { name, slug, basePath } = Astro.props;
+---
+
+<a href={`${basePath}/${slug}`} class="block p-4 bg-gray-800 rounded-lg hover:bg-gray-700 transition-colors">
+  <h2 class="text-lg font-semibold text-white">{name}</h2>
+  <p class="text-gray-400">Explorez les stations de radio par {name}</p>
+</a>

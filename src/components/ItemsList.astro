@@ -1,0 +1,21 @@
+---
+// Définition des props du composant
+export interface Props {
+  items: Array<{ name: string; slug: string }>;
+  basePath: string;
+  ariaLabel: string;
+}
+
+// Récupération des props passées au composant
+const { items, basePath, ariaLabel } = Astro.props;
+---
+
+<ul class="flex flex-wrap gap-2" aria-label={ariaLabel}>
+  {items.map(item => (
+    <li>
+      <a href={`${basePath}/${item.slug}`} class="block p-4 bg-gray-800 rounded-lg hover:bg-gray-700 transition-colors">
+        {item.name}
+      </a>
+    </li>
+  ))}
+</ul>

@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import type { RadioStation } from "../../api/radio-browser.js";
+import type { RadioStation } from "../../utils/api.js";
 
 interface UseStationsFilterProps {
   stations: RadioStation[];
