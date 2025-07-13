@@ -22,7 +22,7 @@ class RPlayer extends Audio {
   constructor(initialSource?: string) {
     super();
 
-    // Load volume from localStorage if available
+    // Initialize with default settings
     this.initializeVolume();
 
     // Set event listeners
@@ -39,21 +39,12 @@ class RPlayer extends Audio {
   }
 
   /**
-   * Initialize volume settings from localStorage
+   * Initialize volume settings
    * @private
    */
   private initializeVolume(): void {
-    try {
-      const savedVolume = localStorage.getItem('RPlayer-volume');
-      if (savedVolume !== null) {
-        const volume = parseFloat(savedVolume);
-        if (!isNaN(volume) && volume >= 0 && volume <= 1) {
-          this.volume = volume;
-        }
-      }
-    } catch (error) {
-      console.warn('Could not retrieve volume settings from localStorage', error);
-    }
+    // Default volume initialization
+    this.volume = 1.0; // Default to full volume
   }
 
   /**
@@ -61,17 +52,10 @@ class RPlayer extends Audio {
    * @private
    */
   private setupEventListeners(): void {
-    // Save volume to localStorage when changed
-    this.addEventListener('volumechange', () => {
-      try {
-        localStorage.setItem('RPlayer-volume', this.volume.toString());
-      } catch (error) {
-        console.warn('Could not save volume settings to localStorage', error);
-      }
-    });
+    // Volume management is now handled externally by the application
 
     // Handle errors
-    this.addEventListener('error', (event) => {
+    this.addEventListener('error', () => {
       const error = new Error(`Media error: ${this.error?.code ?? 'unknown'}`);
       this.errorHandlers.forEach(handler => handler(error));
     });
@@ -87,63 +71,66 @@ class RPlayer extends Audio {
   }
 
   /**
-   * Validate if the provided URL is an HLS stream.
-   * @param {string | URL} url - The URL to validate.
+   * Checks if the provided URL is an HLS stream.
+   * @param {string | URL} url - The URL to check.
    * @returns {boolean} True if the URL is an HLS stream, false otherwise.
    * @private
    */
   private isHlsUrl(url: string | URL): boolean {
     const urlStr = url.toString();
 
-    // Gestion simple pour les chemins relatifs ou les URL
-    if (urlStr.endsWith('.m3u8')) {
-      return true;
-    }
-
     try {
-      // Pour les URL complètes, nous pouvons toujours utiliser l'objet URL
+      // Check if the URL has a valid structure
       if (urlStr.startsWith('http://') || urlStr.startsWith('https://')) {
+        // Use URL object to parse properly
         const parsedUrl = new URL(urlStr);
+        // Check if pathname (without query parameters) ends with .m3u8
         return parsedUrl.pathname.endsWith('.m3u8');
       }
-      return false;
+
+      // For relative paths or non-standard URLs
+      // Extract the path part before any query parameters
+      const pathWithoutQuery = urlStr.split('?')[0];
+      return pathWithoutQuery.endsWith('.m3u8');
     } catch (error) {
-      // Si nous ne pouvons pas construire un objet URL, vérifier simplement l'extension
+      // If we can't parse the URL, use a regex to check for .m3u8 before any query params
       console.warn('URL parsing failed in isHlsUrl, using fallback check:', urlStr);
-      return false;
+      return /\.m3u8($|\?)/.test(urlStr);
     }
   }
 
   /**
-   * Validate if the provided URL is a standard M3U playlist.
-   * @param {string | URL} url - The URL to validate.
+   * Checks if the provided URL is a standard M3U playlist.
+   * @param {string | URL} url - The URL to check.
    * @returns {boolean} True if the URL is a standard M3U playlist, false otherwise.
    * @private
    */
   private isM3uUrl(url: string | URL): boolean {
     const urlStr = url.toString();
 
-    // Gestion simple pour les chemins relatifs ou les URL
-    if (urlStr.endsWith('.m3u') && !urlStr.endsWith('.m3u8')) {
-      return true;
-    }
-
     try {
-      // Pour les URL complètes, nous pouvons toujours utiliser l'objet URL
+      // Check if the URL has a valid structure
       if (urlStr.startsWith('http://') || urlStr.startsWith('https://')) {
+        // Use URL object to parse properly
         const parsedUrl = new URL(urlStr);
-        return parsedUrl.pathname.endsWith('.m3u') && !parsedUrl.pathname.endsWith('.m3u8');
+        // Check if pathname (without query parameters) ends with .m3u but not .m3u8
+        const pathname = parsedUrl.pathname;
+        return pathname.endsWith('.m3u') && !pathname.endsWith('.m3u8');
       }
-      return false;
+
+      // For relative paths or non-standard URLs
+      // Extract the path part before any query parameters
+      const pathWithoutQuery = urlStr.split('?')[0];
+      return pathWithoutQuery.endsWith('.m3u') && !pathWithoutQuery.endsWith('.m3u8');
     } catch (error) {
-      // Si nous ne pouvons pas construire un objet URL, vérifier simplement l'extension
+      // If we can't parse the URL, use a regex to check for .m3u (not .m3u8) before any query params
       console.warn('URL parsing failed in isM3uUrl, using fallback check:', urlStr);
-      return false;
+      return /\.m3u($|\?)/.test(urlStr) && !/\.m3u8($|\?)/.test(urlStr);
     }
   }
 
   /**
-   * Check if the current device is an iOS device.
+   * Checks if the current device is an iOS device.
    * @returns {boolean} True if the current device is an iOS device, false otherwise.
    * @readonly
    */
@@ -152,7 +139,7 @@ class RPlayer extends Audio {
   }
 
   /**
-   * Validate if the current source is an HLS stream.
+   * Checks if the current source is an HLS stream.
    * @returns {boolean} True if the current source is an HLS stream, false otherwise.
    * @readonly
    */
@@ -161,7 +148,7 @@ class RPlayer extends Audio {
   }
 
   /**
-   * Check if the audio element is currently playing.
+   * Checks if the audio element is currently playing.
    * @returns {boolean} True if the audio element is playing, false otherwise.
    * @readonly
    */
@@ -170,7 +157,7 @@ class RPlayer extends Audio {
   }
 
   /**
-   * Get the current source URL of the audio element.
+   * Gets the current source URL of the audio element.
    * @returns {string} The current source URL of the audio element.
    * @readonly
    */
@@ -179,7 +166,7 @@ class RPlayer extends Audio {
   }
 
   /**
-   * Register a handler for playback status changes
+   * Registers a handler for playback status changes
    * @param {function} handler - The function to call when playback status changes
    */
   onPlaybackStatusChange(handler: (status: 'playing' | 'paused' | 'stopped') => void): void {
@@ -187,7 +174,7 @@ class RPlayer extends Audio {
   }
 
   /**
-   * Register a handler for errors
+   * Registers a handler for errors
    * @param {function} handler - The function to call when an error occurs
    */
   onError(handler: (error: Error) => void): void {
@@ -195,7 +182,7 @@ class RPlayer extends Audio {
   }
 
   /**
-   * Remove a previously registered playback status handler
+   * Removes a previously registered playback status handler
    * @param {function} handler - The handler to remove
    */
   removePlaybackStatusHandler(handler: (status: 'playing' | 'paused' | 'stopped') => void): void {
@@ -206,7 +193,7 @@ class RPlayer extends Audio {
   }
 
   /**
-   * Remove a previously registered error handler
+   * Removes a previously registered error handler
    * @param {function} handler - The handler to remove
    */
   removeErrorHandler(handler: (error: Error) => void): void {
@@ -217,29 +204,29 @@ class RPlayer extends Audio {
   }
 
   /**
-   * Play the provided audio source
+   * Plays the provided audio source
    * @param {string} src - The source URL of the audio stream
    * @returns {Promise<void>} - A promise that resolves when playback has started or rejects on error
    */
   async playSrc(src: string): Promise<void> {
-    console.log(`[RPlayer] playSrc appelé avec: ${src}`);
+    console.log(`[RPlayer] playSrc called with: ${src}`);
 
-    // Convertir les chemins relatifs en URL absolues
+    // Convert relative paths to absolute URLs
     if (src.startsWith('/') && !src.startsWith('//') && typeof window !== 'undefined') {
       const origin = window.location.origin;
       src = `${origin}${src}`;
-      console.log(`[RPlayer] URL relative convertie en absolue: ${src}`);
+      console.log(`[RPlayer] Relative URL converted to absolute: ${src}`);
     }
 
     // Don't reload if it's the same source and just paused
     if (this.lastSrc === src && this.paused && this.currentTime > 0) {
       try {
-        console.log(`[RPlayer] Même source détectée, reprise de la lecture: ${src}`);
+        console.log(`[RPlayer] Same source detected, resuming playback: ${src}`);
         await this.play();
         return;
       } catch (error) {
         // If there's an error playing, try to reload the source
-        console.warn('[RPlayer] Erreur lors de la reprise de la lecture, tentative de rechargement', error);
+        console.warn('[RPlayer] Error resuming playback, attempting to reload', error);
       }
     }
 
@@ -247,20 +234,20 @@ class RPlayer extends Audio {
       // Stop any current playback
       this.stop();
 
-      // Déterminer le type de source
+      // Determine the type of source
       const isHls = this.isHlsUrl(src);
       const isM3u = this.isM3uUrl(src);
-      console.log(`[RPlayer] Type de source: ${isHls ? 'HLS' : isM3u ? 'M3U standard' : 'Direct'}`);
+      console.log(`[RPlayer] Source type: ${isHls ? 'HLS' : isM3u ? 'Standard M3U' : 'Direct'}`);
 
-      // Détermination du type de source pour le log
+      // Determination of the source type for logging
       let sourceType = 'Direct';
       if (isHls) sourceType = 'HLS';
       else if (isM3u) sourceType = 'M3U standard';
-      console.log(`[RPlayer] Type de source: ${sourceType}`);
+      console.log(`[RPlayer] Source type: ${sourceType}`);
 
       if (isHls) {
         try {
-          // playHls est désormais asynchrone et retourne une promesse
+          // playHls is now asynchronous and returns a promise
           const hlsInstance = await playHls(this, src);
           this.hls = hlsInstance;
           this.lastSrc = src;
@@ -280,7 +267,7 @@ class RPlayer extends Audio {
               reject(new Error(`Failed to load HLS source: ${src}`));
             };
 
-            // Si playHls a déjà commencé la lecture (support natif), résoudre immédiatement
+            // If playHls has already started playback (native support), resolve immediately
             if (!this.paused) {
               resolve();
             } else {
@@ -310,57 +297,28 @@ class RPlayer extends Audio {
           // Update for traceability
           this.lastSrc = src; // Keep the playlist URL as the original source
 
-          // Update MediaSession if available
-          if ('mediaSession' in navigator && navigator.mediaSession) {
-            // Try to extract station name from the URL path
-            let title = "Radio Station";
-            try {
-              // Extract file name from URL and clean it up
-              const urlObj = new URL(mediaUrl);
-              const pathParts = urlObj.pathname.split('/');
-              const fileName = pathParts[pathParts.length - 1];
-              if (fileName) {
-                // Remove extension and replace underscores/hyphens with spaces
-                title = fileName.replace(/\.(mp3|aac|ogg|m4a|wav)$/i, '')
-                               .replace(/[_-]/g, ' ');
-              }
-            } catch (e) {
-              console.warn('Failed to extract title from URL:', e);
-            }
-
-            navigator.mediaSession.metadata = new MediaMetadata({
-              title: title,
-              artist: 'RPlayer M3U',
-              album: 'M3U Playlist',
-              artwork: [
-                { src: '/images/favicon.png', sizes: '96x96', type: 'image/png' },
-                { src: '/images/icons-192.png', sizes: '192x192', type: 'image/png' }
-              ]
-            });
-          }
-
           // Redirect to the media URL
           console.log(`[RPlayer] Redirecting to: ${mediaUrl}`);
           return this.playSrc(mediaUrl);
         } catch (error) {
-          console.error('[RPlayer] Erreur lors de la lecture de la playlist M3U:', error);
-          const m3uError = error instanceof Error ? error : new Error(`Échec de l'analyse de la playlist M3U: ${String(error)}`);
+          console.error('[RPlayer] Error while playing M3U playlist:', error);
+          const m3uError = error instanceof Error ? error : new Error(`Failed to parse M3U playlist: ${String(error)}`);
           this.errorHandlers.forEach(handler => handler(m3uError));
           throw m3uError;
         }
       } else {
-        console.log(`[RPlayer] Tentative de lecture directe: ${src}`);
+        console.log(`[RPlayer] Attempting direct playback: ${src}`);
         this.src = src;
         this.lastSrc = src;
         this.isHls = false;
 
         try {
           await this.play();
-          console.log(`[RPlayer] Lecture directe réussie`);
+          console.log(`[RPlayer] Direct playback successful`);
           return;
         } catch (playError) {
-          console.error('[RPlayer] Erreur lors de la lecture directe:', playError);
-          const directError = new Error(`Échec de la lecture de la source: ${src}`);
+          console.error('[RPlayer] Error during direct playback:', playError);
+          const directError = new Error(`Failed to play source: ${src}`);
           this.errorHandlers.forEach(handler => handler(directError));
           throw directError;
         }
@@ -373,39 +331,39 @@ class RPlayer extends Audio {
   }
 
   /**
-   * Load a source without automatically playing it
-   * This is useful for preloading sources or working with autoplay restrictions
+   * Loads a source without automatically playing it
+   * Useful for preloading sources or working with autoplay restrictions
    * @param {string} src - The source URL to load
    * @returns {Promise<void>} - A promise that resolves when the source is loaded
    */
   async loadSrc(src: string): Promise<void> {
-    console.log(`[RPlayer] loadSrc appelé avec: ${src}`);
+    console.log(`[RPlayer] loadSrc called with: ${src}`);
 
-    // Convertir les chemins relatifs en URL absolues
+    // Convert relative paths to absolute URLs
     if (src.startsWith('/') && !src.startsWith('//') && typeof window !== 'undefined') {
       const origin = window.location.origin;
       src = `${origin}${src}`;
-      console.log(`[RPlayer] URL relative convertie en absolue: ${src}`);
+      console.log(`[RPlayer] Relative URL converted to absolute: ${src}`);
     }
 
     try {
       // Stop any current playback
       this.stop();
 
-      // Déterminer le type de source
+      // Determine the type of source
       const isHls = this.isHlsUrl(src);
       const isM3u = this.isM3uUrl(src);
 
-      // Détermination du type de source pour le log
+      // Determination of the source type for logging
       let sourceType = 'Direct';
       if (isHls) sourceType = 'HLS';
       else if (isM3u) sourceType = 'M3U standard';
-      console.log(`[RPlayer] Type de source: ${sourceType}`);
+      console.log(`[RPlayer] Source type: ${sourceType}`);
 
       if (isHls) {
         try {
-          // playHls est maintenant utilisé uniquement pour charger la source, sans lecture automatique
-          // Nous modifierons la fonction playHls pour accepter un paramètre autoplay
+          // playHls is now used only to load the source, without automatic playback
+          // We will modify the playHls function to accept an autoplay parameter
           const hlsInstance = await playHls(this, src, undefined, false);
           this.hls = hlsInstance;
           this.lastSrc = src;
@@ -418,34 +376,34 @@ class RPlayer extends Audio {
       } else if (this.isM3uUrl(src)) {
         try {
           console.log(`[RPlayer] Attempting to load M3U standard playlist: ${src}`);
-          // Pour les playlists M3U, nous extrayons la première URL mais ne lançons pas la lecture
+          // For M3U playlists, we extract the first URL but do not start playback
           const mediaUrl = await playM3u(this, src);
           console.log(`[RPlayer] URL extracted from M3U playlist: ${mediaUrl}`);
 
-          // Éviter les boucles infinies
+          // Avoid infinite loops
           if (mediaUrl === src) {
             throw new Error("The URL extracted from the playlist is identical to the playlist URL");
           }
 
-          // Mettre à jour pour la traçabilité
+          // Update for traceability
           this.lastSrc = src;
 
-          // Charger la source médias sans lecture automatique
+          // Load media source without automatic playback
           return this.loadSrc(mediaUrl);
         } catch (error) {
-          console.error('[RPlayer] Erreur lors du chargement de la playlist M3U:', error);
-          const m3uError = error instanceof Error ? error : new Error(`Échec de l'analyse de la playlist M3U: ${String(error)}`);
+          console.error('[RPlayer] Error while loading M3U playlist:', error);
+          const m3uError = error instanceof Error ? error : new Error(`Failed to parse M3U playlist: ${String(error)}`);
           this.errorHandlers.forEach(handler => handler(m3uError));
           throw m3uError;
         }
       } else {
-        console.log(`[RPlayer] Chargement direct sans lecture: ${src}`);
+        console.log(`[RPlayer] Loading direct without playback: ${src}`);
         this.src = src;
         this.lastSrc = src;
         this.isHls = false;
 
-        // Ne pas lancer la lecture automatiquement
-        // Charger les métadonnées pour s'assurer que la source est bien chargée
+        // Don't start playback automatically
+        // Trigger loading without playback
         return new Promise((resolve, reject) => {
           const onLoadedMetadata = () => {
             this.removeEventListener('loadedmetadata', onLoadedMetadata);
@@ -456,7 +414,7 @@ class RPlayer extends Audio {
           const onError = () => {
             this.removeEventListener('loadedmetadata', onLoadedMetadata);
             this.removeEventListener('error', onError);
-            const error = new Error(`Échec du chargement de la source: ${src}`);
+            const error = new Error(`Failed to load source: ${src}`);
             this.errorHandlers.forEach(handler => handler(error));
             reject(error);
           };
@@ -464,7 +422,7 @@ class RPlayer extends Audio {
           this.addEventListener('loadedmetadata', onLoadedMetadata, { once: true });
           this.addEventListener('error', onError, { once: true });
 
-          // Déclencher le chargement sans lecture
+          // Trigger loading without playback
           this.load();
         });
       }
@@ -476,9 +434,9 @@ class RPlayer extends Audio {
   }
 
   /**
-   * Stop the audio element
-   * This will pause the audio, reset the current time to 0, clean up HLS resources
-   * and reset internal state
+   * Stops the audio element
+   * Pauses the audio, resets the current time to 0, cleans up HLS resources,
+   * and resets internal state
    */
   stop(): void {
     this.pause();
@@ -489,17 +447,16 @@ class RPlayer extends Audio {
       this.hls = null;
     }
 
-    // Réinitialiser complètement l'état
+    // Reset the state completely
     this.isHls = false;
 
-    // Important: ne pas effacer lastSrc pour permettre l'affichage du dernier flux
-    // tout en indiquant que la lecture est arrêtée
+    // Important: do not clear lastSrc to allow displaying the last stream while indicating that playback is stopped
 
     this.playbackHandlers.forEach(handler => handler('stopped'));
   }
 
   /**
-   * Rewind the audio element by the specified number of seconds
+   * Rewinds the audio element by the specified number of seconds
    * @param {number} seconds - The number of seconds to rewind
    */
   rewind(seconds: number): void {
@@ -507,11 +464,11 @@ class RPlayer extends Audio {
   }
 
   /**
-   * Fast forward the audio element by the specified number of seconds
+   * Fast forwards the audio element by the specified number of seconds
    * @param {number} seconds - The number of seconds to fast forward
    */
   forward(seconds: number): void {
-    if (this.duration && isFinite(this.duration)) {
+    if (this.duration && Number.isFinite(this.duration)) {
       this.currentTime = Math.min(this.currentTime + seconds, this.duration);
     } else {
       this.currentTime += seconds;
@@ -519,7 +476,7 @@ class RPlayer extends Audio {
   }
 
   /**
-   * Increase the volume by 10%
+   * Increases the volume by 10%
    * The volume will not exceed 100%
    */
   upVolume(): void {
@@ -528,7 +485,7 @@ class RPlayer extends Audio {
   }
 
   /**
-   * Decrease the volume by 10%
+   * Decreases the volume by 10%
    * The volume will not go below 0%
    */
   downVolume(): void {
@@ -537,7 +494,7 @@ class RPlayer extends Audio {
   }
 
   /**
-   * Set the volume to a specific level
+   * Sets the volume to a specific level
    * @param {number} level - A value between 0 and 1
    */
   setVolume(level: number): void {
@@ -549,40 +506,17 @@ class RPlayer extends Audio {
   }
 
   /**
-   * Toggle the mute state of the audio element
+   * Toggles the mute state of the audio element
    */
   mute(): void {
     this.muted = !this.muted;
   }
 
-  /**
-   * Update MediaSession metadata with current track information
-   * @param title - The title of the current track
-   * @param artist - The artist name
-   * @param album - The album name
-   */
-  updateMediaSessionMetadata(title: string = '', artist: string = 'RPlayer', album: string = 'Audio Stream'): void {
-    if ('mediaSession' in navigator) {
-      try {
-        navigator.mediaSession.metadata = new MediaMetadata({
-          title: title || this.lastSrc || 'Unknown Track',
-          artist,
-          album,
-          artwork: [
-            { src: '/images/favicon.png', sizes: '96x96', type: 'image/png' },
-            { src: '/images/icons-192.png', sizes: '192x192', type: 'image/png' }
-          ]
-        });
-        console.log(`[RPlayer] MediaSession metadata updated: ${title}`);
-      } catch (error) {
-        console.error('[RPlayer] Error updating MediaSession metadata:', error);
-      }
-    }
-  }
+  // updateMediaSessionMetadata method removed - RPlayer no longer handles media session updates
 
   /**
-   * Clean up resources when the player is no longer needed
-   * This will stop any playback and release all resources
+   * Cleans up resources when the player is no longer needed
+   * Stops any playback and releases all resources
    */
   destroy(): void {
     this.stop();
@@ -591,21 +525,7 @@ class RPlayer extends Audio {
     this.playbackHandlers.length = 0;
     this.errorHandlers.length = 0;
 
-    // Clean up MediaSession handlers
-    if ('mediaSession' in navigator) {
-      try {
-        // Clear all action handlers
-        ['play', 'pause', 'stop', 'seekforward', 'seekbackward', 'previoustrack', 'nexttrack'].forEach(action => {
-          try {
-            navigator.mediaSession.setActionHandler(action as MediaSessionAction, null);
-          } catch (e) {
-            // Some browsers might not support all actions
-          }
-        });
-      } catch (error) {
-        console.warn('[RPlayer] Error clearing MediaSession handlers:', error);
-      }
-    }
+    // MediaSession cleanup removed - RPlayer no longer handles media session
 
     // Clean up any other resources
     if (this.hls) {

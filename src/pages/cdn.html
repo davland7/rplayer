@@ -6,7 +6,7 @@
   <title>RPlayer CDN Demo</title>
   <link rel="icon" href="/favicon.svg" type="image/x-icon">
   <script src="https://cdn.jsdelivr.net/npm/hls.js@1.6.1/dist/hls.min.js"></script>
-  <script src="/lib/rplayer.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@davland7/rplayer@2.2.4/dist/rplayer.umd.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
   <style type="text/tailwindcss">
     @theme {
@@ -49,7 +49,7 @@
       const stored = localStorage.getItem(VOLUME_KEY);
       if (stored !== null) initialVolume = parseFloat(stored);
     }
-    let player = new window.RPlayer();
+    let player = new window.rPlayer();
     player.volume = initialVolume;
     // Save volume if desktop
     if (!isMobile) {

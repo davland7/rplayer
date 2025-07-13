@@ -1,8 +1,3 @@
-/**
- *
- * CSS: OK
- */
-
 interface PlayerStatusPanelProps {
 	status: string;
 	volume: number;
