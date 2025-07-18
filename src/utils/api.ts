@@ -6,6 +6,12 @@ const customStations: RadioStation[] = customStationsJson as RadioStation[];
 
 const API_BASE = "https://de1.api.radio-browser.info/json";
 const SORT_BY_STATION_COUNT_DESC = `order=stationcount&reverse=true`;
+// Formats of stream to exclude
+const EXCLUDED_EXTENSIONS = ['.pls', '.m3u'];
+// List of banned stations by their UUIDs stationuuid
+const BANNED_STATIONS_UUIDS = new Set<string>([
+  // Example : "custom-1", "stationuuid-api-123"
+]);
 
 export enum SearchType {
   Tag = "tag",
@@ -117,11 +123,6 @@ export async function fetchTerms(
   }
 }
 
-// List of banned stations by their UUIDs stationuuid
-const bannedStationUuids = new Set<string>([
-  // Exemple : "custom-1", "stationuuid-api-123"
-]);
-
 function filterCustomStations(term: string, type: SearchType): RadioStation[] {
   if (type === SearchType.Country) {
     return customStations.filter((s: RadioStation) =>
@@ -155,7 +156,14 @@ export async function fetchStationsByTerm({
     );
     if (!response.ok) throw new Error(`Failed to load stations for ${term}`);
     let apiRadioBrowser: RadioStation[] = await response.json();
-    apiRadioBrowser = apiRadioBrowser.filter(s => !bannedStationUuids.has(s.stationuuid));
+    // Nettoie la liste des stations pour RPlayer
+    apiRadioBrowser = apiRadioBrowser
+      .filter(s => !BANNED_STATIONS_UUIDS.has(s.stationuuid))
+      .filter(s => s.url.startsWith("https://"))
+      .filter(s => {
+        const url = s.url.toLowerCase();
+        return !EXCLUDED_EXTENSIONS.some(ext => url.endsWith(ext));
+      });
 
     return [...filteredCustom, ...apiRadioBrowser];
   } catch (error) {
