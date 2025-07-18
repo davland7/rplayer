@@ -161,9 +161,9 @@ export async function fetchStationsByTerm({
       .filter(s => !BANNED_STATIONS_UUIDS.has(s.stationuuid))
       .filter(s => s.url.startsWith("https://"))
       .filter(s => {
-        const url = s.url.toLowerCase();
+        const url = s.url.toLowerCase().split('?')[0];
         return !EXCLUDED_EXTENSIONS.some(ext => url.endsWith(ext));
-      });
+      })
 
     return [...filteredCustom, ...apiRadioBrowser];
   } catch (error) {
