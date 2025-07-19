@@ -5,7 +5,7 @@
 		"jsxImportSource": "react",
 		"moduleResolution": "nodenext",
 		"module": "NodeNext",
-    "resolveJsonModule": true,
+		"resolveJsonModule": true,
 		"esModuleInterop": true,
 		"allowSyntheticDefaultImports": true,
 		"forceConsistentCasingInFileNames": true,

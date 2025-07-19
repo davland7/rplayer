@@ -9,7 +9,7 @@ interface PlayerUrlFieldProps {
 function PlayerUrlField({ inputUrl, onInputUrlChange, onInputPlay }: PlayerUrlFieldProps) {
 	const inputId = useId();
 	return (
-		<div className="mt-6">
+		<div className="mt-4">
 			<label htmlFor={inputId} className="sr-only">
 				Stream URL
 			</label>

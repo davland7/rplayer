@@ -1,42 +1,42 @@
 ---
 // biome-ignore lint/correctness/noUnusedImports: Used in Astro template
-import Layout from '../../layouts/Layout.astro';
+import Layout from "../../layouts/Layout.astro";
 // biome-ignore lint/correctness/noUnusedImports: Used in Astro template
-import MarkdownSection from '../../components/MarkdownSection.astro';
+import MarkdownSection from "../../components/MarkdownSection.astro";
 // biome-ignore lint/correctness/noUnusedImports: Used in Astro template
-import RadioSearch from '../../components/RadioSearch/RadioSearch';
+import RadioSearch from "../../components/RadioSearch/RadioSearch";
 // biome-ignore lint/correctness/noUnusedImports: Used in Astro template
-import ItemsList from '../../components/ItemsList.astro';
+import ItemsList from "../../components/ItemsList.astro";
 // biome-ignore lint/correctness/noUnusedImports: Used in Astro template
-import CategoryCard from '../../components/CategoryCard.astro';
+import CategoryCard from "../../components/CategoryCard.astro";
 
 // biome-ignore lint/correctness/noUnusedImports: Used in Astro template
-import { Content as SearchContent } from '../../content/search.md';
+import { Content as SearchContent } from "../../content/search.md";
 // biome-ignore lint/correctness/noUnusedImports: Used in Astro template
-import { Content as CountryContent } from '../../content/country.md';
+import { Content as CountryContent } from "../../content/country.md";
 // biome-ignore lint/correctness/noUnusedImports: Used in Astro template
-import { Content as TagContent } from '../../content/tag.md';
+import { Content as TagContent } from "../../content/tag.md";
 // biome-ignore lint/correctness/noUnusedImports: Used in Astro template
-import { Content as StationsContent } from '../../content/stations.md';
+import { Content as StationsContent } from "../../content/stations.md";
 
 import { fetchTerms, fetchStationsByTerm, SearchType } from "../../utils/api.js";
 import type { Term, RadioStation } from "../../utils/api.js";
 // biome-ignore lint/correctness/noUnusedImports: Used in Astro template
-import Breadcrumb from '../../components/Breadcrumb.astro';
+import Breadcrumb from "../../components/Breadcrumb.astro";
 
 interface BreadcrumbItem {
-  label: string;
-  href?: string;
+	label: string;
+	href?: string;
 }
 
 interface SearchPageProps {
-  type: string;
-  title: string;
-  description: string;
-  keywords: string;
-  preloadedCategories?: Term[];
-  preloadedStations?: RadioStation[];
-  breadcrumbItems?: BreadcrumbItem[];
+	type: string;
+	title: string;
+	description: string;
+	keywords: string;
+	preloadedCategories?: Term[];
+	preloadedStations?: RadioStation[];
+	breadcrumbItems?: BreadcrumbItem[];
 }
 
 // Enable prerendering for this page
@@ -45,99 +45,107 @@ export const prerender = true;
 
 // 1. getStaticPaths runs at build time
 export async function getStaticPaths() {
-  // Define available categories
-  const categories = [
-    { type: SearchType.Country, name: 'Country', slug: 'country' },
-    { type: SearchType.Tag, name: 'Tag', slug: 'tag' }
-  ];
+	// Define available categories
+	const categories = [
+		{ type: SearchType.Country, name: "Country", slug: "country" },
+		{ type: SearchType.Tag, name: "Tag", slug: "tag" },
+	];
 
-  const limitStations = 128; // Limit the number of stations per page
-  const paths = [];
-  const indexBreadcrumb = [
-    { label: 'Search' }
-  ];
-  // Fetch all category data in a single request
-  const categoriesData = await fetchTerms(16);
+	const limitStations = 128; // Limit the number of stations per page
+	const paths = [];
+	const indexBreadcrumb = [{ label: "Search" }];
+	// Fetch all category data in a single request
+	const categoriesData = await fetchTerms(16);
 
-  // 1. Main index page (route: /search)
-  paths.push({
-    params: { slug: undefined },
-    props: {
-      type: 'index',
-      title: 'RPlayer - Explore radio stations',
-      description: 'Discover radio stations by country and tags',
-      keywords: 'radio, streaming, country, tags, stations',
-      preloadedCategories: categories,
-      preloadedStations: [],
-      breadcrumbItems: indexBreadcrumb
-    }
-  });
+	// 1. Main index page (route: /search)
+	paths.push({
+		params: { slug: undefined },
+		props: {
+			type: "index",
+			title: "RPlayer - Explore radio stations",
+			description: "Discover radio stations by country and tags",
+			keywords: "radio, streaming, country, tags, stations",
+			preloadedCategories: categories,
+			preloadedStations: [],
+			breadcrumbItems: indexBreadcrumb,
+		},
+	});
 
-  // 2. Process each category type
-  for (const category of categories) {
-    const { slug, type, name } = category;
-    // Filter categories by type (Country or Tag)
-    const filteredCategories = categoriesData.filter(item => item.type === type);
+	// 2. Process each category type
+	for (const category of categories) {
+		const { slug, type, name } = category;
+		// Filter categories by type (Country or Tag)
+		const filteredCategories = categoriesData.filter((item) => item.type === type);
 
-    const categoryBreadcrumb = [
-      { label: 'Search', href: '/search' },
-      { label: name }
-    ];
+		const categoryBreadcrumb = [{ label: "Search", href: "/search" }, { label: name }];
 
-    // Category index page (route: /search/country or /search/tag)
-    paths.push({
-      params: { slug },
-      props: {
-        type,
-        title: `Stations by ${name} - RPlayer`,
-        description: `Browse radio stations by ${name}`,
-        keywords: `radio, streaming, ${name}, stations`,
-        preloadedCategories: filteredCategories,
-        preloadedStations: [],
-        breadcrumbItems: categoryBreadcrumb
-      }
-    });
+		// Category index page (route: /search/country or /search/tag)
+		paths.push({
+			params: { slug },
+			props: {
+				type,
+				title: `Stations by ${name} - RPlayer`,
+				description: `Browse radio stations by ${name}`,
+				keywords: `radio, streaming, ${name}, stations`,
+				preloadedCategories: filteredCategories,
+				preloadedStations: [],
+				breadcrumbItems: categoryBreadcrumb,
+			},
+		});
 
-    // 3. Detail pages for each category item
-    // (route: /search/country/[slug] or /search/tag/[slug])
-    for (const item of filteredCategories) {
-      const preloadedStations = await fetchStationsByTerm({
-        term: item.name,
-        type,
-        limit: limitStations
-      });
+		// 3. Detail pages for each category item
+		// (route: /search/country/[slug] or /search/tag/[slug])
+		for (const item of filteredCategories) {
+			const preloadedStations = await fetchStationsByTerm({
+				term: item.name,
+				type,
+				limit: limitStations,
+			});
 
-      const detailBreadcrumb = [
-        { label: 'Search', href: '/search' },
-        { label: name, href: `/search/${slug}` },
-        { label: item.name }
-      ];
-      paths.push({
-        params: { slug: `${slug}/${item.slug}` },
-        props: {
-          type: 'stations',
-          title: `Stations by ${item.name} - RPlayer`,
-          description: `Browse radio stations by ${item.name}`,
-          keywords: `radio, streaming, ${item.name}, stations`,
-          preloadedCategories: filteredCategories,
-          preloadedStations,
-          breadcrumbItems: detailBreadcrumb
-        }
-      });
-    }
-  }
+			const detailBreadcrumb = [
+				{ label: "Search", href: "/search" },
+				{ label: name, href: `/search/${slug}` },
+				{ label: item.name },
+			];
+			paths.push({
+				params: { slug: `${slug}/${item.slug}` },
+				props: {
+					type: "stations",
+					title: `Stations by ${item.name} - RPlayer`,
+					description: `Browse radio stations by ${item.name}`,
+					keywords: `radio, streaming, ${item.name}, stations`,
+					preloadedCategories: filteredCategories,
+					preloadedStations,
+					breadcrumbItems: detailBreadcrumb,
+				},
+			});
+		}
+	}
 
-  return paths;
+	return paths;
 }
 
-// biome-ignore lint/correctness/noUnusedVariables: Used in Astro template
-const { type, title, description, keywords, preloadedCategories = [], preloadedStations = [], breadcrumbItems }: SearchPageProps = Astro.props;
+const {
+	type,
+	// biome-ignore lint/correctness/noUnusedVariables: Used in Astro template
+	title,
+	// biome-ignore lint/correctness/noUnusedVariables: Used in Astro template
+	description,
+	// biome-ignore lint/correctness/noUnusedVariables: Used in Astro template
+	keywords,
+	// biome-ignore lint/correctness/noUnusedVariables: Used in Astro template
+	preloadedCategories = [],
+	// biome-ignore lint/correctness/noUnusedVariables: Used in Astro template
+	preloadedStations = [],
+	// biome-ignore lint/correctness/noUnusedVariables: Used in Astro template
+	breadcrumbItems,
+}: SearchPageProps = Astro.props;
 
 // Determine the schema type based on the page type
 const getSchemaType = () => {
-  if (type === 'stations') return 'MusicPlaylist';
-  if (type === SearchType.Country || type === SearchType.Tag) return 'CollectionPage';
-  return 'WebPage';
+	if (type === "stations") return "MusicPlaylist";
+	if (type === SearchType.Country || type === SearchType.Tag) return "CollectionPage";
+	return "WebPage";
 };
 
 // biome-ignore lint/correctness/noUnusedVariables: Used in Astro template

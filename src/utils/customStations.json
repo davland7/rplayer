@@ -1,14 +1,14 @@
 [
-  {
-    "stationuuid": "custom-1",
-    "name": "CHOI 98,1 Radio X",
-    "url": "https://lb0-stream.radiox981.ca/choi.mp3",
-    "favicon": "https://media.radiox.com/2023/04/choi-logo-mc-fond-pale.svg",
-    "tags": "Talk francophone",
-    "country": "Canada",
-    "countrycode": "CA",
-    "language": "fr",
-    "bitrate": 64,
-    "codec": "MP3"
-  }
+	{
+		"stationuuid": "custom-1",
+		"name": "CHOI 98,1 Radio X",
+		"url": "https://lb0-stream.radiox981.ca/choi.mp3",
+		"favicon": "https://media.radiox.com/2023/04/choi-logo-mc-fond-pale.svg",
+		"tags": "Talk francophone",
+		"country": "Canada",
+		"countrycode": "CA",
+		"language": "fr",
+		"bitrate": 64,
+		"codec": "MP3"
+	}
 ]

@@ -3,14 +3,10 @@ import RPlayer from "../../lib/index.js";
 import { getVolume, setVolume as setStoredVolume } from "../../utils/storage.js";
 
 export interface UseRPlayerOptions {
-  initialVolume?: number;
-  onStatusChange?: (isPlaying: boolean, isPaused: boolean) => void;
+	initialVolume?: number;
 }
 
-export function useRPlayer({
-  initialVolume = 0.5,
-  onStatusChange,
-}: UseRPlayerOptions) {
+export function useRPlayer({ initialVolume = 0.5 }: UseRPlayerOptions) {
 	const playerRef = useRef<RPlayer | null>(null);
 	const [isPlaying, setIsPlaying] = useState(false);
 	const [isPaused, setIsPaused] = useState(false);
@@ -30,7 +26,6 @@ export function useRPlayer({
 				const newIsPaused = status === "paused";
 				setIsPlaying(newIsPlaying);
 				setIsPaused(newIsPaused);
-				if (onStatusChange) onStatusChange(newIsPlaying, newIsPaused);
 			});
 			player.onvolumechange = () => {
 				setVolume(Math.round(player.volume * 100));
@@ -44,7 +39,7 @@ export function useRPlayer({
 		return () => {
 			playerRef.current?.destroy();
 		};
-	}, [initialVolume, onStatusChange]);
+	}, [initialVolume]);
 
 	const play = useCallback(() => playerRef.current?.play(), []);
 	const pause = useCallback(() => playerRef.current?.pause(), []);

@@ -24,7 +24,11 @@ const StationsTable = ({
 
 	return (
 		<div className="overflow-x-auto bg-black rounded-lg border-secondary sm:border">
-			<table className="w-full text-left border-collapse min-w-full bg-black text-white" itemScope itemType="https://schema.org/ItemList">
+			<table
+				className="w-full text-left border-collapse min-w-full bg-black text-white"
+				itemScope
+				itemType="https://schema.org/ItemList"
+			>
 				<thead className="bg-secondary-600">
 					<tr>
 						<th className="px-2 sm:px-4 py-2 text-gray-400 text-sm font-medium">Station</th>
@@ -38,9 +42,19 @@ const StationsTable = ({
 				</thead>
 				<tbody className="divide-y divide-secondary">
 					{stations.map((station, index) => (
-						<tr key={station.stationuuid} className="hover:bg-secondary transition-colors" itemScope itemType="https://schema.org/MusicGroup" itemProp="itemListElement">
+						<tr
+							key={station.stationuuid}
+							className="hover:bg-secondary transition-colors"
+							itemScope
+							itemType="https://schema.org/MusicGroup"
+							itemProp="itemListElement"
+						>
 							<td className="px-0 sm:px-4 py-3 sm:py-4">
-								<span itemProp="position" content={(index + 1).toString()} style={{ display: 'none' }}></span>
+								<span
+									itemProp="position"
+									content={(index + 1).toString()}
+									style={{ display: "none" }}
+								></span>
 								<div className="flex items-center">
 									{station.favicon ? (
 										<img
@@ -62,11 +76,17 @@ const StationsTable = ({
 									)}
 									<div>
 										<div className="font-medium flex items-center gap-2">
-											<span className="truncate max-w-[160px] sm:max-w-[260px] block text-white" itemProp="name">
+											<span
+												className="truncate max-w-[160px] sm:max-w-[260px] block text-white"
+												itemProp="name"
+											>
 												{station.name}
 											</span>
 										</div>
-										<div className="text-xs text-gray-400 truncate max-w-[160px] sm:max-w-[260px]" itemProp="genre">
+										<div
+											className="text-xs text-gray-400 truncate max-w-[160px] sm:max-w-[260px]"
+											itemProp="genre"
+										>
 											{station.tags ? station.tags.replace(/,/g, ", ") : null}
 										</div>
 										<meta itemProp="url" content={station.url} />
