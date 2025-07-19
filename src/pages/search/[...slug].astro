@@ -1,4 +1,5 @@
 ---
+// biome-ignore lint/correctness/noUnusedImports: Used in Astro template
 import Layout from '../../layouts/Layout.astro';
 // biome-ignore lint/correctness/noUnusedImports: Used in Astro template
 import MarkdownSection from '../../components/MarkdownSection.astro';
@@ -18,14 +19,9 @@ import { Content as TagContent } from '../../content/tag.md';
 // biome-ignore lint/correctness/noUnusedImports: Used in Astro template
 import { Content as StationsContent } from '../../content/stations.md';
 
+import { fetchTerms, fetchStationsByTerm, SearchType } from "../../utils/api.js";
+import type { Term, RadioStation } from "../../utils/api.js";
 // biome-ignore lint/correctness/noUnusedImports: Used in Astro template
-import {
-  Term,
-  fetchTerms,
-  fetchStationsByTerm,
-  type RadioStation,
-  SearchType
-} from "../../utils/api.js";
 import Breadcrumb from '../../components/Breadcrumb.astro';
 
 interface BreadcrumbItem {
@@ -134,6 +130,7 @@ export async function getStaticPaths() {
   return paths;
 }
 
+// biome-ignore lint/correctness/noUnusedVariables: Used in Astro template
 const { type, title, description, keywords, preloadedCategories = [], preloadedStations = [], breadcrumbItems }: SearchPageProps = Astro.props;
 
 // Determine the schema type based on the page type
@@ -143,6 +140,7 @@ const getSchemaType = () => {
   return 'WebPage';
 };
 
+// biome-ignore lint/correctness/noUnusedVariables: Used in Astro template
 const schemaType = getSchemaType();
 ---
 
