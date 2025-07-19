@@ -20,8 +20,10 @@ The RPlayer library uses browser localStorage to save and remember your volume p
 This information is stored entirely on your device and is not sent to our servers.
 The following data may be stored locally:
 
-- `RPlayer-volume`: Stores your preferred volume setting for the audio player
-- `cookiesAccepted`: Records whether you've accepted our cookie policy
+- `rplayer:volume`: Stores your preferred volume setting for the audio player
+- `rplayer:cookies`: Records whether you've accepted our cookie policy
+- `rplayer:favorites` (optional): Stores your favorite tracks if you use the favorites feature
+- `rplayer:last_url`: Saves the last URL you played, allowing you to resume playback
 
 ## How We Use Your Information
 

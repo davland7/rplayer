@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import RPlayer from "../../lib/index.js";
-import { setVolume as setStoredVolume } from "../../utils/storage.js";
+import { getVolume, setVolume as setStoredVolume } from "../../utils/storage.js";
 
 export interface UseRPlayerOptions {
   initialVolume?: number;
@@ -14,7 +14,6 @@ export function useRPlayer({
 	const playerRef = useRef<RPlayer | null>(null);
 	const [isPlaying, setIsPlaying] = useState(false);
 	const [isPaused, setIsPaused] = useState(false);
-	const [isMuted, setIsMuted] = useState(false);
 	const [volume, setVolume] = useState(initialVolume * 100);
 	const [currentTime, setCurrentTime] = useState(0);
 	const [error, setError] = useState("");
@@ -24,7 +23,7 @@ export function useRPlayer({
 		if (!playerRef.current) {
 			playerRef.current = new RPlayer();
 			const player = playerRef.current;
-			player.volume = initialVolume;
+			player.volume = getVolume() || initialVolume;
 			player.ontimeupdate = () => setCurrentTime(player.currentTime);
 			player.onPlaybackStatusChange((status) => {
 				const newIsPlaying = status === "playing";
@@ -35,8 +34,6 @@ export function useRPlayer({
 			});
 			player.onvolumechange = () => {
 				setVolume(Math.round(player.volume * 100));
-				setIsMuted(player.muted);
-				// Store the volume as a value between 0 and 1
 				setStoredVolume(player.volume);
 			};
 			player.onError((err) => {
@@ -49,7 +46,6 @@ export function useRPlayer({
 		};
 	}, [initialVolume, onStatusChange]);
 
-	// Méthodes utilitaires
 	const play = useCallback(() => playerRef.current?.play(), []);
 	const pause = useCallback(() => playerRef.current?.pause(), []);
 	const stop = useCallback(() => playerRef.current?.stop(), []);
@@ -65,7 +61,6 @@ export function useRPlayer({
 		playerRef,
 		isPlaying,
 		isPaused,
-		isMuted,
 		volume,
 		currentTime,
 		error,

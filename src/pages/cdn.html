@@ -41,7 +41,7 @@
     // Mobile/touch detection
     const isMobile = window.matchMedia('(pointer: coarse)').matches || 'ontouchstart' in window;
     // Persistent volume management (desktop)
-    const VOLUME_KEY = 'rplayer-volume';
+    const VOLUME_KEY = 'rplayer:volume';
     let initialVolume = 0.5;
     if (isMobile) {
       initialVolume = 1;
@@ -58,7 +58,7 @@
       });
     }
     // Pre-fill URL field if already saved
-    const URL_KEY = 'rplayer-url';
+    const URL_KEY = 'rplayer:last_url';
     const urlInput = document.getElementById('stream-url');
     const storedUrl = localStorage.getItem(URL_KEY);
     if (storedUrl) urlInput.value = storedUrl;

@@ -4,7 +4,10 @@ import { slugify } from "./slugify.js";
 import customStationsJson from './customStations.json' with { type: 'json' };
 const customStations: RadioStation[] = customStationsJson as RadioStation[];
 
-const API_BASE = "https://de1.api.radio-browser.info/json";
+// fi1.api.radio-browser.info
+// de1.api.radio-browser.info
+// de2.api.radio-browser.info
+const API_BASE = "https://de2.api.radio-browser.info/json";
 const SORT_BY_STATION_COUNT_DESC = `order=stationcount&reverse=true`;
 // Formats of stream to exclude
 const EXCLUDED_EXTENSIONS = ['.pls', '.m3u'];
@@ -123,15 +126,11 @@ export async function fetchTerms(
   }
 }
 
-function filterCustomStations(term: string, type: SearchType): RadioStation[] {
+function getCustomStations(term: string, type: SearchType): RadioStation[] {
   if (type === SearchType.Country) {
-    return customStations.filter((s: RadioStation) =>
-      s.country.toLowerCase() === term.toLowerCase()
-    );
+    return customStations.filter((s: RadioStation) => s.country === term);
   } else if (type === SearchType.Tag) {
-    return customStations.filter((s: RadioStation) =>
-      s.tags.toLowerCase().split(/[, ]+/).includes(term.toLowerCase())
-    );
+    return customStations.filter((s: RadioStation) => s.tags === term);
   }
   return [];
 }
@@ -141,13 +140,12 @@ export async function fetchStationsByTerm({
   type,
   limit = 128,
 }: StationsByTerm): Promise<RadioStation[]> {
-  const filteredCustom = filterCustomStations(term, type);
+  const custom = getCustomStations(term, type);
   const searchParams: Record<string, string> = {
-    order: "lastchecktime",
+    order: "clickcount",
     limit: String(limit),
     reverse: "true",
-    hidebroken: "true",
-    offset: "0",
+    hidebroken: "true"
   };
 
   try {
@@ -163,11 +161,11 @@ export async function fetchStationsByTerm({
       .filter(s => {
         const url = s.url.toLowerCase().split('?')[0];
         return !EXCLUDED_EXTENSIONS.some(ext => url.endsWith(ext));
-      })
+      });
 
-    return [...filteredCustom, ...apiRadioBrowser];
+    return [...custom, ...apiRadioBrowser];
   } catch (error) {
     console.error(`Failed to load stations for ${term}:`, error);
-    return [...filteredCustom];
+    return [...custom];
   }
 }

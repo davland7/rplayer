@@ -229,16 +229,15 @@ const Player = ({
 					if (inputUrl && inputUrl !== url) {
 						handleInputPlay();
 					} else if (playerRef.current) {
-						// Ne rien faire si déjà en lecture
 						if (isPlaying) return;
 						try {
-							// Si le player est stoppé, recharger la source avant de jouer
-							if (!isPaused && !isPlaying && url) {
+							// If the player is stopped, reload the source before playing
+              if (!isPaused && !isPlaying && url) {
 								await loadSrc(url);
 							}
 							await play();
 						} catch (err) {
-							console.error("Erreur de lecture même avec le bouton Play :", err);
+							console.error("Playback error even after pressing the Play button:", err);
 						}
 					}
 				}}
@@ -249,14 +248,11 @@ const Player = ({
 				onRewind={() => rewind(10)}
 			/>
 
-			{/* Message Now playing supprimé, car l'URL est déjà affichée dans la barre d'info */}
-
 			<PlayerStatusPanel
 				status={getPlaybackStatus()}
 				volume={volume}
 				currentTime={currentTime}
 				format={getAudioFormat()}
-				source={url}
 			/>
 
 			<PlayerErrorPanel error={error} />

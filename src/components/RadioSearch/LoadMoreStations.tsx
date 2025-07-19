@@ -14,8 +14,6 @@ const LoadMoreStations: React.FC<LoadMoreStationsProps> = ({
   onLoadMore,
   disabled = false,
   loading = false,
-  seeMoreHref = "#",
-  seeMoreLabel = "See more",
 }) => {
   // If neither button nor link should be shown, render nothing
   if (!showLoadMore && !showSeeMoreLink) return null;
@@ -42,18 +40,6 @@ const LoadMoreStations: React.FC<LoadMoreStationsProps> = ({
             Loading...
           </span>
         </button>
-      )}
-      {showSeeMoreLink && (
-        <p className="text-gray-400 text-sm mt-4">
-          For more stations, see the dedicated page&nbsp;
-          <a
-            href={seeMoreHref}
-            className="underline hover:text-primary-500"
-          >
-            {seeMoreLabel}
-          </a>
-          .
-        </p>
       )}
     </div>
   );

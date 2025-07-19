@@ -4,7 +4,7 @@
 export const COOKIE_KEY = "rplayer:cookies";
 export const VOLUME_KEY = "rplayer:volume";
 export const FAVORITES_KEY = "rplayer:favorites";
-export const LAST_URL = "rplayer:lastUrl";
+export const LAST_URL = "rplayer:last_url";
 
 export function isCookiesAccepted(): boolean {
 	return localStorage.getItem(COOKIE_KEY) === "true";

@@ -23,9 +23,9 @@ export default defineConfig({
 	  PUBLIC_RECAPTCHA_SITE_KEY: envField.string({ context: "client", access: "public" }),
 	  PUBLIC_FORMSPREE_FORM_ID: envField.string({ context: "client", access: "public" }),
 	  PUBLIC_GOOGLE_ANALYTICS_ID: envField.string({
-		context: "client",
-		access: "public",
-		optional: true,
+      context: "client",
+      access: "public",
+      optional: true,
 	  }),
 	},
   },
