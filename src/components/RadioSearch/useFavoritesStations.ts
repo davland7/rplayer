@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { FAVORITES_KEY, getLocalStorageItem, setLocalStorageItem } from "../../utils/storage.js";
 import type { RadioStation } from "../../utils/api.js";
+import { ToastType } from "../Toast.js";
 
 /**
  * Custom hook to manage favorite stations in localStorage
@@ -8,6 +9,9 @@ import type { RadioStation } from "../../utils/api.js";
 export function useFavoritesStations() {
 	const [favoritesStations, setFavoritesStations] = useState<RadioStation[]>([]);
 	const [saveMessage, setSaveMessage] = useState<string>("");
+	const [saveMessageType, setSaveMessageType] = useState<ToastType.SUCCESS | ToastType.INFO>(
+		ToastType.INFO,
+	);
 
 	// Load favorite stations on mount
 	useEffect(() => {
@@ -31,15 +35,15 @@ export function useFavoritesStations() {
 				(savedStation) => savedStation.stationuuid === station.stationuuid,
 			);
 			if (stationExists) {
+				setSaveMessageType(ToastType.INFO);
 				setSaveMessage(`"${station.name}" is already in your favorites.`);
-				setTimeout(() => setSaveMessage(""), 3000);
 				return;
 			}
 			const newFavoritesStations = [...favoritesStations, station];
 			setFavoritesStations(newFavoritesStations);
 			setLocalStorageItem(FAVORITES_KEY, JSON.stringify(newFavoritesStations));
+			setSaveMessageType(ToastType.SUCCESS);
 			setSaveMessage(`"${station.name}" has been added to your favorites.`);
-			setTimeout(() => setSaveMessage(""), 3000);
 		},
 		[favoritesStations],
 	);
@@ -56,11 +60,18 @@ export function useFavoritesStations() {
 			);
 			setFavoritesStations(newFavoritesStations);
 			setLocalStorageItem(FAVORITES_KEY, JSON.stringify(newFavoritesStations));
+			setSaveMessageType(ToastType.INFO);
 			setSaveMessage(`"${stationToRemove.name}" has been removed from your favorites.`);
-			setTimeout(() => setSaveMessage(""), 3000);
 		},
 		[favoritesStations],
 	);
 
-	return { favoritesStations, saveStation, removeStation, saveMessage, setSaveMessage };
+	return {
+		favoritesStations,
+		saveStation,
+		removeStation,
+		saveMessage,
+		setSaveMessage,
+		saveMessageType,
+	};
 }

@@ -12,7 +12,7 @@ function PlayerStatusPanel({ status, volume, currentTime, isHls }: PlayerStatusP
 				<span className="font-bold text-amber-300">Status:</span> {status}
 			</div>
 			<div>
-				<span className="font-bold text-amber-300">isHls:</span> {isHls ? "Yes" : "No"}
+				<span className="font-bold text-amber-300">HLS:</span> {isHls ? "Yes" : "No"}
 			</div>
 			<div>
 				<span className="font-bold text-amber-300">Volume:</span> {volume}%

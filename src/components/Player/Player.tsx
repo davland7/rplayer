@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import type { JSX } from "react";
 import PlayerControls from "./PlayerControls.js";
-import PlayerErrorPanel from "./PlayerErrorPanel.js";
+import Toast, { ToastType } from "../Toast.js";
 import PlayerStatusPanel from "./PlayerStatusPanel.js";
 import PlayerUrlField from "./PlayerUrlField.js";
 import { useRPlayer } from "./useRPlayer.js";
@@ -18,54 +18,82 @@ interface PlayerProps {
  * @returns {JSX.Element} Le composant Player
  */
 const Player = ({ initialVolume = 0.5, source = "" }: PlayerProps): JSX.Element => {
-	const {
-		playerRef,
-		isPlaying,
-		isPaused,
-		volume,
-		currentTime,
-		error, // on retire setError de la déstructuration
-		pause,
-		stop,
-		upVolume,
-		downVolume,
-		rewind,
-		playSrc,
-	} = useRPlayer({ initialVolume });
-	const [url, setUrl] = useState<string>(() => getLocalStorageItem(LAST_URL) || source || "");
+  const {
+	playerRef,
+	isPlaying,
+	isPaused,
+	volume,
+	currentTime,
+	error,
+  play,
+	pause,
+	stop,
+	upVolume,
+	downVolume,
+	rewind,
+	playSrc,
+	loadSrc,
+  } = useRPlayer({ initialVolume });
+  const [hasPreloaded, setHasPreloaded] = useState(false);
+  const [url, setUrl] = useState<string>(() => getLocalStorageItem(LAST_URL) || source || "");
 
-	// Synchronise l'input avec la prop source ET joue automatiquement si la source change
-	useEffect(() => {
-		if (source && source !== url) {
-			setUrl(source);
-			setLocalStorageItem(LAST_URL, source);
-			if (typeof playSrc === "function") {
-				playSrc?.(source)?.catch((error: unknown) => {
-					console.error("Failed to play source:", error);
-				});
-			}
-		}
-	}, [source, url, playSrc]);
+  // Précharger la dernière URL au montage (sans autoplay)
+  useEffect(() => {
+	const lastUrl = getLocalStorageItem(LAST_URL);
+	if (lastUrl && typeof loadSrc === "function") {
+	  loadSrc(lastUrl)?.then(() => {
+		  setHasPreloaded(true);
+		  console.log("Source préchargée et prête à être jouée !");
+		})
+		.catch((err) => {
+		  setHasPreloaded(true);
+		  console.error("Erreur lors du préchargement :", err);
+		});
+	} else {
+	  setHasPreloaded(true);
+	}
+  }, [loadSrc]);
 
-	const handlePlay = useCallback(
-		(stationUrl: string) => {
-			const playSrcFn = playSrc;
-			if (!playerRef.current || typeof playSrcFn !== "function") return;
-			if (!playSrcFn) return;
+  useEffect(() => {
+	if (!hasPreloaded) return;
+	if (source && ((!isPlaying && source === url) || source !== url)) {
+	  setUrl(source);
+	  setLocalStorageItem(LAST_URL, source);
+	  if (typeof playSrc === "function") {
+		playSrc(source)?.catch((error: unknown) => {
+		  console.error("Failed to play source:", error);
+		});
+	  }
+	}
+  }, [source, url, playSrc, hasPreloaded, isPlaying]);
 
-			setUrl(stationUrl);
-			setLocalStorageItem(LAST_URL, stationUrl);
-			(playSrcFn as (src: string) => Promise<void>)(stationUrl).catch((error: unknown) => {
-				console.error("Failed to play source:", error);
-			});
-		},
-		[playSrc, playerRef],
-	);
+const handlePlay = useCallback(
+  (stationUrl: string) => {
+	setUrl(stationUrl);
+	setLocalStorageItem(LAST_URL, stationUrl);
+	if (!playerRef.current || typeof playSrc !== "function") return;
+	playSrc(stationUrl)?.catch((error: unknown) => {
+	  console.error("Failed to play source:", error);
+	});
+  },
+  [playSrc, playerRef],
+);
 
-	const handleInputPlay = useCallback(() => {
-		if (!playerRef.current || !url) return;
-		handlePlay(url);
-	}, [url, handlePlay, playerRef]);
+const handleInputPlay = useCallback(() => {
+  if (!playerRef.current || !url) return;
+    // If the source is already preloaded and not currently playing, use play()
+    if (
+      playerRef.current.src === url &&
+      typeof play === "function" &&
+      !isPlaying
+    ) {
+    play()?.catch((error: unknown) => {
+      console.error("Failed to play preloaded source:", error);
+    });
+	  return;
+  }
+  handlePlay(url);
+}, [url, handlePlay, playerRef, isPlaying, play]);
 
 	const handleStop = useCallback(() => {
 		if (playerRef.current) {
@@ -105,7 +133,14 @@ const Player = ({ initialVolume = 0.5, source = "" }: PlayerProps): JSX.Element 
 				currentTime={currentTime}
 				isHls={playerRef.current?.isHlsjs || false}
 			/>
-			<PlayerErrorPanel error={error} />
+			{error && (
+				<Toast
+					message={
+						typeof error === "string" ? error : "An error occurred while playing the stream."
+					}
+					type={ToastType.ERROR}
+				/>
+			)}
 		</>
 	);
 };

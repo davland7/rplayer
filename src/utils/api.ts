@@ -7,7 +7,7 @@ const customStations: RadioStation[] = customStationsJson as RadioStation[];
 // fi1.api.radio-browser.info
 // de1.api.radio-browser.info
 // de2.api.radio-browser.info
-const API_BASE = "https://de2.api.radio-browser.info/json";
+const API_BASE = "https://de1.api.radio-browser.info/json";
 const SORT_BY_STATION_COUNT_DESC = `order=stationcount&reverse=true`;
 // Formats of stream to exclude
 const EXCLUDED_EXTENSIONS = [".pls", ".m3u"];

@@ -9,6 +9,11 @@ export type PlaybackStatus = 'playing' | 'paused' | 'stopped';
  * @extends Audio
  */
 class RPlayer extends Audio {
+  /**
+   * Internal flag to track if we should try to auto-reconnect
+   */
+  private shouldAutoReconnect: boolean = false;
+
   private hls: any | null = null;
   private isHls: boolean = false;
   private lastSrc: string = '';
@@ -21,6 +26,11 @@ class RPlayer extends Audio {
    */
   constructor(initialSource?: string) {
     super();
+    // Auto-reconnect on network change
+    if (typeof window !== 'undefined') {
+      window.addEventListener('online', this.handleReconnect);
+      window.addEventListener('offline', this.handleOffline);
+    }
 
     // Initialize with default settings
     this.initializeVolume();
@@ -178,7 +188,12 @@ class RPlayer extends Audio {
    * @param {function} handler - The function to call when an error occurs
    */
   onError(handler: (error: Error) => void): void {
-    this.errorHandlers.push(handler);
+    // Si une erreur est détectée, activer la reconnexion automatique
+    const wrappedHandler = (error: Error) => {
+      this.shouldAutoReconnect = true;
+      handler(error);
+    };
+    this.errorHandlers.push(wrappedHandler);
   }
 
   /**
@@ -312,16 +327,34 @@ class RPlayer extends Audio {
         this.lastSrc = src;
         this.isHls = false;
 
-        try {
-          await this.play();
-          console.log(`[RPlayer] Direct playback successful`);
-          return;
-        } catch (playError) {
-          console.error('[RPlayer] Error during direct playback:', playError);
-          const directError = new Error(`Failed to play source: ${src}`);
-          this.errorHandlers.forEach(handler => handler(directError));
-          throw directError;
-        }
+        // Attendre canplay avant d'appeler play()
+        return new Promise((resolve, reject) => {
+          const onCanPlay = async () => {
+            this.removeEventListener('canplay', onCanPlay);
+            this.removeEventListener('error', onError);
+            try {
+              await Promise.resolve(); // microtask pour éviter race
+              await this.play();
+              console.log(`[RPlayer] Direct playback successful`);
+              resolve();
+            } catch (playError) {
+              console.error('[RPlayer] Error during direct playback:', playError);
+              const directError = new Error(`Failed to play source: ${src}`);
+              this.errorHandlers.forEach(handler => handler(directError));
+              reject(directError);
+            }
+          };
+          const onError = () => {
+            this.removeEventListener('canplay', onCanPlay);
+            this.removeEventListener('error', onError);
+            const error = new Error(`Failed to load source: ${src}`);
+            this.errorHandlers.forEach(handler => handler(error));
+            reject(error);
+          };
+          this.addEventListener('canplay', onCanPlay, { once: true });
+          this.addEventListener('error', onError, { once: true });
+          this.load();
+        });
       }
     } catch (error) {
       console.error('Error playing source', error);
@@ -452,8 +485,37 @@ class RPlayer extends Audio {
 
     // Important: do not clear lastSrc to allow displaying the last stream while indicating that playback is stopped
 
+    // On stop, enable auto-reconnect if there was a source
+    if (this.lastSrc) {
+      this.shouldAutoReconnect = true;
+    }
+
     this.playbackHandlers.forEach(handler => handler('stopped'));
+    // On demande explicitement la lecture, on désactive l'auto-reconnect (l'utilisateur a le contrôle)
+    this.shouldAutoReconnect = false;
   }
+
+  /**
+   * Handler for browser 'online' event to auto-reconnect the stream
+   */
+  private handleReconnect = () => {
+    if (this.shouldAutoReconnect && this.lastSrc) {
+      // Relance le stream automatiquement
+      this.playSrc(this.lastSrc).catch((err) => {
+        console.warn('[RPlayer] Auto-reconnect failed:', err);
+      });
+      // On ne relance qu'une fois
+      this.shouldAutoReconnect = false;
+    }
+  };
+
+  /**
+   * Handler for browser 'offline' event (optionnel, pour debug)
+   */
+  private handleOffline = () => {
+    // Peut-être afficher un message ou loguer
+    console.warn('[RPlayer] Offline detected');
+  };
 
   /**
    * Rewinds the audio element by the specified number of seconds

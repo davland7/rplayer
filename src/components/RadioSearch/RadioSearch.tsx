@@ -1,13 +1,14 @@
-import { type JSX, useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
+import type { JSX } from "react";
 import Player from "../Player/Player.js";
 import StationsTable from "./StationsTable.js";
 import { useFavoritesStations } from "./useFavoritesStations.js";
 import { useStationsFilter } from "./useStationsFilter.js";
 import type { RadioStation } from "../../utils/api.js";
 import NoStationsFound from "./NoStationsFound.js";
-import SaveMessage from "./SaveMessage.js";
 import LoadMoreStations from "./LoadMoreStations.js";
 import StationNameFilter from "./StationNameFilter.js";
+import Toast, { type ToastType } from "../Toast.js";
 
 export interface RadioSearchProps {
 	initialVisibleCount: number;
@@ -26,7 +27,13 @@ const RadioSearch = ({
 	preloadedStations = [],
 	showFavoritesOnly = false,
 }: RadioSearchProps): JSX.Element => {
-	const { favoritesStations, saveStation, removeStation, saveMessage } = useFavoritesStations();
+	const {
+		favoritesStations,
+		saveStation,
+		removeStation,
+		saveMessage,
+		saveMessageType,
+	} = useFavoritesStations();
 	const [visibleCount, setVisibleCount] = useState<number>(initialVisibleCount);
 	const [currentPlayingUrl, setCurrentPlayingUrl] = useState<string>("");
 	const [filterText, setFilterText] = useState<string>("");
@@ -61,8 +68,6 @@ const RadioSearch = ({
 
 	const displayedStations = filteredStations.slice(0, visibleCount);
 	const showLoadMoreButton = filteredStations.length > visibleCount;
-	const MAX_RESULTS = initialVisibleCount * 2;
-	const showSeeMoreLink = visibleCount >= MAX_RESULTS && stations.length > MAX_RESULTS;
 
 	return (
 		<>
@@ -102,7 +107,6 @@ const RadioSearch = ({
 						{showLoadMoreButton && (
 							<LoadMoreStations
 								showLoadMore={true}
-								showSeeMoreLink={showSeeMoreLink}
 								onLoadMore={() =>
 									setVisibleCount((c: number) =>
 										Math.min(c + initialVisibleCount, filteredStations.length),
@@ -112,8 +116,7 @@ const RadioSearch = ({
 						)}
 					</>
 				)}
-				{/* Save confirmation message */}
-				{saveMessage && <SaveMessage message={saveMessage} />}
+				{saveMessage && <Toast message={saveMessage} type={saveMessageType as ToastType} />}
 			</div>
 		</>
 	);
