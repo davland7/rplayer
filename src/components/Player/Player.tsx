@@ -71,7 +71,8 @@ const Player = ({ initialVolume = 0.5, source = "" }: PlayerProps): JSX.Element 
 
 	useEffect(() => {
 		if (!hasPreloaded) return;
-		if (source && ((!isPlaying && source === url) || source !== url)) {
+		// Ne relancer playSrc que si l'URL a changé ET que l'utilisateur n'a pas stoppé manuellement
+		if (source && source !== url) {
 			setUrl(source);
 			setLocalStorageItem(LAST_URL, source);
 			if (typeof playSrc === "function") {
@@ -80,7 +81,7 @@ const Player = ({ initialVolume = 0.5, source = "" }: PlayerProps): JSX.Element 
 				});
 			}
 		}
-	}, [source, url, playSrc, hasPreloaded, isPlaying]);
+	}, [source, url, playSrc, hasPreloaded]);
 
 	const handlePlay = useCallback(
 		(stationUrl: string) => {
@@ -108,12 +109,6 @@ const Player = ({ initialVolume = 0.5, source = "" }: PlayerProps): JSX.Element 
 		setHlsReconnectWarning(null); // Hide HLS warning on play
 	}, [url, handlePlay, playerRef, isPlaying, play]);
 
-	const handleStop = useCallback(() => {
-		if (playerRef.current) {
-			stop();
-		}
-	}, [stop, playerRef]);
-
 	const getPlaybackStatus = useCallback(() => {
 		if (isPlaying) return "Playing";
 		if (isPaused) return "Paused";
@@ -129,13 +124,14 @@ const Player = ({ initialVolume = 0.5, source = "" }: PlayerProps): JSX.Element 
 			/>
 			<PlayerControls
 				isPlaying={isPlaying}
+				isPaused={isPaused}
 				url={url}
 				inputUrl={url}
 				onPlay={async () => {
 					handleInputPlay();
 				}}
 				onPause={pause}
-				onStop={handleStop}
+				onStop={stop}
 				onUpVolume={upVolume}
 				onDownVolume={downVolume}
 				onRewind={() => rewind(10)}

@@ -7,6 +7,7 @@
 
 interface PlayerControlsProps {
 	isPlaying: boolean;
+	isPaused: boolean;
 	url: string;
 	inputUrl: string;
 	onPlay: () => void;
@@ -19,6 +20,7 @@ interface PlayerControlsProps {
 
 function PlayerControls({
 	isPlaying,
+	isPaused,
 	url,
 	inputUrl,
 	onPlay,
@@ -52,7 +54,7 @@ function PlayerControls({
 				type="button"
 				className="px-4 py-2 rounded border-2 font-bold transition-colors cursor-pointer border-red-500 text-red-400 hover:bg-red-600 hover:text-black focus:outline-none focus:ring-2 focus:ring-red-400 focus:ring-opacity-50"
 				onClick={onStop}
-				disabled={!url}
+				disabled={!isPlaying}
 				aria-label="Stop"
 			>
 				Stop
