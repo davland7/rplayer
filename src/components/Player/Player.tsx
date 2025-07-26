@@ -18,82 +18,95 @@ interface PlayerProps {
  * @returns {JSX.Element} Le composant Player
  */
 const Player = ({ initialVolume = 0.5, source = "" }: PlayerProps): JSX.Element => {
-  const {
-	playerRef,
-	isPlaying,
-	isPaused,
-	volume,
-	currentTime,
-	error,
-  play,
-	pause,
-	stop,
-	upVolume,
-	downVolume,
-	rewind,
-	playSrc,
-	loadSrc,
-  } = useRPlayer({ initialVolume });
-  const [hasPreloaded, setHasPreloaded] = useState(false);
-  const [url, setUrl] = useState<string>(() => getLocalStorageItem(LAST_URL) || source || "");
+	const {
+		playerRef,
+		isPlaying,
+		isPaused,
+		volume,
+		currentTime,
+		error,
+		play,
+		pause,
+		stop,
+		upVolume,
+		downVolume,
+		rewind,
+		playSrc,
+		loadSrc,
+	} = useRPlayer({ initialVolume });
+	const [hasPreloaded, setHasPreloaded] = useState(false);
+	const [url, setUrl] = useState<string>(() => getLocalStorageItem(LAST_URL) || source || "");
+	const [hlsReconnectWarning, setHlsReconnectWarning] = useState<string | null>(null);
+	useEffect(() => {
+		const onOnline = () => {
+			if (playerRef.current?.isHlsjs && !isPlaying) {
+				setHlsReconnectWarning(
+					"The HLS stream did not resume automatically after network change. Please click Play to restart.",
+				);
+			}
+		};
+		window.addEventListener("online", onOnline);
+		return () => {
+			window.removeEventListener("online", onOnline);
+		};
+	}, [playerRef, isPlaying]);
 
-  // Précharger la dernière URL au montage (sans autoplay)
-  useEffect(() => {
-	const lastUrl = getLocalStorageItem(LAST_URL);
-	if (lastUrl && typeof loadSrc === "function") {
-	  loadSrc(lastUrl)?.then(() => {
-		  setHasPreloaded(true);
-		  console.log("Source préchargée et prête à être jouée !");
-		})
-		.catch((err) => {
-		  setHasPreloaded(true);
-		  console.error("Erreur lors du préchargement :", err);
-		});
-	} else {
-	  setHasPreloaded(true);
-	}
-  }, [loadSrc]);
+	// Précharger la dernière URL au montage (sans autoplay)
+	useEffect(() => {
+		const lastUrl = getLocalStorageItem(LAST_URL);
+		if (lastUrl && typeof loadSrc === "function") {
+			loadSrc(lastUrl)
+				?.then(() => {
+					setHasPreloaded(true);
+					console.log("Source préchargée et prête à être jouée !");
+				})
+				.catch((err) => {
+					setHasPreloaded(true);
+					console.error("Erreur lors du préchargement :", err);
+				});
+		} else {
+			setHasPreloaded(true);
+		}
+	}, [loadSrc]);
 
-  useEffect(() => {
-	if (!hasPreloaded) return;
-	if (source && ((!isPlaying && source === url) || source !== url)) {
-	  setUrl(source);
-	  setLocalStorageItem(LAST_URL, source);
-	  if (typeof playSrc === "function") {
-		playSrc(source)?.catch((error: unknown) => {
-		  console.error("Failed to play source:", error);
-		});
-	  }
-	}
-  }, [source, url, playSrc, hasPreloaded, isPlaying]);
+	useEffect(() => {
+		if (!hasPreloaded) return;
+		if (source && ((!isPlaying && source === url) || source !== url)) {
+			setUrl(source);
+			setLocalStorageItem(LAST_URL, source);
+			if (typeof playSrc === "function") {
+				playSrc(source)?.catch((error: unknown) => {
+					console.error("Failed to play source:", error);
+				});
+			}
+		}
+	}, [source, url, playSrc, hasPreloaded, isPlaying]);
 
-const handlePlay = useCallback(
-  (stationUrl: string) => {
-	setUrl(stationUrl);
-	setLocalStorageItem(LAST_URL, stationUrl);
-	if (!playerRef.current || typeof playSrc !== "function") return;
-	playSrc(stationUrl)?.catch((error: unknown) => {
-	  console.error("Failed to play source:", error);
-	});
-  },
-  [playSrc, playerRef],
-);
+	const handlePlay = useCallback(
+		(stationUrl: string) => {
+			setUrl(stationUrl);
+			setLocalStorageItem(LAST_URL, stationUrl);
+			if (!playerRef.current || typeof playSrc !== "function") return;
+			playSrc(stationUrl)?.catch((error: unknown) => {
+				console.error("Failed to play source:", error);
+			});
+		},
+		[playSrc, playerRef],
+	);
 
-const handleInputPlay = useCallback(() => {
-  if (!playerRef.current || !url) return;
-    // If the source is already preloaded and not currently playing, use play()
-    if (
-      playerRef.current.src === url &&
-      typeof play === "function" &&
-      !isPlaying
-    ) {
-    play()?.catch((error: unknown) => {
-      console.error("Failed to play preloaded source:", error);
-    });
-	  return;
-  }
-  handlePlay(url);
-}, [url, handlePlay, playerRef, isPlaying, play]);
+	const handleInputPlay = useCallback(() => {
+		if (!playerRef.current || !url) return;
+		// If the source is already preloaded and not currently playing, use play()
+		if (playerRef.current.src === url && typeof play === "function" && !isPlaying) {
+			play()?.catch((error: unknown) => {
+				console.error("Failed to play preloaded source:", error);
+			});
+			setHlsReconnectWarning(null); // Hide HLS warning on play
+			return;
+		}
+		handlePlay(url);
+		setHlsReconnectWarning(null); // Hide HLS warning on play
+	}, [url, handlePlay, playerRef, isPlaying, play]);
 
 	const handleStop = useCallback(() => {
 		if (playerRef.current) {
@@ -140,6 +153,9 @@ const handleInputPlay = useCallback(() => {
 					}
 					type={ToastType.ERROR}
 				/>
+			)}
+			{hlsReconnectWarning && (
+				<Toast message={hlsReconnectWarning} type={ToastType.WARNING} autoClose={false} />
 			)}
 		</>
 	);

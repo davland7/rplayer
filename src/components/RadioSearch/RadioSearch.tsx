@@ -27,13 +27,8 @@ const RadioSearch = ({
 	preloadedStations = [],
 	showFavoritesOnly = false,
 }: RadioSearchProps): JSX.Element => {
-	const {
-		favoritesStations,
-		saveStation,
-		removeStation,
-		saveMessage,
-		saveMessageType,
-	} = useFavoritesStations();
+	const { favoritesStations, saveStation, removeStation, saveMessage, saveMessageType } =
+		useFavoritesStations();
 	const [visibleCount, setVisibleCount] = useState<number>(initialVisibleCount);
 	const [currentPlayingUrl, setCurrentPlayingUrl] = useState<string>("");
 	const [filterText, setFilterText] = useState<string>("");

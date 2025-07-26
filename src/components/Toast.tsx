@@ -10,7 +10,7 @@ export enum ToastType {
 interface ToastProps {
 	message: string;
 	type?: ToastType;
-	duration?: number;
+	autoClose?: boolean;
 }
 
 const typeStyles = {
@@ -20,16 +20,18 @@ const typeStyles = {
 	[ToastType.WARNING]: "bg-yellow-100 border-yellow-500 text-yellow-700",
 };
 
-const Toast = ({ message, type = ToastType.INFO }: ToastProps) => {
+const Toast = ({ message, type = ToastType.INFO, autoClose = true }: ToastProps) => {
 	const [visible, setVisible] = useState(true);
 
 	useEffect(() => {
 		if (!message) return;
 		setVisible(true);
-		const duration = 3000;
-		const timer = setTimeout(() => setVisible(false), duration);
-		return () => clearTimeout(timer);
-	}, [message]);
+		if (autoClose !== false) {
+			const duration = 3000;
+			const timer = setTimeout(() => setVisible(false), duration);
+			return () => clearTimeout(timer);
+		}
+	}, [message, autoClose]);
 
 	if (!visible) return null;
 

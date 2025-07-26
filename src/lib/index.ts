@@ -542,8 +542,9 @@ class RPlayer extends Audio {
    * The volume will not exceed 100%
    */
   upVolume(): void {
-    this.volume = Math.min(this.volume + 0.1, 1);
-    this.volume = parseFloat(this.volume.toFixed(2));
+    const newVolume = Math.min(this.volume + 0.1, 1);
+    if (newVolume === this.volume) return; // Ne rien faire si déjà au max
+    this.volume = parseFloat(newVolume.toFixed(2));
   }
 
   /**
@@ -551,8 +552,9 @@ class RPlayer extends Audio {
    * The volume will not go below 0%
    */
   downVolume(): void {
-    this.volume = Math.max(this.volume - 0.1, 0);
-    this.volume = parseFloat(this.volume.toFixed(2));
+    const newVolume = Math.max(this.volume - 0.1, 0);
+    if (newVolume === this.volume) return; // Ne rien faire si déjà au min
+    this.volume = parseFloat(newVolume.toFixed(2));
   }
 
   /**

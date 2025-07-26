@@ -8,18 +8,23 @@ export interface UseRPlayerOptions {
 
 export function useRPlayer({ initialVolume = 0.5 }: UseRPlayerOptions) {
 	const playerRef = useRef<RPlayer | null>(null);
+	const storedVol = getVolume();
+	const initialVol =
+		typeof storedVol === "number" && !Number.isNaN(storedVol)
+			? Math.max(0, Math.min(1, storedVol))
+			: Math.max(0, Math.min(1, initialVolume));
 	const [isPlaying, setIsPlaying] = useState(false);
 	const [isPaused, setIsPaused] = useState(false);
-	const [volume, setVolume] = useState(initialVolume * 100);
+	const [volume, setVolume] = useState(initialVol); // volume est une fraction 0-1
 	const [currentTime, setCurrentTime] = useState(0);
 	const [error, setError] = useState("");
 
-	// Initialisation et destruction du lecteur
+	// biome-ignore lint/correctness/useExhaustiveDependencies: initialVol ne doit pas être une dépendance ici
 	useEffect(() => {
 		if (!playerRef.current) {
 			playerRef.current = new RPlayer();
 			const player = playerRef.current;
-			player.volume = getVolume() || initialVolume;
+			player.volume = initialVol;
 			player.ontimeupdate = () => setCurrentTime(player.currentTime);
 			player.onPlaybackStatusChange((status) => {
 				const newIsPlaying = status === "playing";
@@ -28,7 +33,7 @@ export function useRPlayer({ initialVolume = 0.5 }: UseRPlayerOptions) {
 				setIsPaused(newIsPaused);
 			});
 			player.onvolumechange = () => {
-				setVolume(Math.round(player.volume * 100));
+				setVolume(player.volume); // stocke la fraction 0-1
 				setStoredVolume(player.volume);
 			};
 			player.onError((err) => {
@@ -39,18 +44,38 @@ export function useRPlayer({ initialVolume = 0.5 }: UseRPlayerOptions) {
 		return () => {
 			playerRef.current?.destroy();
 		};
-	}, [initialVolume]);
+	}, []);
 
-	const play = useCallback(() => playerRef.current?.play(), []);
-	const pause = useCallback(() => playerRef.current?.pause(), []);
-	const stop = useCallback(() => playerRef.current?.stop(), []);
-	const mute = useCallback(() => playerRef.current?.mute(), []);
-	const upVolume = useCallback(() => playerRef.current?.upVolume(), []);
-	const downVolume = useCallback(() => playerRef.current?.downVolume(), []);
-	const rewind = useCallback((s: number) => playerRef.current?.rewind(s), []);
-	const forward = useCallback((s: number) => playerRef.current?.forward(s), []);
-	const playSrc = useCallback((src: string) => playerRef.current?.playSrc(src), []);
-	const loadSrc = useCallback((src: string) => playerRef.current?.loadSrc(src), []);
+	const play = useCallback((): Promise<void> => {
+		return playerRef.current?.play() as Promise<void>;
+	}, []);
+	const pause = useCallback(() => {
+		playerRef.current?.pause();
+	}, []);
+	const stop = useCallback(() => {
+		playerRef.current?.stop();
+	}, []);
+	const mute = useCallback(() => {
+		playerRef.current?.mute();
+	}, []);
+	const upVolume = useCallback(() => {
+		playerRef.current?.upVolume();
+	}, []);
+	const downVolume = useCallback(() => {
+		playerRef.current?.downVolume();
+	}, []);
+	const rewind = useCallback((s: number) => {
+		playerRef.current?.rewind(s);
+	}, []);
+	const forward = useCallback((s: number) => {
+		playerRef.current?.forward(s);
+	}, []);
+	const playSrc = useCallback((src: string): Promise<void> => {
+		return playerRef.current?.playSrc(src) as Promise<void>;
+	}, []);
+	const loadSrc = useCallback((src: string): Promise<void> => {
+		return playerRef.current?.loadSrc(src) as Promise<void>;
+	}, []);
 
 	return {
 		playerRef,
