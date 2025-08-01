@@ -1,14 +1,14 @@
-// Interface pour les statistiques de lecture HLS
+// Interface for HLS playback statistics
 export interface HlsStats {
-  bandwidth: number;        // Estimation du débit en bits par seconde
-  droppedFrames: number;    // Nombre d'images perdues
-  bufferLength: number;     // Longueur du tampon en secondes
-  currentLevel: number;     // Niveau de qualité actuel
-  totalLevels: number;      // Nombre total de niveaux de qualité disponibles
-  loadLatency: number;      // Latence de chargement en millisecondes
+  bandwidth: number;        // Estimated bandwidth in bits per second
+  droppedFrames: number;    // Number of dropped frames
+  bufferLength: number;     // Buffer length in seconds
+  currentLevel: number;     // Current quality level
+  totalLevels: number;      // Total number of available quality levels
+  loadLatency: number;      // Load latency in milliseconds
 }
 
-// Type pour les callbacks de statistiques
+// Type for statistics callbacks
 export type StatsCallback = (stats: HlsStats) => void;
 
 /**
@@ -36,8 +36,8 @@ export async function playHls(
           const playPromise = audioElement.play();
 
           if (playPromise !== undefined) {
-            playPromise.catch(error => {
-              console.warn('Auto-play was prevented, user interaction may be needed', error);
+            playPromise.catch(_ => {
+              console.warn('Auto-play was prevented, user interaction may be needed');
             });
           }
         }
@@ -93,24 +93,21 @@ export async function playHls(
       if (onStatsUpdate) {
         const statsInterval = 3000; // Update stats every 3 seconds
         const statsTimer = setInterval(() => {
-          if (hls) {
-            // Calculate buffer length
-            let bufferLength = 0;
-            if (hls.media && hls.media.buffered.length > 0) {
-              bufferLength = hls.media.buffered.end(hls.media.buffered.length - 1) - hls.media.currentTime;
-            }
+          // Calculate buffer length - if media exists and has buffer, get length, otherwise 0
+          const bufferLength = (hls.media && hls.media.buffered.length > 0)
+            ? hls.media.buffered.end(hls.media.buffered.length - 1) - hls.media.currentTime
+            : 0;
 
-            const hlsStats: HlsStats = {
-              bandwidth: hls.bandwidthEstimate,
-              droppedFrames: 0, // Need to calculate from media element if needed
-              bufferLength: bufferLength,
-              currentLevel: hls.currentLevel,
-              totalLevels: hls.levels ? hls.levels.length : 0,
-              loadLatency: 0  // Hls.js v1.6.1 doesn't expose this directly through typed properties
-            };
+          const hlsStats: HlsStats = {
+            bandwidth: hls.bandwidthEstimate,
+            droppedFrames: 0, // Need to calculate from media element if needed
+            bufferLength,  // Short property notation when name matches variable
+            currentLevel: hls.currentLevel,
+            totalLevels: hls.levels ? hls.levels.length : 0,
+            loadLatency: 0  // Hls.js v1.6.1 doesn't expose this directly through typed properties
+          };
 
-            onStatsUpdate(hlsStats);
-          }
+          onStatsUpdate(hlsStats);
         }, statsInterval);
 
         // Clean up the timer when media is detached
@@ -129,8 +126,8 @@ export async function playHls(
           const playPromise = audioElement.play();
 
           if (playPromise !== undefined) {
-            playPromise.catch(error => {
-              console.warn('Auto-play was prevented, user interaction may be needed', error);
+            playPromise.catch(_ => {
+              console.warn('Auto-play was prevented, user interaction may be needed');
             });
           }
         }
@@ -142,7 +139,6 @@ export async function playHls(
     }
   } catch (error) {
     console.error('Failed to load or initialize hls.js:', error);
-    throw new Error('Failed to load or initialize HLS support: ' + (error instanceof Error ? error.message : String(error)));
+    throw new Error(`Failed to load or initialize HLS support: ${error instanceof Error ? error.message : String(error)}`);
   }
 }
-

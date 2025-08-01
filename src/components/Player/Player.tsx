@@ -13,9 +13,9 @@ interface PlayerProps {
 }
 
 /**
- * Player - Un composant React pour le lecteur audio RPlayer
- * @param {PlayerProps} props - Propriétés du composant
- * @returns {JSX.Element} Le composant Player
+ * Player - A React component for the RPlayer audio player
+ * @param {PlayerProps} props - Component properties
+ * @returns {JSX.Element} The Player component
  */
 const Player = ({ initialVolume = 0.5, source = "" }: PlayerProps): JSX.Element => {
 	const {
@@ -51,18 +51,18 @@ const Player = ({ initialVolume = 0.5, source = "" }: PlayerProps): JSX.Element 
 		};
 	}, [playerRef, isPlaying]);
 
-	// Précharger la dernière URL au montage (sans autoplay)
+	// Preload the last URL on mount (without autoplay)
 	useEffect(() => {
 		const lastUrl = getLocalStorageItem(LAST_URL);
 		if (lastUrl && typeof loadSrc === "function") {
 			loadSrc(lastUrl)
 				?.then(() => {
 					setHasPreloaded(true);
-					console.log("Source préchargée et prête à être jouée !");
+					console.log("Source preloaded and ready to play!");
 				})
 				.catch((err) => {
 					setHasPreloaded(true);
-					console.error("Erreur lors du préchargement :", err);
+					console.error("Error while preloading:", err);
 				});
 		} else {
 			setHasPreloaded(true);
@@ -71,7 +71,7 @@ const Player = ({ initialVolume = 0.5, source = "" }: PlayerProps): JSX.Element 
 
 	useEffect(() => {
 		if (!hasPreloaded) return;
-		// Ne relancer playSrc que si l'URL a changé ET que l'utilisateur n'a pas stoppé manuellement
+		// Only call playSrc if the URL has changed AND the user has not manually stopped playback
 		if (source && source !== url) {
 			setUrl(source);
 			setLocalStorageItem(LAST_URL, source);
@@ -97,7 +97,7 @@ const Player = ({ initialVolume = 0.5, source = "" }: PlayerProps): JSX.Element 
 
 	const handleInputPlay = useCallback(() => {
 		if (!playerRef.current || !url) return;
-		// If the source is already preloaded and not currently playing, use play()
+		// If the source is already preloaded and playback is stopped, use play() to resume
 		if (playerRef.current.src === url && typeof play === "function" && !isPlaying) {
 			play()?.catch((error: unknown) => {
 				console.error("Failed to play preloaded source:", error);
@@ -127,9 +127,7 @@ const Player = ({ initialVolume = 0.5, source = "" }: PlayerProps): JSX.Element 
 				isPaused={isPaused}
 				url={url}
 				inputUrl={url}
-				onPlay={async () => {
-					handleInputPlay();
-				}}
+				onPlay={async () => handleInputPlay()}
 				onPause={pause}
 				onStop={stop}
 				onUpVolume={upVolume}

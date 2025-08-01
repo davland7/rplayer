@@ -1,8 +1,16 @@
 import { playHls } from './playHls.js';
-import { playM3u } from './playM3u.js';
+import { playM3u, playPreviousTrack, playNextTrack, getCurrentPlaylist } from './playM3u.js';
 
 // Type definitions
 export type PlaybackStatus = 'playing' | 'paused' | 'stopped';
+
+// Extend Window interface to support M3U playlist properties
+declare global {
+  interface Window {
+    __currentM3UPlaylist?: Array<{ title: string; url: string }>;
+    __currentM3UIndex?: number;
+  }
+}
 
 /**
  * RPlayer - An enhanced audio player with HLS support
@@ -19,6 +27,7 @@ class RPlayer extends Audio {
   private lastSrc: string = '';
   private readonly errorHandlers: Array<(error: Error) => void> = [];
   private readonly playbackHandlers: Array<(status: PlaybackStatus) => void> = [];
+  private readonly loadingHandlers: Array<(status: 'loading' | 'buffering' | 'ready' | 'error', message?: string) => void> = [];
 
   /**
    * Creates a new RPlayer instance
@@ -68,6 +77,7 @@ class RPlayer extends Audio {
     this.addEventListener('error', () => {
       const error = new Error(`Media error: ${this.error?.code ?? 'unknown'}`);
       this.errorHandlers.forEach(handler => handler(error));
+      this.loadingHandlers.forEach(handler => handler('error', `Media error: ${this.error?.code ?? 'unknown'}`));
     });
 
     // Track play/pause status
@@ -77,6 +87,27 @@ class RPlayer extends Audio {
 
     this.addEventListener('pause', () => {
       this.playbackHandlers.forEach(handler => handler('paused'));
+    });
+
+    // Loading state events
+    this.addEventListener('loadstart', () => {
+      this.loadingHandlers.forEach(handler => handler('loading', 'Starting to load media...'));
+    });
+
+    this.addEventListener('waiting', () => {
+      this.loadingHandlers.forEach(handler => handler('buffering', 'Buffering media...'));
+    });
+
+    this.addEventListener('stalled', () => {
+      this.loadingHandlers.forEach(handler => handler('buffering', 'Connection stalled. Waiting...'));
+    });
+
+    this.addEventListener('canplay', () => {
+      this.loadingHandlers.forEach(handler => handler('ready', 'Ready to play'));
+    });
+
+    this.addEventListener('canplaythrough', () => {
+      this.loadingHandlers.forEach(handler => handler('ready', 'Can play through without buffering'));
     });
   }
 
@@ -102,7 +133,7 @@ class RPlayer extends Audio {
       // Extract the path part before any query parameters
       const pathWithoutQuery = urlStr.split('?')[0];
       return pathWithoutQuery.endsWith('.m3u8');
-    } catch (error) {
+    } catch (_) {
       // If we can't parse the URL, use a regex to check for .m3u8 before any query params
       console.warn('URL parsing failed in isHlsUrl, using fallback check:', urlStr);
       return /\.m3u8($|\?)/.test(urlStr);
@@ -132,7 +163,7 @@ class RPlayer extends Audio {
       // Extract the path part before any query parameters
       const pathWithoutQuery = urlStr.split('?')[0];
       return pathWithoutQuery.endsWith('.m3u') && !pathWithoutQuery.endsWith('.m3u8');
-    } catch (error) {
+    } catch (_) {
       // If we can't parse the URL, use a regex to check for .m3u (not .m3u8) before any query params
       console.warn('URL parsing failed in isM3uUrl, using fallback check:', urlStr);
       return /\.m3u($|\?)/.test(urlStr) && !/\.m3u8($|\?)/.test(urlStr);
@@ -188,7 +219,7 @@ class RPlayer extends Audio {
    * @param {function} handler - The function to call when an error occurs
    */
   onError(handler: (error: Error) => void): void {
-    // Si une erreur est détectée, activer la reconnexion automatique
+    // If an error is detected, enable auto-reconnect
     const wrappedHandler = (error: Error) => {
       this.shouldAutoReconnect = true;
       handler(error);
@@ -219,12 +250,35 @@ class RPlayer extends Audio {
   }
 
   /**
+   * Registers a handler for loading status changes
+   * Useful for showing loading/buffering indicators to users
+   * @param {function} handler - The function to call when loading status changes
+   */
+  onLoadingStatusChange(handler: (status: 'loading' | 'buffering' | 'ready' | 'error', message?: string) => void): void {
+    this.loadingHandlers.push(handler);
+  }
+
+  /**
+   * Removes a previously registered loading status handler
+   * @param {function} handler - The handler to remove
+   */
+  removeLoadingStatusHandler(handler: (status: 'loading' | 'buffering' | 'ready' | 'error', message?: string) => void): void {
+    const index = this.loadingHandlers.indexOf(handler);
+    if (index !== -1) {
+      this.loadingHandlers.splice(index, 1);
+    }
+  }
+
+  /**
    * Plays the provided audio source
    * @param {string} src - The source URL of the audio stream
    * @returns {Promise<void>} - A promise that resolves when playback has started or rejects on error
    */
   async playSrc(src: string): Promise<void> {
     console.log(`[RPlayer] playSrc called with: ${src}`);
+
+    // Inform listeners that we're about to load something
+    this.loadingHandlers.forEach(handler => handler('loading', `Loading source: ${src}`));
 
     // Convert relative paths to absolute URLs
     if (src.startsWith('/') && !src.startsWith('//') && typeof window !== 'undefined') {
@@ -252,12 +306,9 @@ class RPlayer extends Audio {
       // Determine the type of source
       const isHls = this.isHlsUrl(src);
       const isM3u = this.isM3uUrl(src);
-      console.log(`[RPlayer] Source type: ${isHls ? 'HLS' : isM3u ? 'Standard M3U' : 'Direct'}`);
 
-      // Determination of the source type for logging
-      let sourceType = 'Direct';
-      if (isHls) sourceType = 'HLS';
-      else if (isM3u) sourceType = 'M3U standard';
+      // Get source type for logging
+      const sourceType = isHls ? 'HLS' : isM3u ? 'M3U standard' : 'Direct';
       console.log(`[RPlayer] Source type: ${sourceType}`);
 
       if (isHls) {
@@ -327,13 +378,13 @@ class RPlayer extends Audio {
         this.lastSrc = src;
         this.isHls = false;
 
-        // Attendre canplay avant d'appeler play()
+        // Wait for canplay before calling play()
         return new Promise((resolve, reject) => {
           const onCanPlay = async () => {
             this.removeEventListener('canplay', onCanPlay);
             this.removeEventListener('error', onError);
             try {
-              await Promise.resolve(); // microtask pour éviter race
+              await Promise.resolve(); // microtask to avoid race condition
               await this.play();
               console.log(`[RPlayer] Direct playback successful`);
               resolve();
@@ -387,10 +438,8 @@ class RPlayer extends Audio {
       const isHls = this.isHlsUrl(src);
       const isM3u = this.isM3uUrl(src);
 
-      // Determination of the source type for logging
-      let sourceType = 'Direct';
-      if (isHls) sourceType = 'HLS';
-      else if (isM3u) sourceType = 'M3U standard';
+      // Get source type for logging
+      const sourceType = isHls ? 'HLS' : isM3u ? 'M3U standard' : 'Direct';
       console.log(`[RPlayer] Source type: ${sourceType}`);
 
       if (isHls) {
@@ -491,7 +540,7 @@ class RPlayer extends Audio {
     }
 
     this.playbackHandlers.forEach(handler => handler('stopped'));
-    // On demande explicitement la lecture, on désactive l'auto-reconnect (l'utilisateur a le contrôle)
+    // When playback is explicitly requested, disable auto-reconnect (user has control)
     this.shouldAutoReconnect = false;
   }
 
@@ -500,20 +549,19 @@ class RPlayer extends Audio {
    */
   private handleReconnect = () => {
     if (this.shouldAutoReconnect && this.lastSrc) {
-      // Relance le stream automatiquement
+      // Automatically restart the stream
       this.playSrc(this.lastSrc).catch((err) => {
         console.warn('[RPlayer] Auto-reconnect failed:', err);
       });
-      // On ne relance qu'une fois
+      // Only restart once
       this.shouldAutoReconnect = false;
     }
   };
 
   /**
-   * Handler for browser 'offline' event (optionnel, pour debug)
+   * Handler for browser 'offline' event (optional, for debugging)
    */
   private handleOffline = () => {
-    // Peut-être afficher un message ou loguer
     console.warn('[RPlayer] Offline detected');
   };
 
@@ -526,24 +574,12 @@ class RPlayer extends Audio {
   }
 
   /**
-   * Fast forwards the audio element by the specified number of seconds
-   * @param {number} seconds - The number of seconds to fast forward
-   */
-  forward(seconds: number): void {
-    if (this.duration && Number.isFinite(this.duration)) {
-      this.currentTime = Math.min(this.currentTime + seconds, this.duration);
-    } else {
-      this.currentTime += seconds;
-    }
-  }
-
-  /**
    * Increases the volume by 10%
    * The volume will not exceed 100%
    */
   upVolume(): void {
     const newVolume = Math.min(this.volume + 0.1, 1);
-    if (newVolume === this.volume) return; // Ne rien faire si déjà au max
+    if (newVolume === this.volume) return; // Do nothing if already at max
     this.volume = parseFloat(newVolume.toFixed(2));
   }
 
@@ -553,7 +589,7 @@ class RPlayer extends Audio {
    */
   downVolume(): void {
     const newVolume = Math.max(this.volume - 0.1, 0);
-    if (newVolume === this.volume) return; // Ne rien faire si déjà au min
+    if (newVolume === this.volume) return; // Do nothing if already at min
     this.volume = parseFloat(newVolume.toFixed(2));
   }
 
@@ -576,7 +612,61 @@ class RPlayer extends Audio {
     this.muted = !this.muted;
   }
 
-  // updateMediaSessionMetadata method removed - RPlayer no longer handles media session updates
+  /**
+   * Plays an M3U playlist directly
+   * @param {string} url - The URL of the M3U playlist
+   * @returns {Promise<string>} - A promise that resolves with the first track's URL when playback starts
+   */
+  async playM3u(url: string): Promise<string> {
+    try {
+      // Use existing playSrc method which already handles M3U files through playM3u
+      await this.playSrc(url);
+      return this.lastSrc;
+    } catch (error) {
+      console.error('[RPlayer] Error playing M3U playlist:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Plays the previous track in the current M3U playlist
+   * @returns {Promise<void>} - A promise that resolves when playback of the previous track starts
+   */
+  async previous(): Promise<void> {
+    try {
+      // Use the function from playM3u.ts module to get the previous track URL
+      const previousTrackUrl = await playPreviousTrack();
+
+      // Play the track
+      return this.playSrc(previousTrackUrl);
+    } catch (error) {
+      console.error('[RPlayer] Error playing previous track:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Plays the next track in the current M3U playlist
+   * @returns {Promise<void>} - A promise that resolves when playback of the next track starts
+   */
+  async next(): Promise<void> {
+    try {
+      // Use the function from playM3u.ts module to get the next track URL
+      const nextTrackUrl = await playNextTrack();
+
+      // Play the track
+      return this.playSrc(nextTrackUrl);
+    } catch (error) {
+      console.error('[RPlayer] Error playing next track:', error);
+      throw error;
+    }
+  }  /**
+   * Gets the current M3U playlist information if available
+   * @returns {Object|null} Playlist information or null if no playlist is loaded
+   */
+  getCurrentPlaylist(): { playlist: Array<{ title: string; url: string }>, index: number } | null {
+    return getCurrentPlaylist();
+  }
 
   /**
    * Cleans up resources when the player is no longer needed
@@ -588,8 +678,7 @@ class RPlayer extends Audio {
     // Remove all event listeners
     this.playbackHandlers.length = 0;
     this.errorHandlers.length = 0;
-
-    // MediaSession cleanup removed - RPlayer no longer handles media session
+    this.loadingHandlers.length = 0;
 
     // Clean up any other resources
     if (this.hls) {
@@ -600,6 +689,8 @@ class RPlayer extends Audio {
 }
 
 // Export types
+export type LoadingStatus = 'loading' | 'buffering' | 'ready' | 'error';
+
 export type RPlayerEvents = {
   onPlay: () => void;
   onPause: () => void;
@@ -607,6 +698,7 @@ export type RPlayerEvents = {
   onError: (error: Error) => void;
   onVolumeChange: (volume: number) => void;
   onTimeUpdate: (time: number) => void;
+  onLoadingStatusChange: (status: LoadingStatus, message?: string) => void;
 };
 
 // Export the RPlayer class

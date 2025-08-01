@@ -6,4 +6,4 @@ You can click the ⭐ star icon next to any station to add it to your favorites.
 
 Stations are provided by the open [Radio Browser API](https://www.radio-browser.info/).
 
-Last updated: 7/26/2025.
+Last updated: 8/02/2025.

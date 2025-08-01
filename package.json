@@ -33,7 +33,8 @@
 		"preview": "astro preview",
 		"astro": "astro",
 		"lint": "biome lint .",
-		"format": "biome format . --write"
+		"format": "biome format . --write",
+		"test": "node test/parse-m3u-test.js"
 	},
 	"keywords": [
 		"rplayer",

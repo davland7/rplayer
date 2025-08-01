@@ -1,11 +1,5 @@
 <section class="">
   <div id="player-container" class="flex flex-col gap-4 items-center justify-center">
-    <h2 class="text-lg font-semibold text-white text-center">
-      mini-radio Playlist Demo
-    </h3>
-    <p class="text-sm text-gray-300 text-center">
-      This player uses RPlayer to play a .m3u playlist of Canadian radio stations.
-    </p>
     <div class="w-full max-w-md mx-auto">
       <div class="flex items-center justify-center my-4 gap-4">
         <button
@@ -41,11 +35,10 @@
     </div>
     <div class="mt-4 text-sm w-full flex flex-col gap-4">
       <details class="w-full">
-        <summary class="cursor-pointer hover:text-primary-600 font-medium text-white bg-secondary rounded p-4 select-none w-full focus:outline-none focus:ring-2 focus:ring-blue-400">Edit/View Playlist Content</summary>
+        <summary class="cursor-pointer hover:text-primary-600 font-medium text-white bg-secondary rounded p-4 select-none w-full focus:outline-none focus:ring-2 focus:ring-blue-400">View Playlist Content</summary>
         <div class="mt-2 w-full">
           <label for="playlist-content" class="block text-xs font-medium text-gray-300 mb-4">Playlist Content (.m3u)</label>
-          <textarea id="playlist-content" rows="8" class="w-full p-4 rounded bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 border-2 border-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-400 shadow-inner transition-all font-mono text-xs mb-3" aria-label="Playlist content"></textarea>
-          <button id="loadContentButton" class="p-4 border-2 border-blue-500 hover:bg-blue-600 hover:text-white text-blue-400 font-bold rounded transition-colors focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-50">Load Content</button>
+          <textarea id="playlist-content" rows="8" class="w-full p-4 rounded bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 border-2 border-gray-400 shadow-inner font-mono text-xs mb-3" aria-label="Playlist content" readonly></textarea>
         </div>
       </details>
       <details class="w-full">
@@ -61,9 +54,15 @@
 <script>
 import RPlayer from '../lib/index.js';
 
-// Wait for the DOM to be fully loaded before running the player logic
-// This ensures all elements are available
+// Extend RPlayer with additional methods
+declare global {
+  interface Window {
+    __currentM3UPlaylist?: Array<{ title: string; url: string }>;
+    __currentM3UIndex?: number;
+  }
+}
 
+// Wait for the DOM to be fully loaded before running the player logic
 document.addEventListener('DOMContentLoaded', () => {
   // Get DOM elements
   const playButton = document.getElementById('playButton');
@@ -76,10 +75,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const stationCountElement = document.getElementById('station-count');
   const prevButton = document.getElementById('prevButton');
   const nextButton = document.getElementById('nextButton');
-
-  // Variables for MediaSession support
-  let mediaItems: { title: string; url: string }[] = [];
-  let currentMediaIndex = 0;
 
   // Add a logging function for debugging
   const addDebugLog = (message: string, type: 'info' | 'error' = 'info') => {
@@ -105,7 +100,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  let player: any = null;
+  let player: RPlayer | null = null;
 
   // Update the status message in the UI and log it
   const updateStatus = (message: string) => {
@@ -131,11 +126,11 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   // Show navigation controls between stations
-  const showStationControls = (currentIndex: number, totalCount: number) => {
-    if (stationControlsElement && stationCountElement) {
+  const showStationControls = () => {
+    if (stationControlsElement) {
       stationControlsElement.classList.remove('hidden');
-      stationCountElement.textContent = `Station ${currentIndex + 1}/${totalCount}`;
     }
+    updateStationInfo();
   };
 
   // Hide navigation controls between stations
@@ -145,11 +140,80 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   };
 
-  // Update station number display
-  const updateStationCount = (index: number, total: number) => {
-    if (stationCountElement) {
-      stationCountElement.textContent = `Station ${index + 1}/${total}`;
+  // Update station information display
+  const updateStationInfo = () => {
+    if (!stationCountElement || !window.__currentM3UPlaylist) return;
+
+    const currentIndex = window.__currentM3UIndex || 0;
+    const totalCount = window.__currentM3UPlaylist.length;
+    stationCountElement.textContent = `Station ${currentIndex + 1}/${totalCount}`;
+  };
+
+  // Update MediaSession API with current track info and navigation controls
+  const updateMediaSession = () => {
+    const playlist = window.__currentM3UPlaylist || [];
+    if (playlist.length === 0) return;
+
+    const currentIndex = window.__currentM3UIndex || 0;
+    const station = playlist[currentIndex];
+
+    // Update MediaSession metadata and navigation handlers
+    if ('mediaSession' in navigator) {
+      navigator.mediaSession.metadata = new MediaMetadata({
+        title: station.title,
+        artist: 'Mini Radio Playlist',
+        album: 'Mini Radio',
+        artwork: [
+          { src: '/images/mini-radio-256x256.png', sizes: '256x256', type: 'image/png' },
+          { src: '/images/mini-radio-96x96.png', sizes: '96x96', type: 'image/png' },
+          { src: '/images/mini-radio-128x128.png', sizes: '128x128', type: 'image/png' }
+        ]
+      });
+
+      // Add MediaSession navigation actions
+      navigator.mediaSession.setActionHandler('previoustrack', () => {
+        if (player && playlist.length > 1) {
+          player.previous();
+          addDebugLog(`Previous track requested`);
+          updateStationInfo();
+        }
+      });
+
+      navigator.mediaSession.setActionHandler('nexttrack', () => {
+        if (player && playlist.length > 1) {
+          player.next();
+          addDebugLog(`Next track requested`);
+          updateStationInfo();
+        }
+      });
     }
+  };
+
+  // Helper function to update UI after playlist is loaded
+  const updatePlayerUI = () => {
+    const playlist = window.__currentM3UPlaylist || [];
+    if (playlist.length > 0) {
+      const currentIndex = window.__currentM3UIndex || 0;
+      const currentStation = playlist[currentIndex];
+
+      // Update the UI
+      updateStatus('Playing');
+      showCurrentTrack(currentStation.title);
+      showStationControls();
+      addDebugLog(`Now playing: ${currentStation.title}`);
+
+      // Update MediaSession API
+      updateMediaSession();
+    }
+  };
+
+  // Note: No need to extend RPlayer, the methods are now native
+  const initializePlayer = (player: RPlayer) => {
+    // Log that we're using native methods
+    console.log('Using native RPlayer methods for M3U playlist playback');
+    addDebugLog('RPlayer now has native M3U playlist support');
+
+    return player;
   };
 
   // Initialize the RPlayer instance and set up event listeners
@@ -158,161 +222,87 @@ document.addEventListener('DOMContentLoaded', () => {
       player.stop();
     }
 
-    player = new RPlayer();
-    // Set volume from localStorage if available, otherwise use default 0.5
+    // Create new RPlayer instance
+    let newPlayer = new RPlayer();
+
+    // Initialize the player (no need to extend anymore as methods are now native)
+    newPlayer = initializePlayer(newPlayer);    // Set volume from localStorage if available, otherwise use default 0.5
     try {
-      // Import getVolume and setVolume from utils/storage.js (must be available in browser)
-      // For Astro client-side scripts, use a relative path and ensure the file is accessible
       // @ts-ignore
       import('/src/utils/storage.js').then(({ getVolume, setVolume }) => {
         const volume = getVolume();
-        console.log('volume', volume);
-        player.volume = volume;
+        newPlayer.volume = volume;
         setVolume(volume); // Save back if cookies accepted
       }).catch(() => {
-        player.volume = 0.5;
+        newPlayer.volume = 0.5;
       });
     } catch (e) {
-      player.volume = 0.5;
+      newPlayer.volume = 0.5;
     }
 
-    player.addEventListener('playing', () => {
+    // Setup event listeners
+    newPlayer.addEventListener('playing', () => {
       updateStatus('Playing');
-      showCurrentTrack(player.url);
+
+      // Get current track information from the global window object
+      const playlist = window.__currentM3UPlaylist || [];
+      const currentIndex = window.__currentM3UIndex || 0;
+
+      if (playlist[currentIndex]) {
+        showCurrentTrack(playlist[currentIndex].title || newPlayer.url);
+      } else {
+        showCurrentTrack(newPlayer.url);
+      }
+
+      // Show station controls if we have a playlist
+      if (playlist.length > 1) {
+        showStationControls();
+        // Update MediaSession when playback starts
+        updateMediaSession();
+      }
     });
 
-    player.addEventListener('pause', () => {
+    newPlayer.addEventListener('pause', () => {
       updateStatus('Paused');
     });
 
-    player.addEventListener('error', (e: Event) => {
+    newPlayer.addEventListener('error', (e: Event) => {
       console.error('Player error:', e);
       updateStatus('Error: Unable to play playlist');
       addDebugLog(`Audio player error: ${e.type}`, 'error');
     });
 
-    player.onPlaybackStatusChange((status: string) => {
+    newPlayer.onPlaybackStatusChange((status: string) => {
       updateStatus(`Status: ${status}`);
     });
 
-    player.onError((err: Error) => {
+    newPlayer.onError((err: Error) => {
       console.error('RPlayer error:', err);
       updateStatus(`Error: ${err.message}`);
       addDebugLog(`RPlayer error: ${err.message}`, 'error');
     });
 
-    return player;
-  };
-
-  // Play a specific station by index
-  const playStation = async (index: number) => {
-    if (!player || index < 0 || index >= mediaItems.length) return;
-
-    try {
-      const station = mediaItems[index];
-      currentMediaIndex = index;
-
-      addDebugLog(`Changing station to: ${station.title}`);
-      updateStatus(`Changing to: ${station.title}`);
-
-      // Play the station
-      await player.playSrc(station.url);
-
-      // Update interface
-      showCurrentTrack(`${station.title} (${index + 1}/${mediaItems.length})`);
-      updateStationCount(index, mediaItems.length);
-
-      // Update MediaSession metadata and navigation handlers
-      if ('mediaSession' in navigator) {
-        navigator.mediaSession.metadata = new MediaMetadata({
-          title: station.title,
-          artist: 'Mini Radio Playlist',
-          album: 'Mini Radio',
-          artwork: [
-            { src: '/images/mini-radio-256x256.png', sizes: '256x256', type: 'image/png' },
-            { src: '/images/mini-radio-96x96.png', sizes: '96x96', type: 'image/png' },
-            { src: '/images/mini-radio-128x128.png', sizes: '128x128', type: 'image/png' }
-          ]
-        });
-        // Add MediaSession navigation actions
-        navigator.mediaSession.setActionHandler('previoustrack', () => {
-          if (mediaItems.length > 1) {
-            currentMediaIndex = (currentMediaIndex - 1 + mediaItems.length) % mediaItems.length;
-            playStation(currentMediaIndex);
-          }
-        });
-        navigator.mediaSession.setActionHandler('nexttrack', () => {
-          if (mediaItems.length > 1) {
-            currentMediaIndex = (currentMediaIndex + 1) % mediaItems.length;
-            playStation(currentMediaIndex);
-          }
-        });
-      }
-    } catch (error) {
-      const errorMsg = error instanceof Error ? error.message : 'Unknown error';
-      addDebugLog(`Error changing station: ${errorMsg}`, 'error');
-      updateStatus(`Error: ${errorMsg}`);
-    }
-  };
-
-  // Parse an M3U playlist and extract station information
-  const parseM3uPlaylist = (content: string) => {
-    const lines = content.trim().split('\n');
-    const stations: { title: string; url: string }[] = [];
-    let currentTitle = '';
-
-    for (let i = 0; i < lines.length; i++) {
-      const line = lines[i].trim();
-
-      // Skip empty lines and the first #EXTM3U line
-      if (!line || line === '#EXTM3U') continue;
-
-      // Extract title from #EXTINF lines
-      if (line.startsWith('#EXTINF:')) {
-        // Find the position of the first comma which separates duration from title
-        const firstCommaPos = line.indexOf(',');
-        if (firstCommaPos !== -1 && firstCommaPos + 1 < line.length) {
-          // Extract everything after the first comma as the title
-          currentTitle = line.substring(firstCommaPos + 1).trim();
-          addDebugLog(`Extracted title: ${currentTitle}`);
-        }
-        continue;
-      }
-
-      // If not a comment and we have a title, it's a station URL
-      if (!line.startsWith('#') && line.length > 5) { // Valid URL more than 5 characters
-        stations.push({
-          title: currentTitle || `Station ${stations.length + 1}`,
-          url: line
-        });
-        currentTitle = ''; // Reset for next station
-      }
-    }
-
-    addDebugLog(`Stations extracted from playlist: ${stations.length}`);
-
-    // Log all found stations for debugging
-    stations.forEach((station, index) => {
-      addDebugLog(`Station ${index + 1}: ${station.title} - ${station.url.substring(0, 50)}...`);
-    });
-
-    return stations;
+    return newPlayer;
   };
 
   // Add event handlers for navigation buttons
   prevButton?.addEventListener('click', () => {
-    if (mediaItems.length > 1) {
-      currentMediaIndex = (currentMediaIndex - 1 + mediaItems.length) % mediaItems.length;
-      addDebugLog(`Previous button: switching to index ${currentMediaIndex}`);
-      playStation(currentMediaIndex);
+    if (player && window.__currentM3UPlaylist && window.__currentM3UPlaylist.length > 1) {
+      addDebugLog(`Previous button clicked`);
+      // Use the previous method directly on the player
+      (player as any).previous();
+      updateStationInfo();
+      updateMediaSession();
     }
   });
 
   nextButton?.addEventListener('click', () => {
-    if (mediaItems.length > 1) {
-      currentMediaIndex = (currentMediaIndex + 1) % mediaItems.length;
-      addDebugLog(`Next button: switching to index ${currentMediaIndex}`);
-      playStation(currentMediaIndex);
+    if (player && window.__currentM3UPlaylist && window.__currentM3UPlaylist.length > 1) {
+      addDebugLog(`Next button clicked`);
+      // Use the next method directly on the player
+      (player as any).next();
+      updateStationInfo();
+      updateMediaSession();
     }
   });
 
@@ -323,27 +313,20 @@ document.addEventListener('DOMContentLoaded', () => {
       hideCurrentTrack();
       hideStationControls();
       addDebugLog('Playback stopped by user');
-
-      // Disable MediaSession controls
-      if ('mediaSession' in navigator) {
-        navigator.mediaSession.setActionHandler('previoustrack', null);
-        navigator.mediaSession.setActionHandler('nexttrack', null);
-      }
     }
   });
 
-  // Add logic to load playlist content and initialize player
+  // Add logic to load playlist content for display only
   const playlistTextarea = document.getElementById('playlist-content') as HTMLTextAreaElement;
-  const loadContentButton = document.getElementById('loadContentButton');
 
   // Function to load the .m3u file content into the textarea
   const fetchAndShowPlaylist = async () => {
     try {
-      const res = await fetch('/mini-radio.m3u');
+      const res = await fetch('https://rplayer.js.org/mini-radio.m3u');
       if (!res.ok) throw new Error('Failed to fetch playlist');
       const text = await res.text();
       if (playlistTextarea) playlistTextarea.value = text;
-      addDebugLog('Playlist loaded into textarea');
+      addDebugLog('Playlist loaded into textarea for viewing');
     } catch (err) {
       addDebugLog('Error loading playlist: ' + (err instanceof Error ? err.message : err), 'error');
     }
@@ -352,41 +335,24 @@ document.addEventListener('DOMContentLoaded', () => {
   // Load playlist content on page load
   fetchAndShowPlaylist();
 
-  // Handler for the Load Content button
-  loadContentButton?.addEventListener('click', () => {
-    if (playlistTextarea) {
-      const content = playlistTextarea.value;
-      mediaItems = parseM3uPlaylist(content);
-      if (mediaItems.length > 0) {
-        currentMediaIndex = 0;
-        showStationControls(currentMediaIndex, mediaItems.length);
-        playStation(currentMediaIndex);
-        addDebugLog('Playlist loaded and player initialized');
-      } else {
-        updateStatus('No valid stations found in playlist');
-        hideStationControls();
-      }
-    }
-  });
-
-  // Play button: always parse the .m3u before playing
+  // Play button: fetch and play the default M3U file
   playButton?.addEventListener('click', async () => {
-    if (playlistTextarea) {
-      // Always parse the textarea content (auto-loaded on mount)
-      const content = playlistTextarea.value;
-      mediaItems = parseM3uPlaylist(content);
-      if (mediaItems.length > 0) {
-        currentMediaIndex = 0;
+    try {
+      // Initialize player if needed
+      if (!player) {
         player = initPlayer();
-        showStationControls(currentMediaIndex, mediaItems.length);
-        await playStation(currentMediaIndex);
-        addDebugLog('Playlist parsed and player started');
-      } else {
-        updateStatus('No valid stations found in playlist');
-        hideStationControls();
       }
-    } else {
-      updateStatus('Playlist textarea not found');
+
+      // Use the playM3u method directly
+      await (player as any).playM3u('/mini-radio.m3u');
+      addDebugLog('Playing default mini-radio.m3u playlist');
+
+      // Update UI based on playlist info
+      updatePlayerUI();
+    } catch (error) {
+      const errorMsg = error instanceof Error ? error.message : 'Unknown error';
+      addDebugLog(`Error playing playlist: ${errorMsg}`, 'error');
+      updateStatus(`Error: ${errorMsg}`);
     }
   });
 });

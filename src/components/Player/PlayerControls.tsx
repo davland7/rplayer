@@ -1,10 +1,3 @@
-/**
- *
- * Juste vérifier c'est url et urlInput
- * CSS: OK
- *
- */
-
 interface PlayerControlsProps {
 	isPlaying: boolean;
 	isPaused: boolean;
@@ -20,7 +13,6 @@ interface PlayerControlsProps {
 
 function PlayerControls({
 	isPlaying,
-	isPaused,
 	url,
 	inputUrl,
 	onPlay,

@@ -1,7 +1,7 @@
 
 # RPlayer
 
-| [![npm version](https://img.shields.io/npm/v/@davland7/rplayer?style=flat-square)](https://www.npmjs.com/package/@davland7/rplayer) | [![](https://data.jsdelivr.com/v1/package/npm/@davland7/rplayer/badge)](https://www.jsdelivr.com/package/npm/@davland7/rplayer) | [![license](https://img.shields.io/npm/l/@davland7/rplayer?style=flat-square)](./LICENSE) |
+| [![npm version](https://img.shields.io/npm/v/@davland7/rplayer?style=flat-square)](https://www.npmjs.com/package/@davland7/rplayer) | [![](https://data.jsdelivr.com/v1/package/npm/@davland7/rplayer/badge)](https://www.jsdelivr.com/package/npm/@davland7/rplayer) | [![license](https://img.shields.io/npm/l/@davland7/rplayer?style=flat-square)](https://github.com/davland7/rplayer/blob/main/LICENSE) |
 |:-:|:-:|:-:|
 
 RPlayer is a JavaScript/TypeScript audio library for playing radio streams, compatible with many formats: HLS (.m3u8), MP3 (.mp3), AAC (.aac), and more.
@@ -10,7 +10,12 @@ RPlayer is a JavaScript/TypeScript audio library for playing radio streams, comp
 
 - Complete rewrite in TypeScript with improved typing
 - Advanced error handling and recovery for HLS streams
-- Playback of .m3u (playlist) files
+- Native M3U playlist support with `playM3u()`, `next()`, and `previous()` methods
+- Full playlist navigation capabilities
+- Detailed loading status events with `onLoadingStatusChange()` method
+- Better user feedback during media loading and buffering
+- Support for displaying custom loading messages
+- Enhanced stability for streaming radio stations
 - Better autoplay management according to browser restrictions
 
 ## Browser autoplay restrictions
@@ -125,6 +130,84 @@ audio.upVolume();
 audio.downVolume();
 ```
 
+### M3U Playlist Support
+
+Play an M3U playlist file:
+
+```javascript
+// Create a new RPlayer instance
+const audio = new RPlayer();
+
+// Play an M3U playlist
+audio.playM3u('/path/to/playlist.m3u');
+
+// Navigate the playlist
+audio.next();     // Play the next track in the playlist
+audio.previous(); // Play the previous track in the playlist
+```
+
+## Loading Status Events
+
+RPlayer provides detailed loading status events to improve user experience, especially useful for slow connections or streaming content that takes time to load:
+
+```javascript
+// Create a new player instance
+const player = new RPlayer();
+
+// Register for loading status changes
+player.onLoadingStatusChange((status, message) => {
+  switch(status) {
+    case 'loading':
+      showLoadingSpinner();
+      setStatusMessage(message || 'Loading media...');
+      break;
+    case 'buffering':
+      showBufferingIndicator();
+      setStatusMessage(message || 'Buffering...');
+      break;
+    case 'ready':
+      hideLoadingIndicators();
+      setStatusMessage('Ready to play');
+      break;
+    case 'error':
+      showErrorIcon();
+      setStatusMessage(message || 'Error loading media');
+      break;
+  }
+});
+
+// Start playback
+player.playSrc('https://example.com/stream.mp3');
+```
+
+Available status values:
+- `loading`: Initial loading has started
+- `buffering`: Media is loading more data (e.g., during waiting or stalled states)
+- `ready`: Media is ready to play without interruption
+- `error`: An error occurred while loading or playing
+
+Each status update includes an optional message with more details about the current state.
+
+Example of usage:
+
+```javascript
+// Simple playlist player with navigation
+const player = new RPlayer();
+await player.playM3u('/radio-stations.m3u');
+
+// Set up buttons for navigation
+document.getElementById('nextBtn').addEventListener('click', () => player.next());
+document.getElementById('prevBtn').addEventListener('click', () => player.previous());
+document.getElementById('stopBtn').addEventListener('click', () => player.stop());
+
+// Get current playlist information
+const playlistInfo = player.getCurrentPlaylist();
+if (playlistInfo) {
+  console.log(`Currently playing track ${playlistInfo.index + 1} of ${playlistInfo.playlist.length}`);
+  console.log(`Current track: ${playlistInfo.playlist[playlistInfo.index].title}`);
+}
+```
+
 > **Note iOS**
 > On iPhone/iPad, volume is physically controlled by the user. The volume property always returns 1.
 
@@ -146,4 +229,9 @@ console.log('Muted:', audio.muted);
 console.log('Volume:', audio.volume * 100);
 console.log('hls.js:', audio.isHls);
 console.log('Time:', audio.currentTime);
+
+// Monitor loading status
+audio.onLoadingStatusChange((status, message) => {
+  console.log(`Loading status: ${status}`, message);
+});
 ```

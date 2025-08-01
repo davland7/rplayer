@@ -55,9 +55,6 @@ export function useRPlayer({ initialVolume = 0.5 }: UseRPlayerOptions) {
 	const stop = useCallback(() => {
 		playerRef.current?.stop();
 	}, []);
-	const mute = useCallback(() => {
-		playerRef.current?.mute();
-	}, []);
 	const upVolume = useCallback(() => {
 		playerRef.current?.upVolume();
 	}, []);
@@ -66,9 +63,6 @@ export function useRPlayer({ initialVolume = 0.5 }: UseRPlayerOptions) {
 	}, []);
 	const rewind = useCallback((s: number) => {
 		playerRef.current?.rewind(s);
-	}, []);
-	const forward = useCallback((s: number) => {
-		playerRef.current?.forward(s);
 	}, []);
 	const playSrc = useCallback((src: string): Promise<void> => {
 		return playerRef.current?.playSrc(src) as Promise<void>;
@@ -88,11 +82,9 @@ export function useRPlayer({ initialVolume = 0.5 }: UseRPlayerOptions) {
 		play,
 		pause,
 		stop,
-		mute,
 		upVolume,
 		downVolume,
 		rewind,
-		forward,
 		playSrc,
 		loadSrc,
 	};

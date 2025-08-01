@@ -20,15 +20,24 @@ Created a specialized mini-radio.m3u player demonstration that shows RPlayer's c
 1. **Playlist Parsing**:
    - Created playM3u.ts module to handle fetching and parsing .m3u files
    - Built support for EXTINF metadata extraction to display station titles
+   - Fixed title parsing for entries with commas (e.g., "CHOI 98,1 - Québec")
+   - Enhanced audio detection to properly identify HLS audio streams (.m3u8)
 
 2. **UI Enhancements**:
    - Added visual playlist content display
    - Implemented debug logging system for development
    - Created responsive controls for station navigation
+   - Added loading state events for better user experience
 
 3. **MediaSession Integration**:
    - Added artwork and metadata support for OS-level media controls
    - Implemented previous/next handlers for external playback control
+
+4. **Build & Deployment Optimizations**:
+   - Added dependency caching for faster GitHub Actions workflows
+   - Implemented build caching for library and Astro components
+   - Added version checking to prevent duplicate NPM publications
+   - Created test script to validate M3U parsing logic
 
 ## Mini Radio Feature
 
@@ -39,6 +48,7 @@ The Mini Radio demonstration shows how RPlayer can be used to create specialized
 - Shows current station information
 - Offers station navigation
 - Works with both MediaSession API and on-screen controls
+- Properly detects and plays all radio stations including HLS streams
 
 ## Usage Example
 
@@ -64,17 +74,32 @@ if ('mediaSession' in navigator) {
 }
 ```
 
-## Future Improvements
+## Any plans to support parsing of timed ID3 metadata to get 'now playing' info?
 
-Potential enhancements that could be made to the Mini Radio player:
+This is a feature request from users. Timed ID3 metadata would allow the player to display real-time 'now playing' information (such as current song title and artist) as broadcast by some radio streams. Implementation would require parsing timed metadata from the audio stream and updating the UI accordingly. This is not currently supported, but is under consideration for future versions.
 
-1. Station favorites/bookmarking system
-2. Station categories and filtering
-3. Stream quality selection for stations with multiple streams
-4. Visual equalizer display
-5. Station metadata display (current song, etc.)
-6. Offline mode with cached station URLs
+## Technical Challenges Solved
+
+### M3U Title Parsing with Commas
+
+The original regex-based title parsing incorrectly handled titles containing commas. For example:
+- `#EXTINF:-1,CHOI 98,1 - Québec` was parsed as `1 - Québec` (incorrect)
+- Our solution using `split()` and `join()` correctly extracts `CHOI 98,1 - Québec`
+
+### HLS Audio Stream Detection
+
+Fixed the audio stream detection logic to properly identify HLS audio streams (.m3u8 files):
+- Added detection for URLs containing keywords like 'livestream', 'stream', or 'radio'
+- Fixed issue where only 7 out of 16 radio stations were being detected in sample playlists
+- Implemented relative URL resolution for playlist entries
+
+### Loading State Management
+
+Added comprehensive loading state events to improve user experience:
+- `onLoadingStatusChange` event for external handling of loading states
+- Better buffering detection for smoother playback transitions
 
 ---
 
-*Documentation created by Claude - June 19, 2025*
+*Documentation created by Claude - June 19, 2025*  
+*Updated by Claude - August 1, 2025*
