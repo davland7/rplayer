@@ -1,3 +1,5 @@
+import { logger } from './index.js';
+
 /**
  * Interface for track information in M3U playlists
  */
@@ -15,7 +17,7 @@ export interface M3UTrackInfo {
  */
 export async function playM3u(player: HTMLAudioElement, url: string): Promise<string> {
   try {
-    console.log(`Fetching M3U playlist from: ${url}`);
+    logger.info(`Fetching M3U playlist from: ${url}`);
 
     // Special handling for local files (the URL may already be a local or relative path)
     if (!url.startsWith('http://') && !url.startsWith('https://')) {
@@ -28,7 +30,7 @@ export async function playM3u(player: HTMLAudioElement, url: string): Promise<st
         // For relative paths like './playlist.m3u' or 'playlist.m3u'
         url = origin + '/' + url.replace(/^\.\//, '');
       }
-      console.log(`Local file detected, using absolute URL: ${url}`);
+      logger.info(`Local file detected, using absolute URL: ${url}`);
     }
 
     // Fetch the playlist content with a 10 second timeout
@@ -49,7 +51,7 @@ export async function playM3u(player: HTMLAudioElement, url: string): Promise<st
       }
 
       const content = await response.text();
-      console.log(`M3U content fetched, size: ${content.length} bytes`);
+      logger.info(`M3U content fetched, size: ${content.length} bytes`);
 
       // Parse the playlist content
       const lines = content.split('\n');
@@ -91,7 +93,7 @@ export async function playM3u(player: HTMLAudioElement, url: string): Promise<st
             const resolvedUrl = new URL(line, baseUrl.href);
             mediaUrl = resolvedUrl.href;
           } catch (e) {
-            console.warn(`Could not resolve relative URL: ${line}`, e);
+            logger.warn(`Could not resolve relative URL: ${line}`, e);
           }
         }
 
@@ -117,7 +119,7 @@ export async function playM3u(player: HTMLAudioElement, url: string): Promise<st
         currentTitle = '';
       }
 
-      console.log(`Found ${mediaUrls.length} audio URLs in playlist`);
+      logger.info(`Found ${mediaUrls.length} audio URLs in playlist`);
 
       // Check if any URLs were found
       if (mediaUrls.length === 0) {
@@ -126,7 +128,7 @@ export async function playM3u(player: HTMLAudioElement, url: string): Promise<st
 
       // Use the first URL
       const firstTrack = mediaUrls[0];
-      console.log(`Found first entry in M3U playlist: ${firstTrack.title} (${firstTrack.url})`);
+      logger.info(`Found first entry in M3U playlist: ${firstTrack.title} (${firstTrack.url})`);
 
       // Store all tracks in a global variable to allow navigation between them later
       if (typeof window !== 'undefined') {
@@ -145,12 +147,12 @@ export async function playM3u(player: HTMLAudioElement, url: string): Promise<st
       // so RPlayer can handle it according to its type (HLS, MP3, etc.)
       return firstTrack.url;
     } catch (error) {
-      console.error('Error fetching M3U playlist:', error);
+      logger.error('Error fetching M3U playlist:', error);
       throw new Error(`Timeout or network error fetching playlist: ${error instanceof Error ? error.message : String(error)}`);
     }
 
   } catch (error) {
-    console.error('Error playing M3U playlist:', error);
+    logger.error('Error playing M3U playlist:', error);
     throw new Error(`Failed to play M3U playlist: ${error instanceof Error ? error.message : String(error)}`);
   }
 }
@@ -175,7 +177,7 @@ export async function playPreviousTrack(): Promise<string> {
 
   // Get the previous station
   const prevStation = playlist[prevIndex];
-  console.log(`[RPlayer M3U] Moving to previous track: ${prevStation.title}`);
+  logger.info(`Moving to previous track: ${prevStation.title}`);
 
   // Return the URL to play
   return prevStation.url;
@@ -201,7 +203,7 @@ export async function playNextTrack(): Promise<string> {
 
   // Get the next station
   const nextStation = playlist[nextIndex];
-  console.log(`[RPlayer M3U] Moving to next track: ${nextStation.title}`);
+  logger.info(`Moving to next track: ${nextStation.title}`);
 
   // Return the URL to play
   return nextStation.url;

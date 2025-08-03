@@ -1,144 +1,83 @@
-// Interface for HLS playback statistics
-export interface HlsStats {
-  bandwidth: number;        // Estimated bandwidth in bits per second
-  droppedFrames: number;    // Number of dropped frames
-  bufferLength: number;     // Buffer length in seconds
-  currentLevel: number;     // Current quality level
-  totalLevels: number;      // Total number of available quality levels
-  loadLatency: number;      // Load latency in milliseconds
-}
+import Hls from 'hls.js';
+import { logger } from './index.js';
 
-// Type for statistics callbacks
-export type StatsCallback = (stats: HlsStats) => void;
+export { Hls };
 
 /**
- * Play or load the provided HLS source with dynamic loading of hls.js if needed.
+ * Play the provided HLS source.
  * @param {HTMLAudioElement} audioElement - The audio element to play the HLS stream.
  * @param {string} src - The source URL of the HLS stream.
- * @param {StatsCallback} [onStatsUpdate] - Optional callback function for streaming statistics updates
- * @param {boolean} [autoplay=true] - Whether to start playback automatically
- * @returns {Promise<any|null>} - The Hls instance if created, or null if native HLS is used
+ * @param {Object} options - Optional configuration
+ * @param {boolean} options.autoplay - Whether to attempt autoplay (default: true)
+ * @returns {Hls|null} The HLS.js instance or null if not supported
  */
-export async function playHls(
-  audioElement: HTMLAudioElement,
-  src: string,
-  onStatsUpdate?: StatsCallback,
-  autoplay: boolean = true
-): Promise<any | null> {
-  // First check if we can use native HLS support (Safari/iOS)
-  if (audioElement.canPlayType('application/vnd.apple.mpegurl')) {
-    console.log('Using native HLS support');
-    audioElement.src = src;
+export function playHls(audioElement: HTMLAudioElement, src: string, options = { autoplay: true }) {
+  if (Hls.isSupported()) {
+    const config = {
+      abrEwmaDefaultEstimate: 50000,
+      maxBufferLength: 60,
+      maxMaxBufferLength: 120,
+      maxBufferSize: 60 * 1000 * 1000,
+      fragLoadingTimeOut: 20000,
+      fragLoadingMaxRetry: 4,
+      fragLoadingRetryDelay: 500,
+      levelLoadingTimeOut: 10000,
+      levelLoadingMaxRetry: 4,
+      levelLoadingRetryDelay: 500,
+    };
 
-    return new Promise((resolve) => {
-      audioElement.addEventListener('loadedmetadata', () => {
-        if (autoplay) {
-          const playPromise = audioElement.play();
-
-          if (playPromise !== undefined) {
-            playPromise.catch(_ => {
-              console.warn('Auto-play was prevented, user interaction may be needed');
-            });
-          }
+    const hls = new Hls(config);
+    hls.loadSource(src);
+    hls.attachMedia(audioElement as HTMLVideoElement);
+    hls.on(Hls.Events.MANIFEST_PARSED, () => {
+      logger.info('HLS manifest parsed successfully');
+      if (options.autoplay) {
+        logger.info('Attempting autoplay as requested');
+        const playPromise = audioElement.play();
+        if (playPromise !== null) {
+          playPromise.catch((error) => {
+            logger.warn(`HLS autoplay failed: ${error.message}`);
+          });
         }
-
-        resolve(null); // Return null as we're using native HLS support
-      }, { once: true });
-    });
-  }
-
-  // Otherwise, try to dynamically import hls.js
-  try {
-    const { default: Hls } = await import('hls.js');
-
-    // If HLS.js is supported, use it
-    if (Hls.isSupported()) {
-      // Create a new HLS instance with improved error recovery
-      const hls = new Hls({
-        // Add some configuration for better performance and reliability
-        maxBufferLength: 30,
-        maxMaxBufferLength: 60,
-        liveSyncDurationCount: 3,
-        enableWorker: true,
-        lowLatencyMode: true,
-        // Error recovery settings
-        fragLoadingMaxRetry: 5,
-        manifestLoadingMaxRetry: 5,
-        levelLoadingMaxRetry: 5
-      });
-
-      // Setup error handling
-      hls.on(Hls.Events.ERROR, (event, data) => {
-        if (data.fatal) {
-          switch (data.type) {
-            case Hls.ErrorTypes.NETWORK_ERROR:
-              // Try to recover network error
-              console.warn('Network error encountered, trying to recover', data);
-              hls.startLoad();
-              break;
-            case Hls.ErrorTypes.MEDIA_ERROR:
-              // Try to recover media error
-              console.warn('Media error encountered, trying to recover', data);
-              hls.recoverMediaError();
-              break;
-            default:
-              // Cannot recover from other fatal errors
-              console.error('Fatal error encountered, cannot recover', data);
-              break;
-          }
-        }
-      });
-
-      // Set up stats monitoring if callback is provided
-      if (onStatsUpdate) {
-        const statsInterval = 3000; // Update stats every 3 seconds
-        const statsTimer = setInterval(() => {
-          // Calculate buffer length - if media exists and has buffer, get length, otherwise 0
-          const bufferLength = (hls.media && hls.media.buffered.length > 0)
-            ? hls.media.buffered.end(hls.media.buffered.length - 1) - hls.media.currentTime
-            : 0;
-
-          const hlsStats: HlsStats = {
-            bandwidth: hls.bandwidthEstimate,
-            droppedFrames: 0, // Need to calculate from media element if needed
-            bufferLength,  // Short property notation when name matches variable
-            currentLevel: hls.currentLevel,
-            totalLevels: hls.levels ? hls.levels.length : 0,
-            loadLatency: 0  // Hls.js v1.6.1 doesn't expose this directly through typed properties
-          };
-
-          onStatsUpdate(hlsStats);
-        }, statsInterval);
-
-        // Clean up the timer when media is detached
-        hls.on(Hls.Events.MEDIA_DETACHING, () => {
-          clearInterval(statsTimer);
-        });
+      } else {
+        logger.info('Autoplay disabled, waiting for user action');
       }
-
-      // Load the source and attach to audio element
-      hls.loadSource(src);
-      hls.attachMedia(audioElement as HTMLVideoElement);
-
-      // Start playback when manifest is parsed (if autoplay is enabled)
-      hls.on(Hls.Events.MANIFEST_PARSED, () => {
-        if (autoplay) {
-          const playPromise = audioElement.play();
-
-          if (playPromise !== undefined) {
-            playPromise.catch(_ => {
-              console.warn('Auto-play was prevented, user interaction may be needed');
-            });
-          }
+    });
+    hls.on(Hls.Events.ERROR, (_, data) => {
+      logger.error(`HLS Error: Type ${data.type} - Details: ${data.details}`);
+      if (data.fatal) {
+        switch (data.type) {
+          case Hls.ErrorTypes.NETWORK_ERROR:
+            logger.info("Fatal network error, attempting recovery...");
+            hls.startLoad();
+            break;
+          case Hls.ErrorTypes.MEDIA_ERROR:
+            logger.info("Fatal media error, attempting recovery...");
+            hls.recoverMediaError();
+            break;
+          default:
+            logger.info("Unrecoverable fatal error, destroying HLS instance.");
+            hls.destroy();
+            break;
         }
-      });
-
-      return hls;
-    } else {
-      throw new Error('HLS.js is not supported in this browser');
-    }
-  } catch (error) {
-    console.error('Failed to load or initialize hls.js:', error);
-    throw new Error(`Failed to load or initialize HLS support: ${error instanceof Error ? error.message : String(error)}`);
+      }
+    });
+    return hls;
+  } else if (audioElement.canPlayType('application/vnd.apple.mpegurl')) {
+    logger.info("HLS.js is not supported, but native HLS playback is possible (e.g., Safari).");
+    audioElement.src = src;
+    audioElement.addEventListener('loadedmetadata', () => {
+      logger.info("HLS stream loaded using native support.");
+      if (options.autoplay) {
+        logger.info("Attempting to play HLS stream using native support.");
+        audioElement.play().catch(error => {
+          logger.warn("Autoplay was blocked by the browser.", error);
+        });
+      } else {
+        logger.info("Autoplay disabled for native HLS, waiting for user action");
+      }
+    });
+  } else {
+    logger.error('HLS is not supported in this browser.');
   }
 }

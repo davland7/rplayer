@@ -23,6 +23,7 @@ export function useRPlayer({ initialVolume = 0.5 }: UseRPlayerOptions) {
 	useEffect(() => {
 		if (!playerRef.current) {
 			playerRef.current = new RPlayer();
+			RPlayer.setLogLevel("debug");
 			const player = playerRef.current;
 			player.volume = initialVol;
 			player.ontimeupdate = () => setCurrentTime(player.currentTime);

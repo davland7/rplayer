@@ -16,12 +16,13 @@ const config: UserConfigExport = defineConfig({
 				globals: {
 					"hls.js": "Hls",
 				},
+				// Make sure the UMD build sets the correct global variable
+				name: "RPlayer",
 			},
 		},
 		outDir: "lib",
 		sourcemap: true,
 		minify: true,
-		emptyOutDir: false, // Ne pas vider le répertoire de sortie pour préserver les fichiers ES
 	},
 });
 

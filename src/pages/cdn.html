@@ -6,7 +6,7 @@
   <title>RPlayer CDN Demo</title>
   <link rel="icon" href="/favicon.svg" type="image/x-icon">
   <script src="https://cdn.jsdelivr.net/npm/hls.js@1.6.1/dist/hls.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@davland7/rplayer@2.2.4/dist/rplayer.umd.min.js"></script>
+  <script src="rplayer.umd.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
   <style type="text/tailwindcss">
     @theme {
@@ -49,7 +49,13 @@
       const stored = localStorage.getItem(VOLUME_KEY);
       if (stored !== null) initialVolume = parseFloat(stored);
     }
-    let player = new window.rPlayer();
+    // Set a more sensible log level for production CDN use
+    if (window.RPlayer && window.RPlayer.setLogLevel) {
+      window.RPlayer.setLogLevel('error'); // Only show errors in production
+    }
+
+    // Create player instance with no initial source
+    let player = new window.RPlayer();
     player.volume = initialVolume;
     // Save volume if desktop
     if (!isMobile) {
@@ -75,7 +81,11 @@
       }
       localStorage.setItem(URL_KEY, url);
       player.stop();
-      player.playSrc(url);
+      // Pass explicit autoplay: true for CDN usage to ensure consistent behavior with user interaction
+      player.playSrc(url, { autoplay: true }).catch(error => {
+        console.error("Error playing source:", error);
+        alert("Failed to play stream. Check the URL and try again.");
+      });
       urlInput.classList.remove('border-yellow-500', 'ring-yellow-400', 'border-gray-400', 'ring-gray-600', 'focus:ring-white');
       urlInput.classList.add('border-green-500', 'ring-green-400');
       isPlaying = true;

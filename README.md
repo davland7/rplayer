@@ -235,3 +235,30 @@ audio.onLoadingStatusChange((status, message) => {
   console.log(`Loading status: ${status}`, message);
 });
 ```
+
+## Configuring log levels
+
+RPlayer includes a built-in logging system that can be configured based on your environment. This is useful for disabling debug logs in production while keeping them during development:
+
+```javascript
+import RPlayer from '@davland7/rplayer';
+
+// Available log levels: 'debug', 'info', 'warn', 'error', 'none'
+// In production, set to 'error' or 'none' to minimize console output
+RPlayer.setLogLevel('error'); // Only show error logs
+
+// For development, use debug for verbose logging
+if (process.env.NODE_ENV === 'development') {
+  RPlayer.setLogLevel('debug');
+}
+
+// Create player after setting log level
+const player = new RPlayer();
+```
+
+The log levels control which messages are displayed:
+- `debug`: All logs (verbose) - good for development and debugging
+- `info`: Information, warnings and errors
+- `warn`: Warnings and errors only
+- `error`: Only error messages
+- `none`: No logs at all (completely silent)

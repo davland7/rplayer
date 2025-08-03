@@ -4,6 +4,80 @@ import { playM3u, playPreviousTrack, playNextTrack, getCurrentPlaylist } from '.
 // Type definitions
 export type PlaybackStatus = 'playing' | 'paused' | 'stopped';
 
+// Logger configuration
+export type LogLevel = 'none' | 'error' | 'warn' | 'info' | 'debug';
+
+/**
+ * Logger utility for RPlayer
+ * Allows controlling log output based on environment (production vs development)
+ */
+export class Logger {
+  private logLevel: LogLevel = 'error'; // Default to showing only errors in production
+
+  constructor(level?: LogLevel) {
+    if (level) {
+      this.logLevel = level;
+    }
+  }
+
+  /**
+   * Set the log level for the player
+   * @param level - The log level to set
+   */
+  setLevel(level: LogLevel): void {
+    this.logLevel = level;
+  }
+
+  /**
+   * Debug log - only shown in verbose logging
+   */
+  debug(...args: unknown[]): void {
+    if (this.shouldLog('debug')) {
+      console.log('[RPlayer]', ...args);
+    }
+  }
+
+  /**
+   * Info log - shown in normal operation
+   */
+  info(...args: unknown[]): void {
+    if (this.shouldLog('info')) {
+      console.log('[RPlayer]', ...args);
+    }
+  }
+
+  /**
+   * Warning log - shown for non-critical issues
+   */
+  warn(...args: unknown[]): void {
+    if (this.shouldLog('warn')) {
+      console.warn('[RPlayer]', ...args);
+    }
+  }
+
+  /**
+   * Error log - always shown unless logs are completely disabled
+   */
+  error(...args: unknown[]): void {
+    if (this.shouldLog('error')) {
+      console.error('[RPlayer]', ...args);
+    }
+  }
+
+  /**
+   * Determines if a log of the given level should be displayed
+   */
+  private shouldLog(level: LogLevel): boolean {
+    if (this.logLevel === 'none') return false;
+
+    const levels: LogLevel[] = ['error', 'warn', 'info', 'debug'];
+    const currentLevelIndex = levels.indexOf(this.logLevel);
+    const messageLevelIndex = levels.indexOf(level as LogLevel);
+
+    return messageLevelIndex <= currentLevelIndex;
+  }
+}
+
 // Extend Window interface to support M3U playlist properties
 declare global {
   interface Window {
@@ -14,15 +88,48 @@ declare global {
 
 /**
  * RPlayer - An enhanced audio player with HLS support
+ *
+ * Note on autoplay behavior:
+ * - When using ES modules, HLS streams will attempt to autoplay by default
+ * - In CDN/UMD builds, autoplay might be blocked by browsers without user interaction
+ * - You can control autoplay behavior explicitly with the options parameter in playSrc()
+ *
  * @extends Audio
  */
 class RPlayer extends Audio {
+  /**
+   * Logger instance for controlling log output
+   */
+  private static logger = new Logger();
+
   /**
    * Internal flag to track if we should try to auto-reconnect
    */
   private shouldAutoReconnect: boolean = false;
 
+  // Type for HLS.js instance with the destroy method
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private hls: any | null = null;
+
+  /**
+   * Configure the log level for RPlayer
+   * @param level - The logging level ('none', 'error', 'warn', 'info', 'debug')
+   * @static
+   */
+  static setLogLevel(level: LogLevel): void {
+    RPlayer.logger.setLevel(level);
+  }
+
+  /**
+   * Get the current log level
+   * @returns The current log level
+   * @static
+   */
+  static getLogLevel(): LogLevel {
+    return RPlayer.logger['logLevel'];
+  }
+
+  // Private properties
   private isHls: boolean = false;
   private lastSrc: string = '';
   private readonly errorHandlers: Array<(error: Error) => void> = [];
@@ -41,37 +148,10 @@ class RPlayer extends Audio {
       window.addEventListener('offline', this.handleOffline);
     }
 
-    // Initialize with default settings
-    this.initializeVolume();
-
-    // Set event listeners
-    this.setupEventListeners();
-
-    // Play initial source if provided after constructor finishes
-    if (initialSource) {
-      setTimeout(() => {
-        this.playSrc(initialSource).catch(error => {
-          console.error('Failed to play initial source:', error);
-        });
-      }, 0);
-    }
-  }
-
-  /**
-   * Initialize volume settings
-   * @private
-   */
-  private initializeVolume(): void {
     // Default volume initialization
     this.volume = 1.0; // Default to full volume
-  }
 
-  /**
-   * Set up event listeners for the audio element
-   * @private
-   */
-  private setupEventListeners(): void {
-    // Volume management is now handled externally by the application
+    // Configure event listeners directly in the constructor for better readability
 
     // Handle errors
     this.addEventListener('error', () => {
@@ -109,6 +189,15 @@ class RPlayer extends Audio {
     this.addEventListener('canplaythrough', () => {
       this.loadingHandlers.forEach(handler => handler('ready', 'Can play through without buffering'));
     });
+
+    // Play initial source if provided after constructor finishes
+    if (initialSource) {
+      setTimeout(() => {
+        this.playSrc(initialSource).catch(error => {
+          RPlayer.logger.error('Failed to play initial source:', error);
+        });
+      }, 0);
+    }
   }
 
   /**
@@ -135,7 +224,7 @@ class RPlayer extends Audio {
       return pathWithoutQuery.endsWith('.m3u8');
     } catch (_) {
       // If we can't parse the URL, use a regex to check for .m3u8 before any query params
-      console.warn('URL parsing failed in isHlsUrl, using fallback check:', urlStr);
+      RPlayer.logger.warn('URL parsing failed in isHlsUrl, using fallback check:', urlStr);
       return /\.m3u8($|\?)/.test(urlStr);
     }
   }
@@ -165,7 +254,7 @@ class RPlayer extends Audio {
       return pathWithoutQuery.endsWith('.m3u') && !pathWithoutQuery.endsWith('.m3u8');
     } catch (_) {
       // If we can't parse the URL, use a regex to check for .m3u (not .m3u8) before any query params
-      console.warn('URL parsing failed in isM3uUrl, using fallback check:', urlStr);
+      RPlayer.logger.warn('URL parsing failed in isM3uUrl, using fallback check:', urlStr);
       return /\.m3u($|\?)/.test(urlStr) && !/\.m3u8($|\?)/.test(urlStr);
     }
   }
@@ -272,10 +361,12 @@ class RPlayer extends Audio {
   /**
    * Plays the provided audio source
    * @param {string} src - The source URL of the audio stream
+   * @param {Object} options - Optional playback configuration
+   * @param {boolean} options.autoplay - Whether to attempt autoplay (default: true)
    * @returns {Promise<void>} - A promise that resolves when playback has started or rejects on error
    */
-  async playSrc(src: string): Promise<void> {
-    console.log(`[RPlayer] playSrc called with: ${src}`);
+  async playSrc(src: string, options = { autoplay: true }): Promise<void> {
+    RPlayer.logger.info(`playSrc called with: ${src}`);
 
     // Inform listeners that we're about to load something
     this.loadingHandlers.forEach(handler => handler('loading', `Loading source: ${src}`));
@@ -284,18 +375,18 @@ class RPlayer extends Audio {
     if (src.startsWith('/') && !src.startsWith('//') && typeof window !== 'undefined') {
       const origin = window.location.origin;
       src = `${origin}${src}`;
-      console.log(`[RPlayer] Relative URL converted to absolute: ${src}`);
+      RPlayer.logger.info(`Relative URL converted to absolute: ${src}`);
     }
 
     // Don't reload if it's the same source and just paused
     if (this.lastSrc === src && this.paused && this.currentTime > 0) {
       try {
-        console.log(`[RPlayer] Same source detected, resuming playback: ${src}`);
+        RPlayer.logger.info(`Same source detected, resuming playback: ${src}`);
         await this.play();
         return;
       } catch (error) {
         // If there's an error playing, try to reload the source
-        console.warn('[RPlayer] Error resuming playback, attempting to reload', error);
+        RPlayer.logger.warn(`Error resuming playback, attempting to reload`, error);
       }
     }
 
@@ -309,49 +400,106 @@ class RPlayer extends Audio {
 
       // Get source type for logging
       const sourceType = isHls ? 'HLS' : isM3u ? 'M3U standard' : 'Direct';
-      console.log(`[RPlayer] Source type: ${sourceType}`);
+      RPlayer.logger.info(`Source type: ${sourceType}`);
 
       if (isHls) {
+        RPlayer.logger.info(`Playing HLS stream: ${src}`);
         try {
-          // playHls is now asynchronous and returns a promise
-          const hlsInstance = await playHls(this, src);
+          // playHls directly returns the HLS instance (non-asynchronous)
+          const hlsInstance = playHls(this, src, { autoplay: options.autoplay });
           this.hls = hlsInstance;
           this.lastSrc = src;
           this.isHls = true;
 
           // Return a promise that resolves when playback starts or rejects on error
           return new Promise((resolve, reject) => {
-            const onPlay = () => {
-              this.removeEventListener('playing', onPlay);
+            // Use multiple events to detect the start of playback
+            const onPlaybackStarted = () => {
+              RPlayer.logger.info('HLS playback started successfully');
+              this.removeEventListener('playing', onPlaybackStarted);
+              this.removeEventListener('canplay', onCanPlay);
               this.removeEventListener('error', onError);
+              clearTimeout(timeoutId);
               resolve();
+            };
+
+            const onCanPlay = () => {
+              RPlayer.logger.info('HLS stream can be played now');
+              if (this.paused) {
+                RPlayer.logger.info('Auto-starting HLS playback from canplay event');
+                this.play().catch(e => RPlayer.logger.warn('Auto-play from canplay failed:', e));
+              }
             };
 
             const onError = () => {
-              this.removeEventListener('playing', onPlay);
+              RPlayer.logger.error('HLS playback error occurred');
+              this.removeEventListener('playing', onPlaybackStarted);
+              this.removeEventListener('canplay', onCanPlay);
               this.removeEventListener('error', onError);
+              clearTimeout(timeoutId);
               reject(new Error(`Failed to load HLS source: ${src}`));
             };
 
-            // If playHls has already started playback (native support), resolve immediately
-            if (!this.paused) {
+            // Preliminary check of playback status
+            if (!this.paused && this.readyState >= 3) {
+              RPlayer.logger.info('HLS playback already started, resolving immediately');
               resolve();
-            } else {
-              this.addEventListener('playing', onPlay);
-              this.addEventListener('error', onError);
+              return;
             }
+
+            RPlayer.logger.info('Waiting for HLS playback to start...');
+            this.addEventListener('playing', onPlaybackStarted);
+            this.addEventListener('canplay', onCanPlay);
+            this.addEventListener('error', onError);
+
+            // Timeout system with multiple attempts
+            let attempts = 0;
+            const maxAttempts = 5;
+
+            const attemptPlayback = () => {
+              attempts++;
+              if (this.paused) {
+                // Use debug for first attempts and info for later ones
+                if (attempts <= 2) {
+                  RPlayer.logger.debug(`HLS playback initiating, attempt ${attempts}/${maxAttempts}`);
+                } else {
+                  RPlayer.logger.info(`HLS playback retry ${attempts}/${maxAttempts}`);
+                }
+
+                if (attempts <= maxAttempts) {
+                  this.play().catch(() => {
+                    // Less visible log for common playback errors
+                    RPlayer.logger.debug(`Retrying playback, attempt ${attempts}...`);
+                  });
+                  return true; // continue timeout
+                } else {
+                  RPlayer.logger.info('HLS auto-play attempts complete, waiting for user interaction');
+                  // Don't reject - let the user interact manually
+                  return false; // stop timeout
+                }
+              }
+              return false; // stop timeout if playing
+            };
+
+            // Initial attempt after a short delay
+            const timeoutId = setTimeout(function checkPlaybackStarted() {
+              if (attemptPlayback()) {
+                // Schedule next attempt with exponential backoff
+                setTimeout(checkPlaybackStarted, 1000 * Math.min(2 ** (attempts - 1), 10));
+              }
+            }, 1000);
           });
         } catch (error) {
-          console.error('Error initializing HLS playback:', error);
+          RPlayer.logger.error('Error initializing HLS playback:', error);
           throw error;
         }
-      }      else if (this.isM3uUrl(src)) {
+      } else if (this.isM3uUrl(src)) {
         try {
-          console.log(`[RPlayer] Attempting to play M3U standard playlist: ${src}`);
+          RPlayer.logger.info(`Attempting to play M3U standard playlist: ${src}`);
           // For standard .m3u files
           // playM3u now returns the URL of the first item in the playlist
           const mediaUrl = await playM3u(this, src);
-          console.log(`[RPlayer] URL extracted from M3U playlist: ${mediaUrl}`);
+          RPlayer.logger.info(`URL extracted from M3U playlist: ${mediaUrl}`);
 
           // Call playSrc recursively with the media URL
           // This allows automatic handling of HLS streams
@@ -364,16 +512,16 @@ class RPlayer extends Audio {
           this.lastSrc = src; // Keep the playlist URL as the original source
 
           // Redirect to the media URL
-          console.log(`[RPlayer] Redirecting to: ${mediaUrl}`);
+          RPlayer.logger.info(`Redirecting to: ${mediaUrl}`);
           return this.playSrc(mediaUrl);
         } catch (error) {
-          console.error('[RPlayer] Error while playing M3U playlist:', error);
+          RPlayer.logger.error('Error while playing M3U playlist:', error);
           const m3uError = error instanceof Error ? error : new Error(`Failed to parse M3U playlist: ${String(error)}`);
           this.errorHandlers.forEach(handler => handler(m3uError));
           throw m3uError;
         }
       } else {
-        console.log(`[RPlayer] Attempting direct playback: ${src}`);
+        RPlayer.logger.info(`Attempting direct playback: ${src}`);
         this.src = src;
         this.lastSrc = src;
         this.isHls = false;
@@ -386,10 +534,10 @@ class RPlayer extends Audio {
             try {
               await Promise.resolve(); // microtask to avoid race condition
               await this.play();
-              console.log(`[RPlayer] Direct playback successful`);
+              RPlayer.logger.info(`Direct playback successful`);
               resolve();
             } catch (playError) {
-              console.error('[RPlayer] Error during direct playback:', playError);
+              RPlayer.logger.error('Error during direct playback:', playError);
               const directError = new Error(`Failed to play source: ${src}`);
               this.errorHandlers.forEach(handler => handler(directError));
               reject(directError);
@@ -408,7 +556,7 @@ class RPlayer extends Audio {
         });
       }
     } catch (error) {
-      console.error('Error playing source', error);
+      RPlayer.logger.error('Error playing source', error);
       this.errorHandlers.forEach(handler => handler(error instanceof Error ? error : new Error(String(error))));
       throw error;
     }
@@ -421,13 +569,13 @@ class RPlayer extends Audio {
    * @returns {Promise<void>} - A promise that resolves when the source is loaded
    */
   async loadSrc(src: string): Promise<void> {
-    console.log(`[RPlayer] loadSrc called with: ${src}`);
+    RPlayer.logger.info(`loadSrc called with: ${src}`);
 
     // Convert relative paths to absolute URLs
     if (src.startsWith('/') && !src.startsWith('//') && typeof window !== 'undefined') {
       const origin = window.location.origin;
       src = `${origin}${src}`;
-      console.log(`[RPlayer] Relative URL converted to absolute: ${src}`);
+      RPlayer.logger.info(`Relative URL converted to absolute: ${src}`);
     }
 
     try {
@@ -440,27 +588,27 @@ class RPlayer extends Audio {
 
       // Get source type for logging
       const sourceType = isHls ? 'HLS' : isM3u ? 'M3U standard' : 'Direct';
-      console.log(`[RPlayer] Source type: ${sourceType}`);
+      RPlayer.logger.info(`Source type: ${sourceType}`);
 
       if (isHls) {
         try {
-          // playHls is now used only to load the source, without automatic playback
-          // We will modify the playHls function to accept an autoplay parameter
-          const hlsInstance = await playHls(this, src, undefined, false);
+          // Directly use playHls to load the source
+          const hlsInstance = playHls(this, src, { autoplay: false }); // No autoplay for loadSrc
           this.hls = hlsInstance;
           this.lastSrc = src;
           this.isHls = true;
+
           return Promise.resolve();
         } catch (error) {
-          console.error('Error initializing HLS source:', error);
+          RPlayer.logger.error('Error initializing HLS source:', error);
           throw error;
         }
       } else if (this.isM3uUrl(src)) {
         try {
-          console.log(`[RPlayer] Attempting to load M3U standard playlist: ${src}`);
+          RPlayer.logger.info(`Attempting to load M3U standard playlist: ${src}`);
           // For M3U playlists, we extract the first URL but do not start playback
           const mediaUrl = await playM3u(this, src);
-          console.log(`[RPlayer] URL extracted from M3U playlist: ${mediaUrl}`);
+          RPlayer.logger.info(`URL extracted from M3U playlist: ${mediaUrl}`);
 
           // Avoid infinite loops
           if (mediaUrl === src) {
@@ -473,13 +621,13 @@ class RPlayer extends Audio {
           // Load media source without automatic playback
           return this.loadSrc(mediaUrl);
         } catch (error) {
-          console.error('[RPlayer] Error while loading M3U playlist:', error);
+          RPlayer.logger.error('Error while loading M3U playlist:', error);
           const m3uError = error instanceof Error ? error : new Error(`Failed to parse M3U playlist: ${String(error)}`);
           this.errorHandlers.forEach(handler => handler(m3uError));
           throw m3uError;
         }
       } else {
-        console.log(`[RPlayer] Loading direct without playback: ${src}`);
+        RPlayer.logger.info(`Loading direct without playback: ${src}`);
         this.src = src;
         this.lastSrc = src;
         this.isHls = false;
@@ -509,7 +657,7 @@ class RPlayer extends Audio {
         });
       }
     } catch (error) {
-      console.error('Error loading source', error);
+      RPlayer.logger.error('Error loading source', error);
       this.errorHandlers.forEach(handler => handler(error instanceof Error ? error : new Error(String(error))));
       throw error;
     }
@@ -524,23 +672,24 @@ class RPlayer extends Audio {
     this.pause();
     this.currentTime = 0;
 
+    // Clean up HLS resources if necessary
     if (this.hls) {
       this.hls.destroy();
       this.hls = null;
     }
 
-    // Reset the state completely
+    // Reset HLS flag
     this.isHls = false;
 
-    // Important: do not clear lastSrc to allow displaying the last stream while indicating that playback is stopped
+    // Note: We keep lastSrc to allow displaying the last source while indicating that playback is stopped
 
-    // On stop, enable auto-reconnect if there was a source
-    if (this.lastSrc) {
-      this.shouldAutoReconnect = true;
-    }
+    // First enable auto-reconnect if we had a source
+    this.shouldAutoReconnect = this.lastSrc ? true : false;
 
+    // Notify handlers of stopped state
     this.playbackHandlers.forEach(handler => handler('stopped'));
-    // When playback is explicitly requested, disable auto-reconnect (user has control)
+
+    // After explicit stop request, disable auto-reconnect (user has control)
     this.shouldAutoReconnect = false;
   }
 
@@ -551,7 +700,7 @@ class RPlayer extends Audio {
     if (this.shouldAutoReconnect && this.lastSrc) {
       // Automatically restart the stream
       this.playSrc(this.lastSrc).catch((err) => {
-        console.warn('[RPlayer] Auto-reconnect failed:', err);
+        RPlayer.logger.warn('Auto-reconnect failed:', err);
       });
       // Only restart once
       this.shouldAutoReconnect = false;
@@ -562,7 +711,7 @@ class RPlayer extends Audio {
    * Handler for browser 'offline' event (optional, for debugging)
    */
   private handleOffline = () => {
-    console.warn('[RPlayer] Offline detected');
+    RPlayer.logger.warn('Offline detected');
   };
 
   /**
@@ -578,9 +727,7 @@ class RPlayer extends Audio {
    * The volume will not exceed 100%
    */
   upVolume(): void {
-    const newVolume = Math.min(this.volume + 0.1, 1);
-    if (newVolume === this.volume) return; // Do nothing if already at max
-    this.volume = parseFloat(newVolume.toFixed(2));
+    this.setVolume(this.volume + 0.1);
   }
 
   /**
@@ -588,9 +735,7 @@ class RPlayer extends Audio {
    * The volume will not go below 0%
    */
   downVolume(): void {
-    const newVolume = Math.max(this.volume - 0.1, 0);
-    if (newVolume === this.volume) return; // Do nothing if already at min
-    this.volume = parseFloat(newVolume.toFixed(2));
+    this.setVolume(this.volume - 0.1);
   }
 
   /**
@@ -598,11 +743,11 @@ class RPlayer extends Audio {
    * @param {number} level - A value between 0 and 1
    */
   setVolume(level: number): void {
-    if (level < 0 || level > 1) {
-      throw new Error('Volume level must be between 0 and 1');
-    }
+    // Clamp the value between 0 and 1
+    const clampedLevel = Math.max(0, Math.min(1, level));
 
-    this.volume = parseFloat(level.toFixed(2));
+    // Round to 2 decimal places for better precision control
+    this.volume = parseFloat(clampedLevel.toFixed(2));
   }
 
   /**
@@ -614,16 +759,16 @@ class RPlayer extends Audio {
 
   /**
    * Plays an M3U playlist directly
+   * This is a convenience wrapper around playSrc for M3U files
    * @param {string} url - The URL of the M3U playlist
    * @returns {Promise<string>} - A promise that resolves with the first track's URL when playback starts
    */
   async playM3u(url: string): Promise<string> {
     try {
-      // Use existing playSrc method which already handles M3U files through playM3u
       await this.playSrc(url);
       return this.lastSrc;
     } catch (error) {
-      console.error('[RPlayer] Error playing M3U playlist:', error);
+      RPlayer.logger.error('Error playing M3U playlist:', error);
       throw error;
     }
   }
@@ -634,13 +779,10 @@ class RPlayer extends Audio {
    */
   async previous(): Promise<void> {
     try {
-      // Use the function from playM3u.ts module to get the previous track URL
       const previousTrackUrl = await playPreviousTrack();
-
-      // Play the track
       return this.playSrc(previousTrackUrl);
     } catch (error) {
-      console.error('[RPlayer] Error playing previous track:', error);
+      RPlayer.logger.error('Error playing previous track:', error);
       throw error;
     }
   }
@@ -651,16 +793,15 @@ class RPlayer extends Audio {
    */
   async next(): Promise<void> {
     try {
-      // Use the function from playM3u.ts module to get the next track URL
       const nextTrackUrl = await playNextTrack();
-
-      // Play the track
       return this.playSrc(nextTrackUrl);
     } catch (error) {
-      console.error('[RPlayer] Error playing next track:', error);
+      RPlayer.logger.error('Error playing next track:', error);
       throw error;
     }
-  }  /**
+  }
+
+  /**
    * Gets the current M3U playlist information if available
    * @returns {Object|null} Playlist information or null if no playlist is loaded
    */
@@ -673,18 +814,19 @@ class RPlayer extends Audio {
    * Stops any playback and releases all resources
    */
   destroy(): void {
+    // First stop all playback (this also cleans up HLS)
     this.stop();
 
-    // Remove all event listeners
+    // Remove network event listeners
+    if (typeof window !== 'undefined') {
+      window.removeEventListener('online', this.handleReconnect);
+      window.removeEventListener('offline', this.handleOffline);
+    }
+
+    // Clear all handlers
     this.playbackHandlers.length = 0;
     this.errorHandlers.length = 0;
     this.loadingHandlers.length = 0;
-
-    // Clean up any other resources
-    if (this.hls) {
-      this.hls.destroy();
-      this.hls = null;
-    }
   }
 }
 
@@ -701,5 +843,13 @@ export type RPlayerEvents = {
   onLoadingStatusChange: (status: LoadingStatus, message?: string) => void;
 };
 
-// Export the RPlayer class
+// Export the RPlayer class and shared logger
+export const logger = RPlayer['logger'];
+
+// Ensure RPlayer is available in the global scope for CDN usage
+if (typeof window !== 'undefined') {
+  // @ts-ignore - RPlayer will be available in window context
+  window.RPlayer = RPlayer;
+}
+
 export default RPlayer;
