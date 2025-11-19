@@ -52,7 +52,7 @@
 	"dependencies": {
 		"@astrojs/check": "^0.9.4",
 		"@astrojs/sitemap": "^3.4.1",
-		"astro": "^5.12.8",
+		"astro": "^5.15.9",
 		"flag-icons": "^7.5.0",
 		"hls.js": "^1.6.7",
 		"react": "^19.1.0",
