@@ -18,6 +18,17 @@ plugins:
   - jekyll-redirect-from
   - jekyll-sitemap
 
+# Exclude from sitemap
+defaults:
+  - scope:
+      path: "404.html"
+    values:
+      sitemap: false
+  - scope:
+      path: "googlef84e2477d307cfb8.html"
+    values:
+      sitemap: false
+
 # -------------------------------------------------------------------
 # File Management
 # -------------------------------------------------------------------
