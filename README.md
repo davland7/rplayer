@@ -23,7 +23,7 @@ npm install @davland7/rplayer
 
 ### CDN (jsDelivr)
 ```html
-<script src="https://cdn.jsdelivr.net/npm/@davland7/rplayer@latest/dist/rplayer.umd.cjs"></script>
+<script src="https://cdn.jsdelivr.net/npm/@davland7/rplayer@latest/dist/rplayer.umd.js"></script>
 ```
 
 ## ESM vs UMD
@@ -36,11 +36,11 @@ This library ships both ESM and UMD builds.
   - Recommended for Vite, Webpack, Rollup, etc.
 
 - UMD (script tag / no bundler):
-  - File: `dist/rplayer.umd.cjs`
+  - File: `dist/rplayer.umd.js`
   - Global name: `window.RPlayer` (configured via Vite `build.lib.name`)
   - Usage:
     ```html
-    <script src="https://cdn.jsdelivr.net/npm/@davland7/rplayer@latest/dist/rplayer.umd.cjs"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@davland7/rplayer@latest/dist/rplayer.umd.js"></script>
     <script>
       const player = new window.RPlayer();
       const audio = document.querySelector('audio');

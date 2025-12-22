@@ -7,7 +7,12 @@ export default defineConfig(() => {
       lib: {
         entry: 'src/index.js',
         name: 'RPlayer',
-        fileName: 'rplayer'
+        fileName: (format) => {
+          if (format === 'umd') return 'rplayer.umd.js';
+          if (format === 'iife') return 'rplayer.min.js';
+          return 'rplayer.js';
+        },
+        formats: ['es', 'umd']
       },
     }
   };
