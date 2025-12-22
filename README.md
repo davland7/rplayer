@@ -1,264 +1,246 @@
+# RPlayer III — Minimal Audio Stream Controller
 
-# RPlayer
+Dependency‑free helper for controlling an `HTMLAudioElement` and working with streaming URLs. Built for modern apps and lightweight extensions. Mobile‑ready.
 
-| [![npm version](https://img.shields.io/npm/v/@davland7/rplayer?style=flat-square)](https://www.npmjs.com/package/@davland7/rplayer) | [![](https://data.jsdelivr.com/v1/package/npm/@davland7/rplayer/badge)](https://www.jsdelivr.com/package/npm/@davland7/rplayer) | [![license](https://img.shields.io/npm/l/@davland7/rplayer?style=flat-square)](https://github.com/davland7/rplayer/blob/main/LICENSE) |
-|:-:|:-:|:-:|
+[![](https://data.jsdelivr.com/v1/package/npm/@davland7/rplayer/badge)](https://www.jsdelivr.com/package/npm/@davland7/rplayer)
+[![](https://img.shields.io/npm/v/@davland7/rplayer.svg)](https://www.npmjs.com/package/@davland7/rplayer)
 
-RPlayer is a JavaScript/TypeScript audio library for playing radio streams, compatible with many formats: HLS (.m3u8), MP3 (.mp3), AAC (.aac), and more.
+---
 
-## What's new in 3.0.0
+## Overview
+- Simple API over `HTMLAudioElement`
+- Native HLS detection (no HLS.js bundled)
+- Works great in extension popups and small UIs
+- No dependencies, tiny footprint
 
-- Complete rewrite in TypeScript with improved typing
-- Advanced error handling and recovery for HLS streams
-- Native M3U playlist support with `playM3u()`, `next()`, and `previous()` methods
-- Full playlist navigation capabilities
-- Detailed loading status events with `onLoadingStatusChange()` method
-- Better user feedback during media loading and buffering
-- Support for displaying custom loading messages
-- Enhanced stability for streaming radio stations
-- Better autoplay management according to browser restrictions
+See the demo in `index.html` or run `npm run dev` to explore.
 
-## Browser autoplay restrictions
-
-Most modern browsers restrict audio autoplay: user interaction is often required before playback can start. RPlayer handles these restrictions elegantly:
-
-- The `loadSrc()` method allows preloading without starting playback
-- The React component accepts the `autoplay` prop to control initial behavior
-- Automatic detection of user interaction to enable playback
-- Clear status indicators when media is loaded but waiting for interaction
-
-## React & modern frameworks integration
-
-RPlayer works with all modern JavaScript frameworks. For React, Next.js, Astro, etc., make sure the Player component is rendered client-side only (RPlayer depends on browser APIs like Audio and MediaSession).
-
-- **React**: Import and use the Player component normally.
-- **Next.js**: Use dynamic import with `ssr: false` to load the Player client-side.
-- **Astro**: Use `client:only="react"` to avoid SSR rendering.
-
-## Installation
+## Install
 
 ### NPM
-
 ```bash
 npm install @davland7/rplayer
 ```
 
-```javascript
-import RPlayer from '@davland7/rplayer';
+### CDN (jsDelivr)
+```html
+<script src="https://cdn.jsdelivr.net/npm/@davland7/rplayer@latest/dist/rplayer.umd.cjs"></script>
 ```
 
-### CDN
+## ESM vs UMD
+
+This library ships both ESM and UMD builds.
+
+- ESM (modern bundlers, frameworks):
+  - Import: `import RPlayer from '@davland7/rplayer'`
+  - Entry: `module` points to `dist/rplayer.js`
+  - Recommended for Vite, Webpack, Rollup, etc.
+
+- UMD (script tag / no bundler):
+  - File: `dist/rplayer.umd.cjs`
+  - Global name: `window.RPlayer` (configured via Vite `build.lib.name`)
+  - Usage:
+    ```html
+    <script src="https://cdn.jsdelivr.net/npm/@davland7/rplayer@latest/dist/rplayer.umd.cjs"></script>
+    <script>
+      const player = new window.RPlayer();
+      const audio = document.querySelector('audio');
+      player.attachMedia(audio);
+      audio.src = 'https://example.com/stream.mp3';
+      audio.play();
+    </script>
+    ```
+
+## Quick Start
+```html
+<audio id="audio" preload="none"></audio>
+<button id="play">Play / Pause</button>
+```
+
+```js
+import RPlayer from '@davland7/rplayer';
+
+const audio = document.getElementById('audio');
+const playBtn = document.getElementById('play');
+
+const player = new RPlayer();
+player.attachMedia(audio);
+
+// Load any stream URL (HTTP/HTTPS). User gesture required to play in browsers.
+audio.src = 'https://example.com/stream.mp3';
+
+playBtn.addEventListener('click', () => player.togglePlay());
+```
+
+### Autoplay Policy (Important)
+- Browsers often require a user gesture to start audio. Calling `audio.play()` may reject with a `DOMException` if initiated without a direct click/tap.
+- Handle the promise from `play()` and provide a friendly message or re‑enable the play button.
+
+```js
+try {
+  await audio.play();
+} catch (err) {
+  // Playback blocked by browser (user action required)
+  console.warn('Playback blocked:', err);
+}
+```
+
+## HLS (.m3u8) Support
+
+RPlayer v3 does not bundle HLS.js. It prefers native HLS where available and leaves optional HLS.js integration to you if needed.
+
+- `player.supportsHls()` checks if the current browser can natively play HLS via `canPlayType('application/vnd.apple.mpegurl')`.
+- `RPlayer.isHls(url)` detects HLS URLs by extension (`.m3u8`, `.m3u`).
+- Safari (macOS/iOS) generally supports HLS natively. Chrome has begun introducing native/partial HLS support; check current status. Firefox typically does not.
+- Browser support reference: https://caniuse.com/?search=hls
+
+### Recommended Pattern
+If your URL is HLS and the browser does not support HLS natively, you can integrate HLS.js yourself:
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/hls.js@1.6.1/dist/hls.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@davland7/rplayer@3.0.0/lib/rplayer.umd.min.js"></script>
+<!-- Load HLS.js from CDN only when you need it -->
+<script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
 ```
 
-```javascript
-const audio = new RPlayer();
-```
-
-RPlayer extends [Audio](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/audio) (HTMLMediaElement).
-
-## Playback
-
-The native `play()` method does not work with HLS:
-
-```javascript
-const audio = new Audio('URL.m3u8');
-audio.play(); // Does not work with HLS
-```
-
-Instead, use:
-
-```javascript
-audio.playSrc('URL.m3u8'); // Works with HLS
-```
-
-> **Important**
-> For HLS, use hls.js on Windows/Android. On iPhone/iPad, HLS is native.
-
-RPlayer also supports .mp3, .aac, .ogg, etc.:
-
-```javascript
-audio.playSrc('URL.aac');
-```
-
-> **Tip**
-> You can use RPlayer without hls.js if you don't play .m3u8 files.
-
-## Volume
-
-Volume ranges from 0 (mute) to 1 (max).
-
-```javascript
-// Set volume to 50%
-audio.volume = 0.5;
-// Read current volume
-const currentVolume = audio.volume;
-```
-
-## Additional functions
-
-### Stop
-
-```javascript
-audio.stop();
-```
-
-### Mute
-
-```javascript
-audio.mute();
-```
-
-### Rewind
-
-```javascript
-audio.rewind(10); // seconds
-```
-
-### Volume +
-
-```javascript
-audio.upVolume();
-```
-
-### Volume -
-
-```javascript
-audio.downVolume();
-```
-
-### M3U Playlist Support
-
-Play an M3U playlist file:
-
-```javascript
-// Create a new RPlayer instance
-const audio = new RPlayer();
-
-// Play an M3U playlist
-audio.playM3u('/path/to/playlist.m3u');
-
-// Navigate the playlist
-audio.next();     // Play the next track in the playlist
-audio.previous(); // Play the previous track in the playlist
-```
-
-## Loading Status Events
-
-RPlayer provides detailed loading status events to improve user experience, especially useful for slow connections or streaming content that takes time to load:
-
-```javascript
-// Create a new player instance
-const player = new RPlayer();
-
-// Register for loading status changes
-player.onLoadingStatusChange((status, message) => {
-  switch(status) {
-    case 'loading':
-      showLoadingSpinner();
-      setStatusMessage(message || 'Loading media...');
-      break;
-    case 'buffering':
-      showBufferingIndicator();
-      setStatusMessage(message || 'Buffering...');
-      break;
-    case 'ready':
-      hideLoadingIndicators();
-      setStatusMessage('Ready to play');
-      break;
-    case 'error':
-      showErrorIcon();
-      setStatusMessage(message || 'Error loading media');
-      break;
-  }
-});
-
-// Start playback
-player.playSrc('https://example.com/stream.mp3');
-```
-
-Available status values:
-- `loading`: Initial loading has started
-- `buffering`: Media is loading more data (e.g., during waiting or stalled states)
-- `ready`: Media is ready to play without interruption
-- `error`: An error occurred while loading or playing
-
-Each status update includes an optional message with more details about the current state.
-
-Example of usage:
-
-```javascript
-// Simple playlist player with navigation
-const player = new RPlayer();
-await player.playM3u('/radio-stations.m3u');
-
-// Set up buttons for navigation
-document.getElementById('nextBtn').addEventListener('click', () => player.next());
-document.getElementById('prevBtn').addEventListener('click', () => player.previous());
-document.getElementById('stopBtn').addEventListener('click', () => player.stop());
-
-// Get current playlist information
-const playlistInfo = player.getCurrentPlaylist();
-if (playlistInfo) {
-  console.log(`Currently playing track ${playlistInfo.index + 1} of ${playlistInfo.playlist.length}`);
-  console.log(`Current track: ${playlistInfo.playlist[playlistInfo.index].title}`);
-}
-```
-
-> **Note iOS**
-> On iPhone/iPad, volume is physically controlled by the user. The volume property always returns 1.
-
-## timeupdate event
-
-```javascript
-audio.ontimeupdate = function() {
-  console.log('Time:', audio.currentTime);
-};
-```
-
-## Useful info
-
-```javascript
-console.log('Source:', audio.url);
-console.log('Playing:', audio.playing);
-console.log('Paused:', audio.paused);
-console.log('Muted:', audio.muted);
-console.log('Volume:', audio.volume * 100);
-console.log('hls.js:', audio.isHls);
-console.log('Time:', audio.currentTime);
-
-// Monitor loading status
-audio.onLoadingStatusChange((status, message) => {
-  console.log(`Loading status: ${status}`, message);
-});
-```
-
-## Configuring log levels
-
-RPlayer includes a built-in logging system that can be configured based on your environment. This is useful for disabling debug logs in production while keeping them during development:
-
-```javascript
+```js
 import RPlayer from '@davland7/rplayer';
 
-// Available log levels: 'debug', 'info', 'warn', 'error', 'none'
-// In production, set to 'error' or 'none' to minimize console output
-RPlayer.setLogLevel('error'); // Only show error logs
-
-// For development, use debug for verbose logging
-if (process.env.NODE_ENV === 'development') {
-  RPlayer.setLogLevel('debug');
-}
-
-// Create player after setting log level
+const audio = document.getElementById('audio');
 const player = new RPlayer();
+player.attachMedia(audio);
+
+async function playStream(url) {
+  const isHls = RPlayer.isHls(url);
+  const hasNative = player.supportsHls();
+
+  if (!isHls || hasNative) {
+    audio.src = url;
+    await audio.play();
+    return;
+  }
+
+  // Use HLS.js for non‑native browsers
+  if (window.Hls?.isSupported()) {
+    // Clean previous instance if any
+    if (audio._hlsInstance) {
+      audio._hlsInstance.destroy();
+      audio._hlsInstance = null;
+    }
+    const hls = new window.Hls();
+    audio._hlsInstance = hls;
+    hls.loadSource(url);
+    hls.attachMedia(audio);
+    await audio.play();
+  } else {
+    // Fallback: assign URL; some environments may still handle it
+    audio.src = url;
+    await audio.play();
+  }
+}
 ```
 
-The log levels control which messages are displayed:
-- `debug`: All logs (verbose) - good for development and debugging
-- `info`: Information, warnings and errors
-- `warn`: Warnings and errors only
-- `error`: Only error messages
-- `none`: No logs at all (completely silent)
+## Browser Support
+- Native HLS: Safari (macOS/iOS) supports HLS; Chrome has begun introducing native/partial HLS support; Firefox typically does not.
+- Check current status: https://caniuse.com/?search=hls
+
+Notes:
+- RPlayer does not import or manage HLS.js internally in v3.
+- If you bundle HLS.js via ESM (e.g., `import Hls from 'hls.js'`), use the same logic as above with the imported `Hls` instead of `window.Hls`.
+- Prefer native HLS on Safari/iOS when available.
+
+### Media Session API (Lock Screen Controls)
+
+RPlayer works seamlessly with the [Media Session API](https://developer.mozilla.org/en-US/docs/Web/API/Media_Session_API) to provide lock screen and notification controls on supported platforms.
+
+**iOS Considerations:**
+- iOS Safari uses **native physical buttons** (play/pause, volume) that work automatically with `<audio>` elements
+- Setting custom `navigator.mediaSession.setActionHandler()` on iOS can interfere with native controls
+- **Volume control:** iOS manages volume exclusively through physical buttons; software volume buttons should be disabled
+- **Recommendation:** Skip media session handlers on iOS and disable volume buttons:
+
+```js
+// Example: Conditionally register media session handlers and controls
+const isIos = RPlayer.isIos();
+
+if (!isIos && 'mediaSession' in navigator) {
+  navigator.mediaSession.metadata = new MediaMetadata({
+    title: 'Stream Title',
+    artist: 'RPlayer III',
+    artwork: [{ src: '/icon.png', sizes: '128x128', type: 'image/png' }]
+  });
+
+  navigator.mediaSession.setActionHandler('play', () => player.togglePlay());
+  navigator.mediaSession.setActionHandler('pause', () => player.togglePlay());
+}
+
+// Disable volume buttons on iOS
+volumeUpBtn.disabled = isIos;
+volumeDownBtn.disabled = isIos;
+```
+
+**Desktop/Android:**
+- Media session handlers work well and provide lock screen/notification controls
+- Software volume controls function as expected
+- Metadata (title, artist, artwork) enhances the user experience
+
+## API Reference
+
+### Class: `RPlayer`
+- `attachMedia(audioElement)`: Attach an `HTMLAudioElement` to control.
+- `togglePlay()`: Toggle play/pause.
+- `stop(forceClear = false)`: Pause, reset to 0; if `true`, also clear `src`.
+- `rewind(seconds = 10)`: Seek backward by `seconds` (min 0).
+- `volumeUp()`: Increase volume by step (default `0.1`).
+- `volumeDown()`: Decrease volume by step (default `0.1`).
+- `toggleMute()` / `mute()`: Toggle muted state.
+- `supportsHls()`: Return native HLS capability for the attached audio.
+- `get isPlaying`: `true` if not paused.
+- `get isMuted`: `true` if muted.
+
+### Static Helpers
+- `RPlayer.isHls(url)`: Detect `.m3u8`/`.m3u` URLs.
+- `RPlayer.isIos()`: Best‑effort iOS device detection.
+
+## Types
+Type definitions are published at `types/rplayer.d.ts` for TS consumers.
+
+### TypeScript Example
+```ts
+import RPlayer from '@davland7/rplayer';
+
+const audio = document.getElementById('audio') as HTMLAudioElement;
+const player = new RPlayer();
+player.attachMedia(audio);
+
+audio.src = 'https://example.com/stream.mp3';
+await audio.play().catch(console.warn);
+
+// Helpers
+const isHls = RPlayer.isHls(audio.src);
+const isIos = RPlayer.isIos();
+```
+
+## Demo / Development
+Run the demo locally with Vite:
+
+```bash
+npm install
+npm run dev
+```
+
+Build the library:
+```bash
+npm run build
+```
+
+### Extension Popup Pattern
+See the minimal demo UI in [index.html](index.html). It demonstrates an extension‑style popup layout with small controls, ellipsis for long URLs, and badge indicators.
+
+### Build & Tooling
+- Runtime dependencies: none — the library is dependency‑free.
+- Dev/build tooling: Vite is used to develop and build the library outputs (`module` and `umd`).
+
+## Notes for Developers
+- RPlayer focuses on controlling the native `HTMLAudioElement` and remains dependency‑free.
+- HLS.js is entirely optional in v3; integrate it manually if your app targets non‑native HLS browsers and HLS streams.
+- See the copy and messaging in `index.html` for an example UI and recommended UX wording.

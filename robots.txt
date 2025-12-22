@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://davland7.github.io/rplayer/sitemap.xml

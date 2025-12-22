@@ -1,77 +1,35 @@
 {
-	"name": "@davland7/rplayer",
-	"type": "module",
-	"version": "3.0.0",
-	"description": "RPlayer is an audio player for streaming radio that offers the possibility to play different audio formats including HLS streams (.m3u8), MP3, AAC and more.",
-	"main": "lib/rplayer.umd.min.js",
-	"module": "lib/rplayer.es.js",
-	"types": "lib/rplayer.d.ts",
-	"files": [
-		"lib"
-	],
-	"repository": {
-		"type": "git",
-		"url": "git+https://github.com/davland7/rplayer.git"
-	},
-	"bugs": {
-		"url": "https://github.com/davland7/rplayer/issues"
-	},
-	"homepage": "https://rplayer.js.org",
-	"engines": {
-		"node": ">=18.0.0"
-	},
-	"publishConfig": {
-		"access": "public"
-	},
-	"scripts": {
-		"dev": "astro dev",
-		"build": "astro build",
-		"build:all": "node --loader ts-node/esm build.ts",
-		"build:lib": "node --loader ts-node/esm build-lib.ts",
-		"build:lib:es": "vite build --config vite.lib.config.js",
-		"build:lib:umd": "vite build --config vite.lib-cdn.config.js",
-		"preview": "astro preview",
-		"astro": "astro",
-		"lint": "biome lint .",
-		"format": "biome format . --write",
-		"test": "node test/parse-m3u-test.js"
-	},
-	"keywords": [
-		"rplayer",
-		"audio",
-		"player",
-		"streaming",
-		"radio",
-		"hls",
-		"mp3",
-		"aac",
-		"library"
-	],
-	"author": "David Landry",
-	"license": "MIT",
-	"dependencies": {
-		"@astrojs/check": "^0.9.4",
-		"@astrojs/sitemap": "^3.4.1",
-		"astro": "^5.12.8",
-		"flag-icons": "^7.5.0",
-		"hls.js": "^1.6.7",
-		"react": "^19.1.0",
-		"react-dom": "^19.1.0",
-		"react-icons": "^5.5.0",
-		"recaptcha-v3": "^1.11.3"
-	},
-	"devDependencies": {
-		"@astrojs/react": "^4.3.0",
-		"@biomejs/biome": "^2.0.6",
-		"@formspree/react": "^3.0.0",
-		"@tailwindcss/forms": "^0.5.10",
-		"@tailwindcss/typography": "^0.5.16",
-		"@tailwindcss/vite": "^4.1.11",
-		"@types/react": "^19.1.8",
-		"@types/react-dom": "^19.1.6",
-		"tailwindcss": "^4.1.11",
-		"ts-node": "^10.9.2",
-		"typescript": "^5.8.3",
-		"vite": "^7.0.0"
-	}
+  "name": "@davland7/rplayer",
+  "version": "3.0.0",
+  "type": "module",
+  "main": "./dist/rplayer.umd.cjs",
+  "module": "./dist/rplayer.js",
+  "types": "./types/rplayer.d.ts",
+  "homepage": "https://rplayer.js.org",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/davland7/rplayer.git"
+  },
+  "bugs": {
+    "url": "https://github.com/davland7/rplayer/issues"
+  },
+  "exports": {
+    ".": {
+      "types": "./types/rplayer.d.ts",
+      "import": "./dist/rplayer.js",
+      "require": "./dist/rplayer.umd.cjs"
+    }
+  },
+  "files": [
+    "dist",
+    "types"
+  ],
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build --mode lib",
+    "prepublishOnly": "npm run build"
+  },
+  "devDependencies": {
+    "vite": "^7.2.4"
+  }
 }

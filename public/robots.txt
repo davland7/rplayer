@@ -1,4 +1,0 @@
-User-agent: *
-Disallow:
-
-Sitemap: https://rplayer.js.org/sitemap-index.xml

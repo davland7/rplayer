@@ -1,0 +1,227 @@
+---
+layout: null
+permalink: /
+redirect_from:
+  - /m3u/
+  - /m3u
+  - /documentation/
+  - /documentation
+  - /search/
+  - /search
+  - /privacy/
+  - /privacy
+  - /cdn/
+  - /cdn
+  - /contact/
+  - /contact
+  - /search/country/
+  - /search/country
+  - /search/tag/
+  - /search/tag
+  - /search/country/china/
+  - /search/country/china
+  - /search/country/the-netherlands/
+  - /search/country/the-netherlands
+  - /search/country/india/
+  - /search/country/india
+  - /search/country/spain/
+  - /search/country/spain
+  - /search/country/france/
+  - /search/country/france
+  - /search/country/poland/
+  - /search/country/poland
+  - /search/country/brazil/
+  - /search/country/brazil
+  - /search/country/italy/
+  - /search/country/italy
+  - /search/country/australia/
+  - /search/country/australia
+  - /search/country/canada/
+  - /search/country/canada
+  - /search/country/mexico/
+  - /search/country/mexico
+  - /search/country/greece/
+  - /search/country/greece
+  - /search/country/germany/
+  - /search/country/germany
+  - /search/country/the-russian-federation/
+  - /search/country/the-united-kingdom-of-great-britain-and-northern-ireland/
+  - /search/country/the-united-kingdom-of-great-britain-and-northern-ireland
+  - /search/country/the-united-states-of-america/
+  - /search/country/the-united-states-of-america
+  - /search/tag/classical/
+  - /search/tag/classical
+  - /search/tag/pop/
+  - /search/tag/pop
+  - /search/tag/estacion/
+  - /search/tag/estacion
+  - /search/tag/talk/
+  - /search/tag/talk
+  - /search/tag/jazz/
+  - /search/tag/jazz
+  - /search/tag/music/
+  - /search/tag/music
+  - /search/tag/fm/
+  - /search/tag/fm
+  - /search/tag/entretenimiento/
+  - /search/tag/entretenimiento
+  - /search/tag/news/
+  - /search/tag/news
+  - /search/tag/dance/
+  - /search/tag/dance
+  - /search/tag/radio/
+  - /search/tag/radio
+  - /search/tag/oldies/
+  - /search/tag/oldies
+  - /search/tag/80s/
+  - /search/tag/80s
+  - /search/tag/mexico/
+  - /search/tag/mexico
+  - /search/tag/hits/
+  - /search/tag/hits
+  - /search/tag/rock/
+---
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>RPlayer III — Try It Out</title>
+  <link rel="icon" href="images/favicon.png" type="image/png" />
+  <link rel="apple-touch-icon" href="images/favicon.png" />
+  <meta name="description" content="Minimal audio stream controller. Lightweight utility for controlling audio streams, with zero dependencies. Perfect for extensions and modern web apps." />
+  <meta name="keywords" content="audio player, stream controller, HTMLAudioElement, dependency-free, lightweight" />
+
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://rplayer.js.org" />
+  <meta property="og:title" content="RPlayer III — Minimal Audio Stream Controller" />
+  <meta property="og:description" content="Lightweight utility for controlling audio streams, with zero dependencies." />
+  <meta property="og:image" content="https://rplayer.js.org/images/rplayer-in-action.jpg" />
+  <meta property="og:locale" content="en_US" />
+
+  <!-- Twitter -->
+  <meta property="twitter:card" content="summary_large_image" />
+  <meta property="twitter:url" content="https://rplayer.js.org" />
+  <meta property="twitter:title" content="RPlayer III — Minimal Audio Stream Controller" />
+  <meta property="twitter:description" content="Lightweight utility for controlling audio streams, with zero dependencies." />
+  <meta property="twitter:image" content="https://rplayer.js.org/images/rplayer-in-action.jpg" />
+
+  <!-- JSON-LD Schema -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareSourceCode",
+    "name": "RPlayer III",
+    "description": "Minimal audio stream controller. Lightweight utility for controlling HTMLAudioElement and streaming sources.",
+    "author": {
+      "@type": "Organization",
+      "name": "davland7"
+    },
+    "url": "https://rplayer.js.org",
+    "softwareVersion": "3.0.0",
+    "programmingLanguage": "JavaScript",
+    "runtimePlatform": "Browser",
+    "license": "MIT",
+    "downloadUrl": "https://www.npmjs.com/package/@davland7/rplayer",
+    "codeRepository": "https://github.com/davland7/rplayer",
+    "featureList": [
+      "Play/Pause control",
+      "Volume adjustment",
+      "Stream rewinding",
+      "HLS detection",
+      "Zero dependencies",
+      "Mobile-ready"
+    ]
+  }
+  </script>
+
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="wrapper">
+    <header>
+      <img src="images/logo.svg" alt="Logo RPlayer III" width="64" height="64" />
+      <div>
+        <h1>RPlayer III</h1>
+        <p><strong>Minimal Audio Stream Controller</strong></p>
+        <p>
+          Lightweight utility for controlling audio streams, with zero dependencies.
+          See the <a href="https://github.com/davland7/rplayer" target="_blank">README</a> for installation, usage, and examples.
+        </p>
+      </div>
+    </header>
+
+    <main>
+      <header>
+        <h2>Try It Out</h2>
+        <p class="subtitle">
+          Enter a streaming URL to play. Mobile-ready.
+        </p>
+      </header>
+
+      <section class="demo">
+        <div class="player" role="application" aria-label="Mini Radio player">
+          <div class="mini-radio">
+            <img class="mini-radio__image" src="images/icon64.png" srcset="images/icon64.png 1x, images/icon128.png 2x" alt="Mini Radio Icon" />
+            <p class="mini-radio__title">Mini Radio</p>
+            <p class="mini-radio__description">RPlayer in action</p>
+            <audio id="audio" preload="none" hidden></audio>
+
+            <button id="tooglePlay" class="mini-radio__play mini-radio__play--play" aria-pressed="false" aria-label="Play" title="Play / Pause">
+              <span class="sr-only">Play</span>
+            </button>
+          </div>
+
+          <div class="controls" role="group" aria-label="Audio controls">
+            <button id="volumeUp" class="btn" aria-label="Increase volume">Volume +</button>
+            <button id="toogleMute" class="btn" aria-pressed="false" aria-label="Mute">Mute</button>
+            <button id="volumeDown" class="btn" aria-label="Decrease volume">Volume -</button>
+            <button id="rewind" class="btn" aria-label="Rewind 10 seconds">Rewind -10s</button>
+            <button id="stop" class="btn" aria-label="Stop playback">Stop</button>
+            <button id="stopForce" class="btn" aria-label="Force stop playback">Force Stop</button>
+          </div>
+
+          <div class="badge-group" aria-live="polite" aria-atomic="true">
+            <span class="badge" id="badge-ios" title="iOS Device Detected">iOS</span>
+            <span class="badge" id="badge-hls" title="HLS Stream Active">HLS</span>
+            <span class="badge" id="badge-hlsSupport" title="Native HLS Support">HLS Support</span>
+            <span class="badge" id="badge-playback" title="Playback Status">Playing</span>
+            <span class="badge" id="badge-volume" title="Current Volume">Volume</span>
+            <span class="badge" id="badge-time" title="Playback Time">00:00</span>
+          </div>
+        </div>
+
+        <div class="stream-history">
+          <h3>Recent Streams</h3>
+          <div class="input-group">
+            <label for="urlInput" class="sr-only">Stream URL</label>
+            <input
+              id="urlInput"
+              type="text"
+              placeholder="Enter stream URL (e.g., radio.example/stream.mp3)"
+              autocomplete="off"
+            />
+            <div id="validationMessage" class="msg" aria-live="polite"></div>
+          </div>
+          <ul id="urlList" class="url-list" aria-label="Stream history"></ul>
+          <p><small>Your history is saved locally in your browser.</small></p>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <h3>Resources & Distribution</h3>
+      <ul>
+        <li><strong>NPM Package:</strong> <a href="https://www.npmjs.com/package/@davland7/rplayer" target="_blank">@davland7/rplayer</a></li>
+        <li><strong>CDN (jsDelivr):</strong> <a href="https://www.jsdelivr.com/package/npm/@davland7/rplayer" target="_blank">Browse files</a></li>
+        <li><strong>Source Code:</strong> <a href="https://github.com/davland7/rplayer" target="_blank">GitHub Repository</a></li>
+      </ul>
+      <p><small>&copy; <span id="year"></span> — RPlayer III</small></p>
+    </footer>
+  </div>
+
+  <script src="dist/rplayer.umd.cjs"></script>
+  <script src="scripts.js"></script>
+</body>
+</html>
