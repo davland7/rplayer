@@ -1,6 +1,20 @@
 {
   "name": "@davland7/rplayer",
   "version": "3.0.0",
+  "description": "Minimal audio stream controller. Lightweight utility for controlling audio streams, with zero dependencies.",
+  "keywords": [
+    "audio",
+    "player",
+    "stream",
+    "HTMLAudioElement",
+    "hls",
+    "m3u8",
+    "minimal",
+    "lightweight",
+    "zero-dependencies"
+  ],
+  "author": "David Landry",
+  "license": "MIT",
   "type": "module",
   "main": "./dist/rplayer.umd.cjs",
   "module": "./dist/rplayer.js",

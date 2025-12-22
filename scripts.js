@@ -319,10 +319,12 @@ audioEl.addEventListener('loadstart', () => {
   if (input.value !== '') setPlaybackState('loading');
 });
 audioEl.addEventListener('waiting', () => {
-  if (input.value !== '') setPlaybackState('loading');
+  // Don't switch to loading if already playing (common on iOS with HLS)
+  if (!player.isPlaying && input.value !== '') setPlaybackState('loading');
 });
 audioEl.addEventListener('stalled', () => {
-  if (input.value !== '') setPlaybackState('loading');
+  // Don't switch to loading if already playing (common on iOS with HLS)
+  if (!player.isPlaying && input.value !== '') setPlaybackState('loading');
 });
 audioEl.addEventListener('playing', () => {
   setPlaybackState('playing');
@@ -413,10 +415,13 @@ input.addEventListener('blur', () => {
 
   // Restore persisted volume if any
   const storedVol = parseFloat(localStorage.getItem(VOLUME_KEY));
+  const isIos = RPlayer.isIos();
+
   if (Number.isFinite(storedVol) && storedVol >= 0 && storedVol <= 1) {
     audioEl.volume = storedVol;
   } else {
-    audioEl.volume = 0.8;
+    // On iOS, set volume to 1.0 by default to show 100% in badge
+    audioEl.volume = isIos ? 1.0 : 0.8;
   }
   updateMuteButton();
   updateBadges(audioEl.src);
