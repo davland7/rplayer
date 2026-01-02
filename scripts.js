@@ -126,7 +126,7 @@ function updateTimeBadge() {
 }
 
 /* -------------------- URL history (localStorage) -------------------- */
-function getFavoritesUrls() {
+function getRecentUrls() {
   try {
     const raw = localStorage.getItem(FAVORITES_KEY);
     if (!raw) return [];
@@ -148,7 +148,7 @@ function getUrls() {
   const stored = localStorage.getItem(HISTORY_KEY);
   let urls = stored ? JSON.parse(stored) : [];
   if (!urls.length) {
-    const favs = getFavoritesUrls();
+    const favs = getRecentUrls();
     if (favs.length) {
       urls = favs.slice(0, MAX_HISTORY);
       localStorage.setItem(HISTORY_KEY, JSON.stringify(urls));
@@ -236,7 +236,9 @@ function renderList() {
     btnDelete.type = 'button';
     btnDelete.addEventListener('click', (e) => {
       e.stopPropagation();
-      removeUrl(url);
+      if (confirm('Delete this URL from history?')) {
+        removeUrl(url);
+      }
     });
 
     li.appendChild(btnUrl);
