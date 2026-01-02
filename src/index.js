@@ -8,11 +8,6 @@ export default class RPlayer {
     this.audio = audioElement;
   }
 
-  supportsHls() {
-    if (!this.audio) throw new Error("No audio element attached.");
-    return this.audio.canPlayType("application/vnd.apple.mpegurl") !== "";
-  }
-
   rewind(seconds = 10) {
     if (!this.audio) throw new Error("No audio element attached.");
     if (this.audio.duration && this.audio.currentTime >= seconds) {
@@ -45,6 +40,15 @@ export default class RPlayer {
     this.audio.currentTime = 0;
     if (forceClear) {
       this.audio.src = "";
+    }
+  }
+
+  static supportsHls() {
+    try {
+      const audio = document.createElement('audio');
+      return audio.canPlayType("application/vnd.apple.mpegurl") !== "";
+    } catch {
+      return false;
     }
   }
 

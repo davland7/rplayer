@@ -336,8 +336,9 @@ footer {
 }
 
 .controls {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
   gap: 8px;
 }
 

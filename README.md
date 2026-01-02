@@ -110,7 +110,7 @@ player.attachMedia(audio);
 
 async function playStream(url) {
   const isHls = RPlayer.isHls(url);
-  const hasNative = player.supportsHls();
+  const hasNative = RPlayer.supportsHls();
 
   if (!isHls || hasNative) {
     audio.src = url;
@@ -192,11 +192,11 @@ volumeDownBtn.disabled = isIos;
 - `volumeUp()`: Increase volume by step (default `0.1`).
 - `volumeDown()`: Decrease volume by step (default `0.1`).
 - `toggleMute()` / `mute()`: Toggle muted state.
-- `supportsHls()`: Return native HLS capability for the attached audio.
 - `get isPlaying`: `true` if not paused.
 - `get isMuted`: `true` if muted.
 
 ### Static Helpers
+- `RPlayer.supportsHls()`: Return native HLS capability.
 - `RPlayer.isHls(url)`: Detect `.m3u8`/`.m3u` URLs.
 - `RPlayer.isIos()`: Best‑effort iOS device detection.
 

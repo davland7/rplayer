@@ -159,18 +159,32 @@ function getUrls() {
 
 function saveUrl(url) {
   if (!isValidUrl(url)) return;
-  const urls = getUrls();
-  if (!urls.includes(url)) {
-    urls.unshift(url);
-    if (urls.length > MAX_HISTORY) urls.pop();
-    localStorage.setItem(HISTORY_KEY, JSON.stringify(urls));
-    renderList();
-  }
+  let urls = getUrls();
+  // Remove URL if it already exists (to move it to top)
+  urls = urls.filter(u => u !== url);
+  // Add to top
+  urls.unshift(url);
+  if (urls.length > MAX_HISTORY) urls.pop();
+  localStorage.setItem(HISTORY_KEY, JSON.stringify(urls));
+  renderList();
 }
 
 function removeUrl(urlToDelete) {
-  const urls = getUrls().filter(u => u !== urlToDelete);
-  localStorage.setItem(HISTORY_KEY, JSON.stringify(urls));
+  const urls = getUrls();
+  const isFirstUrl = urls[0] === urlToDelete;
+
+  // If removing the first URL (currently playing), stop everything
+  if (isFirstUrl) {
+    player.stop(true);
+    setPlaybackState('stopped');
+    updatePlayButton();
+    updateControlsEnabled();
+    updateBadges('');
+    input.value = '';
+  }
+
+  const filtered = urls.filter(u => u !== urlToDelete);
+  localStorage.setItem(HISTORY_KEY, JSON.stringify(filtered));
   renderList();
   input.focus();
 }
@@ -276,23 +290,13 @@ async function loadAndPlayUrl(rawUrl) {
 // Skip media session handlers on iOS (uses native controls)
 if (!RPlayer.isIos() && 'mediaSession' in navigator) {
   navigator.mediaSession.setActionHandler('play', () => {
-    player.togglePlay();
+    audioEl.play();
     updatePlayButton();
   });
 
   navigator.mediaSession.setActionHandler('pause', () => {
-    player.togglePlay();
+    audioEl.pause();
     updatePlayButton();
-  });
-
-  navigator.mediaSession.setActionHandler('stop', () => {
-    player.stop(false);
-    updatePlayButton();
-    setPlaybackState('stopped');
-  });
-
-  navigator.mediaSession.setActionHandler('previoustrack', () => {
-    player.rewind(REWIND_SECONDS);
   });
 }
 
@@ -379,22 +383,28 @@ btnStop.addEventListener('click', () => {
   setPlaybackState('stopped');
 });
 
-btnStopForce.addEventListener('click', () => {
-  player.stop(true);
-  setPlaybackState('stopped');
-  updatePlayButton();
-  updateControlsEnabled();
-  updateBadges('');
-  input.value = '';
-  input.focus();
-});
-
 /* -------------------- Input and list events -------------------- */
 // list is always visible; no focus-based rendering
 
 input.addEventListener('input', () => {
   validateInput();
   updateBadges(input.value);
+});
+
+input.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') {
+    e.preventDefault();
+    const val = input.value.trim();
+    if (val && isValidUrl(val)) {
+      const normalized = normalizeUrl(val);
+      input.value = normalized;
+      // Only load if URL is different from current
+      if (normalized !== audioEl.src) {
+        loadAndPlayUrl(val);
+      }
+    }
+    input.blur();
+  }
 });
 
 input.addEventListener('blur', () => {
