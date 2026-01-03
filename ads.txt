@@ -1,0 +1,5 @@
+# ads.txt for RPlayer III
+# Replace pub-XXXXXXXXXXXXXXX with your AdSense publisher ID
+# Format: domain, publisher-id, relationship, cert-authority-id
+# Example below (Google AdSense):
+google.com, pub-XXXXXXXXXXXXXXX, DIRECT, f08c47fec0942fa0
