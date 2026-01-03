@@ -209,6 +209,7 @@ footer {
   width: 32px;
   justify-content: center;
   font-weight: 700;
+  font-size: 20px;
   color: var(--color-white);
   background-color: var(--red-color);
 }
