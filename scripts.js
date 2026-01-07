@@ -81,10 +81,11 @@ function updateControlsEnabled() {
 function updatePlayButton() {
   const playing = player.isPlaying;
   btnPlay.setAttribute('aria-pressed', String(playing));
-  // Remove only modifiers, keep base class
-  btnPlay.classList.remove('mini-radio__play--play', 'mini-radio__play--pause');
+  // Remove ALL modifiers, keep base class
+  btnPlay.classList.remove('mini-radio__play--play', 'mini-radio__play--pause', 'mini-radio__play--loading');
   btnPlay.classList.add(playing ? 'mini-radio__play--pause' : 'mini-radio__play--play');
   btnPlay.setAttribute('aria-label', playing ? 'Pause' : 'Play');
+  btnPlay.removeAttribute('aria-busy');
 }
 
 function updateMuteButton() {
@@ -264,7 +265,7 @@ function updateMediaSession(url) {
 }
 
 /* -------------------- Audio load and play -------------------- */
-async function loadAndPlayUrl(rawUrl) {
+function loadUrl(rawUrl) {
   const url = normalizeUrl(rawUrl);
 
   if (!isValidUrl(url)) {
@@ -277,8 +278,13 @@ async function loadAndPlayUrl(rawUrl) {
   showMessage('');
   updateMediaSession(url);
   audioEl.src = url;
+  audioEl.load();
   saveUrl(url);
   updateControlsEnabled();
+}
+
+async function loadAndPlayUrl(rawUrl) {
+  loadUrl(rawUrl);
 
   try {
     await audioEl.play();
@@ -304,42 +310,52 @@ if (!RPlayer.isIos() && 'mediaSession' in navigator) {
 
 /* -------------------- Playback state -------------------- */
 function setPlaybackState(state) {
-  // Remove only modifiers, keep base class mini-radio__play
+  // Always clean all modifier classes first
   btnPlay.classList.remove('mini-radio__play--play', 'mini-radio__play--pause', 'mini-radio__play--loading');
 
-  // Set the appropriate state class
+  // Set the appropriate state
   if (state === 'loading') {
     btnPlay.classList.add('mini-radio__play--loading');
     btnPlay.setAttribute('aria-busy', 'true');
   } else {
     btnPlay.removeAttribute('aria-busy');
-    // Let updatePlayButton handle play/pause classes
+    // For playing, stopped, paused states, set play/pause based on actual player state
+    const playing = player.isPlaying;
+    btnPlay.classList.add(playing ? 'mini-radio__play--pause' : 'mini-radio__play--play');
+    btnPlay.setAttribute('aria-pressed', String(playing));
+    btnPlay.setAttribute('aria-label', playing ? 'Pause' : 'Play');
   }
 
+  // Update badge indicator
   const indicatorState = state === 'playing' ? 'ok' : state === 'loading' ? 'loading' : state === 'paused' ? 'loading' : 'bad';
   setIndicator(badgePlayback, indicatorState);
 }
 
 /* -------------------- Audio element events -------------------- */
 audioEl.addEventListener('loadstart', () => {
-  if (input.value !== '') setPlaybackState('loading');
+  // Only show loading if we're trying to play (not paused)
+  if (!audioEl.paused) setPlaybackState('loading');
+});
+audioEl.addEventListener('canplay', () => {
+  // If we loaded but didn't start playing, show ready state with play button
+  if (audioEl.paused && audioEl.src) {
+    setPlaybackState('stopped');
+  }
 });
 audioEl.addEventListener('waiting', () => {
   // Don't switch to loading if already playing (common on iOS with HLS)
-  if (!player.isPlaying && input.value !== '') setPlaybackState('loading');
+  if (!player.isPlaying) setPlaybackState('loading');
 });
 audioEl.addEventListener('stalled', () => {
   // Don't switch to loading if already playing (common on iOS with HLS)
-  if (!player.isPlaying && input.value !== '') setPlaybackState('loading');
+  if (!player.isPlaying) setPlaybackState('loading');
 });
 audioEl.addEventListener('playing', () => {
   setPlaybackState('playing');
-  updatePlayButton();
 });
 audioEl.addEventListener('pause', () => {
   // If audio was stopped (currentTime reset to 0), show stopped (red), else paused (orange)
   setPlaybackState(audioEl.currentTime === 0 ? 'stopped' : 'paused');
-  updatePlayButton();
 });
 audioEl.addEventListener('ended', () => setPlaybackState('stopped'));
 audioEl.addEventListener('volumechange', () => {
@@ -443,4 +459,16 @@ input.addEventListener('blur', () => {
   updatePlayButton(); // Call after setPlaybackState to ensure correct classes
   updateControlsEnabled();
   renderList();
+
+  // Check for URL parameter in query string
+  const params = new URLSearchParams(window.location.search);
+  const rawUrl = params.get('url');
+  if (rawUrl) {
+    const decodedUrl = decodeURIComponent(rawUrl);
+    if (isValidUrl(decodedUrl)) {
+      input.value = normalizeUrl(decodedUrl);
+      setPlaybackState('loading');
+      loadUrl(decodedUrl);
+    }
+  }
 })();
