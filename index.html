@@ -6,23 +6,23 @@
   <title>RPlayer III — Try It Out</title>
   <link rel="icon" href="images/favicon.png" type="image/png" />
   <link rel="apple-touch-icon" href="images/favicon.png" />
-  <meta name="description" content="Minimal audio stream controller. Lightweight utility for controlling audio streams, with zero dependencies. Perfect for extensions and modern web apps." />
+  <meta name="description" content="Lightweight, dependency-free controller for HTMLAudioElement. Built for streaming URLs in modern apps and extensions." />
   <meta name="keywords" content="audio player, stream controller, HTMLAudioElement, dependency-free, lightweight" />
 
   <!-- Open Graph / Facebook -->
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://rplayer.js.org" />
   <meta property="og:title" content="RPlayer III — Minimal Audio Stream Controller" />
-  <meta property="og:description" content="Lightweight utility for controlling audio streams, with zero dependencies." />
+  <meta property="og:description" content="Lightweight, dependency-free controller for HTMLAudioElement. Built for streaming URLs in modern apps and extensions." />
   <meta property="og:image" content="https://rplayer.js.org/images/rplayer-in-action.jpg" />
   <meta property="og:locale" content="en_US" />
 
   <!-- Twitter -->
-  <meta property="twitter:card" content="summary_large_image" />
-  <meta property="twitter:url" content="https://rplayer.js.org" />
-  <meta property="twitter:title" content="RPlayer III — Minimal Audio Stream Controller" />
-  <meta property="twitter:description" content="Lightweight utility for controlling audio streams, with zero dependencies." />
-  <meta property="twitter:image" content="https://rplayer.js.org/images/rplayer-in-action.jpg" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:url" content="https://rplayer.js.org" />
+  <meta name="twitter:title" content="RPlayer III — Minimal Audio Stream Controller" />
+  <meta name="twitter:description" content="Lightweight, dependency-free controller for HTMLAudioElement. Built for streaming URLs in modern apps and extensions." />
+  <meta name="twitter:image" content="https://rplayer.js.org/images/rplayer-in-action.jpg" />
 
   <!-- Stylesheet -->
   <link rel="stylesheet" href="styles.css" />
@@ -40,7 +40,7 @@
     "@context": "https://schema.org",
     "@type": "SoftwareSourceCode",
     "name": "RPlayer III",
-    "description": "Minimal audio stream controller. Lightweight utility for controlling HTMLAudioElement and streaming sources.",
+    "description": "Lightweight, dependency-free controller for HTMLAudioElement. Built for streaming URLs in modern apps and extensions.",
     "author": {
       "@type": "Organization",
       "name": "davland7"
@@ -71,10 +71,9 @@
       <img src="images/logo.svg" alt="Logo RPlayer III" width="64" height="64" />
       <div>
         <h1>RPlayer III</h1>
-        <p><strong>Minimal Audio Stream Controller</strong></p>
-        <p>Lightweight utility for controlling audio streams, with zero dependencies.</p>
+        <p><strong>Minimal Audio Stream Controller</strong><br>
+        Lightweight, dependency-free controller for HTMLAudioElement. Built for streaming URLs in modern apps and extensions.</p>
         <p>See the <a href="https://github.com/davland7/rplayer" target="_blank">README</a> for installation, usage, and examples.</p>
-        </p>
       </div>
     </header>
 
@@ -94,17 +93,18 @@
             <p class="mini-radio__description">RPlayer in action</p>
             <audio id="audio" preload="none" hidden></audio>
 
-            <button id="tooglePlay" class="mini-radio__play mini-radio__play--play" aria-pressed="false" aria-label="Play" title="Play / Pause">
+            <button id="togglePlay" class="mini-radio__play mini-radio__play--play" aria-pressed="false" aria-label="Play" title="Play / Pause">
               <span class="sr-only">Play</span>
             </button>
           </div>
 
           <div class="controls" role="group" aria-label="Audio controls">
             <button id="volumeUp" class="btn" aria-label="Increase volume">Volume +</button>
-            <button id="toogleMute" class="btn" aria-pressed="false" aria-label="Mute">Mute</button>
+            <button id="toggleMute" class="btn" aria-pressed="false" aria-label="Mute">Mute</button>
             <button id="volumeDown" class="btn" aria-label="Decrease volume">Volume -</button>
             <button id="rewind" class="btn" aria-label="Rewind 10 seconds">Rewind -10s</button>
             <button id="stop" class="btn" aria-label="Stop playback">Stop</button>
+            <button id="shareUrl" class="btn" aria-label="Share current stream URL">Share URL</button>
           </div>
 
           <div class="badge-group" aria-live="polite" aria-atomic="true">

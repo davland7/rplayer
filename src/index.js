@@ -43,25 +43,6 @@ export default class RPlayer {
     }
   }
 
-  static supportsHls() {
-    try {
-      const audio = document.createElement('audio');
-      return audio.canPlayType("application/vnd.apple.mpegurl") !== "";
-    } catch {
-      return false;
-    }
-  }
-
-  static isHls(url) {
-    if (!url || typeof url !== "string") return false;
-    const cleanUrl = url.toLowerCase().split("?")[0];
-    return cleanUrl.endsWith(".m3u8") || cleanUrl.endsWith(".m3u");
-  }
-
-  static isIos() {
-    return /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-  }
-
   togglePlay() {
     if (!this.audio) throw new Error("No audio element attached.");
     if (this.audio.paused) {
@@ -84,5 +65,30 @@ export default class RPlayer {
   get isMuted() {
     if (!this.audio) return false;
     return this.audio.muted;
+  }
+
+  static supportsHls() {
+    try {
+      const audio = document.createElement('audio');
+      return audio.canPlayType("application/vnd.apple.mpegurl") !== "";
+    } catch {
+      return false;
+    }
+  }
+
+  static isHls(url) {
+    if (!url || typeof url !== "string") return false;
+    const lowerUrl = url.toLowerCase();
+
+    const pathWithoutQuery = lowerUrl.split("?")[0].split("#")[0];
+    if (pathWithoutQuery.endsWith(".m3u8") || pathWithoutQuery.endsWith(".m3u")) {
+      return true;
+    }
+
+    return lowerUrl.includes("/hls/") || lowerUrl.includes("m3u8");
+  }
+
+  static isIos() {
+    return /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
   }
 }

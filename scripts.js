@@ -6,13 +6,13 @@ const RPlayer = window.RPlayer;
 
 /* -------------------- Sélecteurs DOM -------------------- */
 const audioEl = document.getElementById('audio');
-const btnPlay = document.getElementById('tooglePlay');
+const btnPlay = document.getElementById('togglePlay');
 const btnVolumeUp = document.getElementById('volumeUp');
 const btnVolumeDown = document.getElementById('volumeDown');
-const btnMute = document.getElementById('toogleMute');
+const btnMute = document.getElementById('toggleMute');
 const btnRewind = document.getElementById('rewind');
 const btnStop = document.getElementById('stop');
-const btnStopForce = document.getElementById('stopForce');
+const btnShare = document.getElementById('shareUrl');
 
 const input = document.getElementById('urlInput');
 const list = document.getElementById('urlList');
@@ -28,7 +28,6 @@ const badgeTime = document.getElementById('badge-time');
 /* -------------------- Constantes -------------------- */
 const HISTORY_KEY = 'rplayer:history';
 const VOLUME_KEY = 'rplayer:volume';
-const FAVORITES_KEY = 'rplayer:favorites';
 const REWIND_SECONDS = 10;
 const MAX_HISTORY = 10;
 
@@ -46,10 +45,13 @@ const supportsHls = (() => {
 })();
 
 /* -------------------- Helpers UI -------------------- */
-function showMessage(text = '', type = 'info') {
-  if (!messageBox) return;
-  messageBox.textContent = text || '';
-  messageBox.className = type ? `msg msg-${type}` : 'msg';
+function toast(msg, type = 'info') {
+  const el = document.createElement('div');
+  el.className = `toast ${type}`;
+  el.textContent = msg;
+
+  document.body.appendChild(el);
+  el.addEventListener('animationend', () => el.remove());
 }
 
 function setIndicator(el, state) {
@@ -69,7 +71,7 @@ function updateControlsEnabled() {
   const isIos = RPlayer.isIos();
 
   // Disable volume buttons on iOS (uses physical buttons)
-  [btnPlay, btnMute, btnRewind, btnStop, btnStopForce].forEach(btn => {
+  [btnPlay, btnMute, btnStop, btnShare, btnRewind].forEach(btn => {
     setDisabled(btn, !hasUrl);
   });
 
@@ -106,6 +108,25 @@ function updateVolumeBadge() {
   badgeVolume.textContent = audioEl.muted ? 'Muted' : `Volume ${pct}%`;
 }
 
+/* -------------------- URL Management Functions -------------------- */
+function updateUrl(url) {
+  const newUrl = window.location.pathname + '?url=' + encodeURIComponent(url);
+  window.history.pushState({ streamUrl: url }, '', newUrl);
+}
+
+function shareUrl() {
+  const currentUrl = window.location.href;
+  if (navigator.share) {
+    navigator.share({ title: 'Listen with RPlayer', url: currentUrl });
+  } else {
+    navigator.clipboard.writeText(currentUrl).then(() => {
+      toast('URL copied to clipboard', 'success');
+    }).catch(() => {
+      toast('Failed to copy URL', 'error');
+    });
+  }
+}
+
 function formatTime(sec) {
   if (!Number.isFinite(sec) || sec < 0) return '--:--';
   const s = Math.floor(sec);
@@ -127,35 +148,14 @@ function updateTimeBadge() {
 }
 
 /* -------------------- URL history (localStorage) -------------------- */
-function getRecentUrls() {
+function getUrls() {
   try {
-    const raw = localStorage.getItem(FAVORITES_KEY);
-    if (!raw) return [];
-    const arr = JSON.parse(raw);
-    if (!Array.isArray(arr)) return [];
-    // Prefer url_resolved, fall back to url
-    const urls = arr
-      .map(item => (item?.url_resolved || item?.url || '').toString())
-      .map(u => normalizeUrl(u))
-      .filter(u => isValidUrl(u));
-    // Deduplicate while keeping order
-    return [...new Set(urls)];
+    const stored = localStorage.getItem(HISTORY_KEY);
+    const urls = stored ? JSON.parse(stored) : [];
+    return Array.isArray(urls) ? urls : [];
   } catch {
     return [];
   }
-}
-
-function getUrls() {
-  const stored = localStorage.getItem(HISTORY_KEY);
-  let urls = stored ? JSON.parse(stored) : [];
-  if (!urls.length) {
-    const favs = getRecentUrls();
-    if (favs.length) {
-      urls = favs.slice(0, MAX_HISTORY);
-      localStorage.setItem(HISTORY_KEY, JSON.stringify(urls));
-    }
-  }
-  return urls;
 }
 
 function saveUrl(url) {
@@ -239,6 +239,7 @@ function renderList() {
       e.stopPropagation();
       if (confirm('Delete this URL from history?')) {
         removeUrl(url);
+        toast('URL removed from history', 'success');
       }
     });
 
@@ -269,14 +270,14 @@ function loadUrl(rawUrl) {
   const url = normalizeUrl(rawUrl);
 
   if (!isValidUrl(url)) {
-    showMessage('Invalid URL', 'error');
+    toast('Invalid URL', 'error');
     updateBadges('');
     return;
   }
 
   updateBadges(url);
-  showMessage('');
   updateMediaSession(url);
+  updateUrl(url);
   audioEl.src = url;
   audioEl.load();
   saveUrl(url);
@@ -289,7 +290,7 @@ async function loadAndPlayUrl(rawUrl) {
   try {
     await audioEl.play();
   } catch (err) {
-    showMessage('Playback blocked by browser (user action required)', 'error');
+    toast('Playback blocked by browser (user action required)', 'error');
     setIndicator(badgePlayback, 'bad');
   }
 }
@@ -341,6 +342,7 @@ audioEl.addEventListener('canplay', () => {
   if (audioEl.paused && audioEl.src) {
     setPlaybackState('stopped');
   }
+  updateControlsEnabled();
 });
 audioEl.addEventListener('waiting', () => {
   // Don't switch to loading if already playing (common on iOS with HLS)
@@ -366,7 +368,10 @@ audioEl.addEventListener('volumechange', () => {
   } catch {}
 });
 audioEl.addEventListener('timeupdate', updateTimeBadge);
-audioEl.addEventListener('loadedmetadata', updateTimeBadge);
+audioEl.addEventListener('loadedmetadata', () => {
+  updateTimeBadge();
+  updateControlsEnabled();
+});
 audioEl.addEventListener('durationchange', updateTimeBadge);
 audioEl.addEventListener('ended', updateTimeBadge);
 
@@ -401,6 +406,8 @@ btnStop.addEventListener('click', () => {
   setPlaybackState('stopped');
 });
 
+btnShare.addEventListener('click', () => shareUrl());
+
 /* -------------------- Input and list events -------------------- */
 // list is always visible; no focus-based rendering
 
@@ -434,6 +441,14 @@ input.addEventListener('blur', () => {
     if (normalized !== audioEl.src) {
       loadAndPlayUrl(val);
     }
+  }
+});
+
+/* -------------------- Browser Back Button Handler -------------------- */
+window.addEventListener('popstate', (e) => {
+  if (e.state && e.state.streamUrl) {
+    input.value = e.state.streamUrl;
+    loadAndPlayUrl(e.state.streamUrl);
   }
 });
 
