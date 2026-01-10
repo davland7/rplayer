@@ -90,20 +90,23 @@ try {
 
 RPlayer v3 does not bundle HLS.js. It provides detection helpers and leaves HLS.js integration to you if needed.
 
-- `RPlayer.supportsHls()` — checks if the browser can natively play HLS via `canPlayType('application/vnd.apple.mpegurl')`
+- `RPlayer.supportsHls()` — checks if the browser claims native HLS support
 - `RPlayer.isHls(url)` — detects HLS URLs by extension (`.m3u8`, `.m3u`) or path patterns (`/hls/`)
-- Safari (macOS/iOS) supports HLS natively. Chrome has partial support. Firefox typically does not.
+- Safari supports HLS natively. Chrome has partial/unstable support. Firefox does not.
 - Browser compatibility: https://caniuse.com/?search=hls
 
-**For browsers without native HLS support:**
-Integrate [HLS.js](https://github.com/video-dev/hls.js/) manually in your app. See their [documentation](https://github.com/video-dev/hls.js/#getting-started) for setup and usage.
+**Recommendation: Use HLS.js for production**
+
+Even when native support is available, [HLS.js](https://github.com/video-dev/hls.js/) provides more stable and consistent playback across browsers. Native HLS support can be unreliable, especially on Chrome.
+
+Integrate HLS.js manually in your app. See their [documentation](https://github.com/video-dev/hls.js/#getting-started) for setup and usage.
 
 ## iOS Considerations
 
-iOS Safari uses **native physical buttons** for audio control and manages volume exclusively through hardware buttons.
+**iPad and iPhone** enforce volume control through physical hardware buttons only. Software volume controls don't work on iOS devices.
 
 **Recommendation:**
-- Use `RPlayer.isIos()` to detect iOS devices
+- Use `RPlayer.isIos()` to detect iOS devices (iPad/iPhone/iPod)
 - Disable software volume buttons on iOS (they won't work)
 - Skip custom media session handlers on iOS (native controls work automatically)
 
@@ -129,9 +132,9 @@ volumeDownBtn.disabled = isIos;
 - `get isMuted`: `true` if muted.
 
 ### Static Helpers
-- `RPlayer.supportsHls()`: Return native HLS capability.
+- `RPlayer.supportsHls()`: Check if browser claims native HLS support (Safari: `true`, Chrome: may be `true` but unreliable, Firefox: `false`).
 - `RPlayer.isHls(url)`: Detect HLS URLs (`.m3u8`, `.m3u`, `/hls/` path, `m3u8` in URL).
-- `RPlayer.isIos()`: iOS device detection (disable volume buttons on iOS).
+- `RPlayer.isIos()`: iOS device detection (iPad/iPhone/iPod — disable volume buttons on these devices).
 
 ## Types
 Type definitions are published at `types/rplayer.d.ts` for TS consumers.
