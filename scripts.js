@@ -25,6 +25,8 @@ const badgePlayback = document.getElementById('badge-playback');
 const badgeVolume = document.getElementById('badge-volume');
 const badgeTime = document.getElementById('badge-time');
 
+const equalizer = document.getElementById('equalizer');
+
 /* -------------------- Constantes -------------------- */
 const HISTORY_KEY = 'rplayer:history';
 const VOLUME_KEY = 'rplayer:volume';
@@ -275,6 +277,10 @@ function loadUrl(rawUrl) {
     return;
   }
 
+  // DON'T setup Web Audio analyser automatically
+  // CORS restrictions make most streams incompatible
+  // Users can enable it manually for local/CORS-friendly streams
+
   updateBadges(url);
   updateMediaSession(url);
   updateUrl(url);
@@ -354,12 +360,17 @@ audioEl.addEventListener('stalled', () => {
 });
 audioEl.addEventListener('playing', () => {
   setPlaybackState('playing');
+  if (equalizer) equalizer.classList.add('playing');
 });
 audioEl.addEventListener('pause', () => {
   // If audio was stopped (currentTime reset to 0), show stopped (red), else paused (orange)
   setPlaybackState(audioEl.currentTime === 0 ? 'stopped' : 'paused');
+  if (equalizer) equalizer.classList.remove('playing');
 });
-audioEl.addEventListener('ended', () => setPlaybackState('stopped'));
+audioEl.addEventListener('ended', () => {
+  setPlaybackState('stopped');
+  if (equalizer) equalizer.classList.remove('playing');
+});
 audioEl.addEventListener('volumechange', () => {
   updateMuteButton();
   updateVolumeBadge();
