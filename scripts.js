@@ -1,5 +1,5 @@
-// scripts.js - Mini Radio Demo
-// Démo interactive de RPlayer avec gestion d'historique localStorage
+// scripts.js - RPlayer Demo
+// Interactive RPlayer demo with localStorage history
 
 // Using CDN version via window.RPlayer (loaded in index.html)
 const RPlayer = window.RPlayer;
@@ -12,11 +12,9 @@ const btnVolumeDown = document.getElementById('volumeDown');
 const btnMute = document.getElementById('toggleMute');
 const btnRewind = document.getElementById('rewind');
 const btnStop = document.getElementById('stop');
-const btnShare = document.getElementById('shareUrl');
 
 const input = document.getElementById('urlInput');
 const list = document.getElementById('urlList');
-const messageBox = document.getElementById('validationMessage');
 
 const badgeIos = document.getElementById('badge-ios');
 const badgeHls = document.getElementById('badge-hls');
@@ -37,7 +35,7 @@ const MAX_HISTORY = 10;
 const player = new RPlayer();
 player.attachMedia(audioEl);
 
-/* Cache pour supportsHls (appelé une seule fois) */
+/* Cache for supportsHls (called once) */
 const supportsHls = (() => {
   try {
     return player.supportsHls();
@@ -73,7 +71,7 @@ function updateControlsEnabled() {
   const isIos = RPlayer.isIos();
 
   // Disable volume buttons on iOS (uses physical buttons)
-  [btnPlay, btnMute, btnStop, btnShare, btnRewind].forEach(btn => {
+  [btnPlay, btnMute, btnStop, btnRewind].forEach(btn => {
     setDisabled(btn, !hasUrl);
   });
 
@@ -82,19 +80,34 @@ function updateControlsEnabled() {
   setDisabled(btnVolumeDown, !hasUrl || isIos);
 }
 
-function updatePlayButton() {
+function updatePlayButton({ loading = false } = {}) {
+  if (!btnPlay) return;
+
   const playing = player.isPlaying;
-  btnPlay.setAttribute('aria-pressed', String(playing));
-  // Remove ALL modifiers, keep base class
-  btnPlay.classList.remove('mini-radio__play--play', 'mini-radio__play--pause', 'mini-radio__play--loading');
-  btnPlay.classList.add(playing ? 'mini-radio__play--pause' : 'mini-radio__play--play');
-  btnPlay.setAttribute('aria-label', playing ? 'Pause' : 'Play');
+
+  // Loading state overrides play/pause visuals
+  btnPlay.classList.toggle('mini-radio__play--loading', loading);
+  btnPlay.classList.toggle('mini-radio__play--pause', !loading && playing);
+  btnPlay.classList.toggle('mini-radio__play--play', !loading && !playing);
+
+  if (loading) {
+    btnPlay.setAttribute('aria-busy', 'true');
+    btnPlay.setAttribute('aria-label', 'Loading');
+    btnPlay.setAttribute('title', 'Loading');
+    btnPlay.setAttribute('aria-pressed', 'false');
+    return;
+  }
+
   btnPlay.removeAttribute('aria-busy');
+  btnPlay.setAttribute('aria-pressed', String(playing));
+  btnPlay.setAttribute('aria-label', playing ? 'Pause' : 'Play');
+  btnPlay.setAttribute('title', playing ? 'Pause' : 'Play');
 }
 
 function updateMuteButton() {
   const muted = player.isMuted;
   btnMute.setAttribute('aria-pressed', String(muted));
+  btnMute.setAttribute('aria-label', muted ? 'Unmute' : 'Mute');
   btnMute.textContent = muted ? 'Unmute' : 'Mute';
 }
 
@@ -114,19 +127,6 @@ function updateVolumeBadge() {
 function updateUrl(url) {
   const newUrl = window.location.pathname + '?url=' + encodeURIComponent(url);
   window.history.pushState({ streamUrl: url }, '', newUrl);
-}
-
-function shareUrl() {
-  const currentUrl = window.location.href;
-  if (navigator.share) {
-    navigator.share({ title: 'Listen with RPlayer', url: currentUrl });
-  } else {
-    navigator.clipboard.writeText(currentUrl).then(() => {
-      toast('URL copied to clipboard', 'success');
-    }).catch(() => {
-      toast('Failed to copy URL', 'error');
-    });
-  }
 }
 
 function formatTime(sec) {
@@ -277,10 +277,6 @@ function loadUrl(rawUrl) {
     return;
   }
 
-  // DON'T setup Web Audio analyser automatically
-  // CORS restrictions make most streams incompatible
-  // Users can enable it manually for local/CORS-friendly streams
-
   updateBadges(url);
   updateMediaSession(url);
   updateUrl(url);
@@ -317,25 +313,19 @@ if (!RPlayer.isIos() && 'mediaSession' in navigator) {
 
 /* -------------------- Playback state -------------------- */
 function setPlaybackState(state) {
-  // Always clean all modifier classes first
-  btnPlay.classList.remove('mini-radio__play--play', 'mini-radio__play--pause', 'mini-radio__play--loading');
+  const isLoading = state === 'loading';
+  updatePlayButton({ loading: isLoading });
 
-  // Set the appropriate state
-  if (state === 'loading') {
-    btnPlay.classList.add('mini-radio__play--loading');
-    btnPlay.setAttribute('aria-busy', 'true');
-  } else {
-    btnPlay.removeAttribute('aria-busy');
-    // For playing, stopped, paused states, set play/pause based on actual player state
-    const playing = player.isPlaying;
-    btnPlay.classList.add(playing ? 'mini-radio__play--pause' : 'mini-radio__play--play');
-    btnPlay.setAttribute('aria-pressed', String(playing));
-    btnPlay.setAttribute('aria-label', playing ? 'Pause' : 'Play');
+   // Stop equalizer animation while loading or not playing
+  if (equalizer) {
+    if (isLoading || state !== 'playing') {
+      equalizer.classList.remove('playing');
+    }
   }
 
-  // Update badge indicator
-  const indicatorState = state === 'playing' ? 'ok' : state === 'loading' ? 'loading' : state === 'paused' ? 'loading' : 'bad';
-  setIndicator(badgePlayback, indicatorState);
+  // Update playback badge
+  const playbackBadgeState = state === 'playing' ? 'ok' : isLoading ? 'loading' : state === 'paused' ? 'loading' : 'bad';
+  setIndicator(badgePlayback, playbackBadgeState);
 }
 
 /* -------------------- Audio element events -------------------- */
@@ -417,8 +407,6 @@ btnStop.addEventListener('click', () => {
   setPlaybackState('stopped');
 });
 
-btnShare.addEventListener('click', () => shareUrl());
-
 /* -------------------- Input and list events -------------------- */
 // list is always visible; no focus-based rendering
 
@@ -438,19 +426,6 @@ input.addEventListener('keydown', (e) => {
       if (normalized !== audioEl.src) {
         loadAndPlayUrl(val);
       }
-    }
-    input.blur();
-  }
-});
-
-input.addEventListener('blur', () => {
-  const val = input.value.trim();
-  if (val && isValidUrl(val)) {
-    const normalized = normalizeUrl(val);
-    input.value = normalized;
-    // Only load if URL is different from current
-    if (normalized !== audioEl.src) {
-      loadAndPlayUrl(val);
     }
   }
 });

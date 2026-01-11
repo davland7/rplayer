@@ -108,7 +108,6 @@
             <button id="volumeDown" class="btn" aria-label="Decrease volume">Volume -</button>
             <button id="rewind" class="btn" aria-label="Rewind 10 seconds">Rewind -10s</button>
             <button id="stop" class="btn" aria-label="Stop playback">Stop</button>
-            <button id="shareUrl" class="btn" aria-label="Share current stream URL">Share URL</button>
           </div>
 
           <div class="badge-group" aria-live="polite" aria-atomic="true">
@@ -122,7 +121,7 @@
         </div>
 
         <div class="stream-history">
-          <h3>Recent Streams</h3>
+          <h3>Add your URL and hit Enter</h3>
           <div class="input-group">
             <label for="urlInput" class="sr-only">Stream URL</label>
             <input
@@ -131,7 +130,6 @@
               placeholder="Enter stream URL (e.g., radio.example/stream.mp3)"
               autocomplete="off"
             />
-            <div id="validationMessage" class="msg" aria-live="polite"></div>
           </div>
           <ul id="urlList" class="url-list" aria-label="Stream history"></ul>
           <p><small>Your history is saved locally in your browser.</small></p>
