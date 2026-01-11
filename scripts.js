@@ -67,7 +67,7 @@ function setDisabled(el, disabled) {
 }
 
 function updateControlsEnabled() {
-  const hasUrl = !!audioEl.src;
+  const hasUrl = !!audioEl.currentSrc && audioEl.readyState !== 0;
   const isIos = RPlayer.isIos();
 
   // Disable volume buttons on iOS (uses physical buttons)
@@ -123,10 +123,20 @@ function updateVolumeBadge() {
   badgeVolume.textContent = audioEl.muted ? 'Muted' : `Volume ${pct}%`;
 }
 
-/* -------------------- URL Management Functions -------------------- */
 function updateUrl(url) {
-  const newUrl = window.location.pathname + '?url=' + encodeURIComponent(url);
-  window.history.pushState({ streamUrl: url }, '', newUrl);
+  try {
+    const currentUrl = new URL(window.location);
+
+    if (url) {
+      currentUrl.searchParams.set('url', url);
+      window.history.pushState({ streamUrl: url }, '', currentUrl.toString());
+    } else {
+      currentUrl.searchParams.delete('url');
+      window.history.replaceState({}, '', currentUrl.toString());
+    }
+  } catch (error) {
+    console.warn("Failed to update URL:", error);
+  }
 }
 
 function formatTime(sec) {
@@ -184,6 +194,7 @@ function removeUrl(urlToDelete) {
     updateControlsEnabled();
     updateBadges('');
     input.value = '';
+    updateUrl(''); // Clear the URL parameter from address bar
   }
 
   const filtered = urls.filter(u => u !== urlToDelete);
@@ -375,6 +386,10 @@ audioEl.addEventListener('loadedmetadata', () => {
 });
 audioEl.addEventListener('durationchange', updateTimeBadge);
 audioEl.addEventListener('ended', updateTimeBadge);
+audioEl.addEventListener('emptied', () => {
+  // Fired after src is cleared and load() called
+  updateControlsEnabled();
+});
 
 /* -------------------- Button controls -------------------- */
 btnPlay.addEventListener('click', () => {

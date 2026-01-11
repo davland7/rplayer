@@ -1,3 +1,4 @@
+/* Common CSS Variables and Reset */
 :root {
   --color-light: #f3f4f6;
   --color-dark: #212121;
@@ -12,6 +13,7 @@
   --color-green: #28a745;
   --color-yellow: #ffc107;
   --color-red: #dc3545;
+  --color-blue: #007bff;
 
   --space-sm: 0.25rem;  /* 4px */
   --space-md: 0.5rem;   /* 8px */
@@ -45,7 +47,6 @@ body {
 }
 
 img {
-  background-color: transparent;
   border-radius: var(--space-md);
 }
 
@@ -59,15 +60,6 @@ a {
 
 a:hover {
   border-color: transparent;
-}
-
-code {
-  font-family: "SF Mono", Monaco, "Cascadia Code", "Roboto Mono", Consolas, "Courier New", monospace;
-  background-color: var(--color-black);
-  color: var(--color-light);
-  padding: var(--space-sm) var(--space-md);
-  border-radius: var(--space-sm);
-  font-size: 0.9em;
 }
 
 button {
@@ -135,6 +127,15 @@ main, main > header {
 main > header {
   padding: var(--space-lg) 0;
   gap: 0;
+}
+
+code {
+  font-family: "SF Mono", Monaco, "Cascadia Code", "Roboto Mono", Consolas, "Courier New", monospace;
+  background-color: var(--color-black);
+  color: var(--color-light);
+  padding: var(--space-sm) var(--space-md);
+  border-radius: var(--space-sm);
+  font-size: 0.9em;
 }
 
 footer {
@@ -317,6 +318,10 @@ footer {
 /* Loading state */
 .mini-radio__play--loading { --offset: var(--space-sm); }
 
+button:disabled.mini-radio__play--loading {
+  opacity: 1 ;
+}
+
 .mini-radio__play--loading::before,
 .mini-radio__play--loading::after {
   width: 8px;
@@ -458,17 +463,17 @@ footer {
 }
 
 .toast.error {
-  background: #e53935;
+  background: var(--color-red);
   color: white;
 }
 
 .toast.success {
-  background: #43a047;
+  background: var(--color-green);
   color: white;
 }
 
 .toast.info {
-  background: #1e88e5;
+  background: var(--color-blue);
   color: white;
 }
 
