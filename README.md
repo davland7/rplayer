@@ -12,7 +12,7 @@ Dependency-free controller for `HTMLAudioElement`, designed for streaming URLs. 
 - Works great in browser extensions and small UIs
 - Zero dependencies, tiny footprint
 
-**🎵 [Live Demo](https://rplayer.js.org/)** | Run locally: `npm run dev`
+**🎵 [Live Demo](https://rplayer.js.org/)** | ⚛️ [React Demo (CodeSandbox)](https://codesandbox.io/p/github/davland7/rplayer-react-demo/main)
 
 ## Install
 
@@ -70,8 +70,6 @@ audio.src = 'https://example.com/stream.mp3';
 
 playPauseBtn.addEventListener('click', () => player.togglePlay());
 ```
-
-[React Demo (CodeSandbox)](https://codesandbox.io/p/github/davland7/rplayer-react-demo/main)
 
 ### Autoplay Policy (Important)
 
@@ -162,7 +160,8 @@ const isIos = RPlayer.isIos();
 ```
 
 ## Demo / Development
-**🎵 [Live Demo](https://rplayer.js.org/)**
+
+**🎵 [Live Demo](https://rplayer.js.org/)** | ⚛️ [React Demo (CodeSandbox)](https://codesandbox.io/p/github/davland7/rplayer-react-demo/main)
 
 Run the demo locally with Vite:
 
