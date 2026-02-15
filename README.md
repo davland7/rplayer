@@ -71,6 +71,8 @@ audio.src = 'https://example.com/stream.mp3';
 playPauseBtn.addEventListener('click', () => player.togglePlay());
 ```
 
+[React Demo (CodeSandbox)](https://codesandbox.io/p/github/davland7/rplayer-react-demo/main)
+
 ### Autoplay Policy (Important)
 
 Browsers require user interaction before playing audio. Calling `audio.play()` without a user gesture (click/tap) will be blocked and may throw a `DOMException`.
