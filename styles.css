@@ -355,6 +355,9 @@ button:disabled.mini-radio__play--loading {
   justify-content: center;
   flex-wrap: wrap;
   gap: var(--space-md);
+  border: none;
+  margin: 0;
+  padding: 0;
 }
 
 .badge-group {

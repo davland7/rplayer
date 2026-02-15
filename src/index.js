@@ -1,60 +1,61 @@
 export default class RPlayer {
-  constructor() {
-    this.audio = null;
-    this.volumeStep = 0.1;
-  }
+  audio = null;
+  volumeStep = 0.1;
 
   attachMedia(audioElement) {
     this.audio = audioElement;
   }
 
-  rewind(seconds = 10) {
+  #requireAudio() {
     if (!this.audio) throw new Error("No audio element attached.");
-    if (this.audio.duration && this.audio.currentTime >= seconds) {
-      this.audio.currentTime -= seconds;
+    return this.audio;
+  }
+
+  rewind(seconds = 10) {
+    const audio = this.#requireAudio();
+    if (audio.duration && audio.currentTime >= seconds) {
+      audio.currentTime -= seconds;
     } else {
-      this.audio.currentTime = 0;
+      audio.currentTime = 0;
     }
   }
 
   volumeUp() {
-    if (!this.audio) throw new Error("No audio element attached.");
-    let newVolume = Math.min(this.audio.volume + this.volumeStep, 1.0);
-    this.audio.volume = parseFloat(newVolume.toFixed(2));
+    const audio = this.#requireAudio();
+    const newVolume = Math.min(audio.volume + this.volumeStep, 1);
+    audio.volume = Number.parseFloat(newVolume.toFixed(2));
   }
 
   volumeDown() {
-    if (!this.audio) throw new Error("No audio element attached.");
-    let newVolume = Math.max(this.audio.volume - this.volumeStep, 0.0);
-    this.audio.volume = parseFloat(newVolume.toFixed(2));
+    const audio = this.#requireAudio();
+    const newVolume = Math.max(audio.volume - this.volumeStep, 0);
+    audio.volume = Number.parseFloat(newVolume.toFixed(2));
   }
 
   mute() {
-    if (!this.audio) throw new Error("No audio element attached.");
-    this.audio.muted = !this.audio.muted;
+    return this.toggleMute();
   }
 
   stop(forceClear = false) {
-    if (!this.audio) throw new Error("No audio element attached.");
-    this.audio.pause();
-    this.audio.currentTime = 0;
+    const audio = this.#requireAudio();
+    audio.pause();
+    audio.currentTime = 0;
     if (forceClear) {
-      this.audio.src = "";
+      audio.src = "";
     }
   }
 
   togglePlay() {
-    if (!this.audio) throw new Error("No audio element attached.");
-    if (this.audio.paused) {
-      this.audio.play();
-    } else {
-      this.audio.pause();
+    const audio = this.#requireAudio();
+    if (audio.paused) {
+      return audio.play();
     }
+    audio.pause();
   }
 
   toggleMute() {
-    if (!this.audio) throw new Error("No audio element attached.");
-    this.audio.muted = !this.audio.muted;
+    const audio = this.#requireAudio();
+    audio.muted = !audio.muted;
   }
 
   get isPlaying() {
@@ -89,6 +90,9 @@ export default class RPlayer {
   }
 
   static isIos() {
-    return /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+    const ua = navigator.userAgent;
+    if (/iPad|iPhone|iPod/.test(ua)) return true;
+    // iPadOS 13+ reports as macOS — detect via touch support
+    return /Macintosh/.test(ua) && navigator.maxTouchPoints > 1;
   }
 }

@@ -1,10 +1,10 @@
 // scripts.js - RPlayer Demo
 // Interactive RPlayer demo with localStorage history
 
-// Using CDN version via window.RPlayer (loaded in index.html)
-const RPlayer = window.RPlayer;
+// Using CDN version via globalThis.RPlayer (loaded in index.html)
+const RPlayer = globalThis.RPlayer;
 
-/* -------------------- Sélecteurs DOM -------------------- */
+/* -------------------- DOM Selectors -------------------- */
 const audioEl = document.getElementById('audio');
 const btnPlay = document.getElementById('togglePlay');
 const btnVolumeUp = document.getElementById('volumeUp');
@@ -25,26 +25,27 @@ const badgeTime = document.getElementById('badge-time');
 
 const equalizer = document.getElementById('equalizer');
 
-/* -------------------- Constantes -------------------- */
+/* -------------------- Constants -------------------- */
 const HISTORY_KEY = 'rplayer:history';
 const VOLUME_KEY = 'rplayer:volume';
 const REWIND_SECONDS = 10;
 const MAX_HISTORY = 10;
 
-/* -------------------- Instance RPlayer -------------------- */
+/* -------------------- RPlayer Instance -------------------- */
 const player = new RPlayer();
 player.attachMedia(audioEl);
 
-/* Cache for supportsHls (called once) */
+/* Cache static checks (called once) */
+const isIos = RPlayer.isIos();
 const supportsHls = (() => {
   try {
-    return player.supportsHls();
+    return RPlayer.supportsHls();
   } catch {
     return false;
   }
 })();
 
-/* -------------------- Helpers UI -------------------- */
+/* -------------------- UI Helpers -------------------- */
 function toast(msg, type = 'info') {
   const el = document.createElement('div');
   el.className = `toast ${type}`;
@@ -68,7 +69,6 @@ function setDisabled(el, disabled) {
 
 function updateControlsEnabled() {
   const hasUrl = !!audioEl.currentSrc && audioEl.readyState !== 0;
-  const isIos = RPlayer.isIos();
 
   // Disable volume buttons on iOS (uses physical buttons)
   [btnPlay, btnMute, btnStop, btnRewind].forEach(btn => {
@@ -112,7 +112,7 @@ function updateMuteButton() {
 }
 
 function updateBadges(url) {
-  setIndicator(badgeIos, RPlayer.isIos() ? 'ok' : 'bad');
+  setIndicator(badgeIos, isIos ? 'ok' : 'bad');
   setIndicator(badgeHlsSupport, supportsHls ? 'ok' : 'bad');
   setIndicator(badgeHls, RPlayer.isHls(url) ? 'ok' : 'bad');
 }
@@ -125,14 +125,14 @@ function updateVolumeBadge() {
 
 function updateUrl(url) {
   try {
-    const currentUrl = new URL(window.location);
+    const currentUrl = new URL(globalThis.location);
 
     if (url) {
       currentUrl.searchParams.set('url', url);
-      window.history.pushState({ streamUrl: url }, '', currentUrl.toString());
+      globalThis.history.pushState({ streamUrl: url }, '', currentUrl.toString());
     } else {
       currentUrl.searchParams.delete('url');
-      window.history.replaceState({}, '', currentUrl.toString());
+      globalThis.history.replaceState({}, '', currentUrl.toString());
     }
   } catch (error) {
     console.warn("Failed to update URL:", error);
@@ -301,8 +301,8 @@ async function loadAndPlayUrl(rawUrl) {
   loadUrl(rawUrl);
 
   try {
-    await audioEl.play();
-  } catch (err) {
+    await player.togglePlay();
+  } catch {
     toast('Playback blocked by browser (user action required)', 'error');
     setIndicator(badgePlayback, 'bad');
   }
@@ -310,15 +310,13 @@ async function loadAndPlayUrl(rawUrl) {
 
 /* -------------------- Media controls -------------------- */
 // Skip media session handlers on iOS (uses native controls)
-if (!RPlayer.isIos() && 'mediaSession' in navigator) {
+if (!isIos && 'mediaSession' in navigator) {
   navigator.mediaSession.setActionHandler('play', () => {
-    audioEl.play();
-    updatePlayButton();
+    player.togglePlay();
   });
 
   navigator.mediaSession.setActionHandler('pause', () => {
-    audioEl.pause();
-    updatePlayButton();
+    player.togglePlay();
   });
 }
 
@@ -327,50 +325,52 @@ function setPlaybackState(state) {
   const isLoading = state === 'loading';
   updatePlayButton({ loading: isLoading });
 
-   // Stop equalizer animation while loading or not playing
+  // Equalizer animation only when playing
   if (equalizer) {
-    if (isLoading || state !== 'playing') {
-      equalizer.classList.remove('playing');
-    }
+    equalizer.classList.toggle('playing', state === 'playing');
   }
 
-  // Update playback badge
-  const playbackBadgeState = state === 'playing' ? 'ok' : isLoading ? 'loading' : state === 'paused' ? 'loading' : 'bad';
-  setIndicator(badgePlayback, playbackBadgeState);
+  // Update playback badge: playing=ok, loading=loading, paused/stopped=bad
+  const badgeState = state === 'playing' ? 'ok' : state === 'loading' ? 'loading' : 'bad';
+  setIndicator(badgePlayback, badgeState);
 }
 
 /* -------------------- Audio element events -------------------- */
 audioEl.addEventListener('loadstart', () => {
-  // Only show loading if we're trying to play (not paused)
-  if (!audioEl.paused) setPlaybackState('loading');
+  // Only show loading if actively trying to play
+  if (!audioEl.paused && audioEl.readyState < 3) {
+    setPlaybackState('loading');
+  }
 });
 audioEl.addEventListener('canplay', () => {
-  // If we loaded but didn't start playing, show ready state with play button
+  // If we loaded but didn't start playing, show ready state
   if (audioEl.paused && audioEl.src) {
     setPlaybackState('stopped');
   }
   updateControlsEnabled();
 });
 audioEl.addEventListener('waiting', () => {
-  // Don't switch to loading if already playing (common on iOS with HLS)
-  if (!player.isPlaying) setPlaybackState('loading');
+  // Only show loading if actively playing (not paused)
+  if (player.isPlaying) {
+    setPlaybackState('loading');
+  }
 });
 audioEl.addEventListener('stalled', () => {
-  // Don't switch to loading if already playing (common on iOS with HLS)
-  if (!player.isPlaying) setPlaybackState('loading');
+  // Only show loading if actively playing (not paused)
+  if (player.isPlaying) {
+    setPlaybackState('loading');
+  }
 });
 audioEl.addEventListener('playing', () => {
   setPlaybackState('playing');
-  if (equalizer) equalizer.classList.add('playing');
 });
 audioEl.addEventListener('pause', () => {
   // If audio was stopped (currentTime reset to 0), show stopped (red), else paused (orange)
   setPlaybackState(audioEl.currentTime === 0 ? 'stopped' : 'paused');
-  if (equalizer) equalizer.classList.remove('playing');
 });
 audioEl.addEventListener('ended', () => {
   setPlaybackState('stopped');
-  if (equalizer) equalizer.classList.remove('playing');
+  updateTimeBadge();
 });
 audioEl.addEventListener('volumechange', () => {
   updateMuteButton();
@@ -385,23 +385,23 @@ audioEl.addEventListener('loadedmetadata', () => {
   updateControlsEnabled();
 });
 audioEl.addEventListener('durationchange', updateTimeBadge);
-audioEl.addEventListener('ended', updateTimeBadge);
 audioEl.addEventListener('emptied', () => {
   // Fired after src is cleared and load() called
   updateControlsEnabled();
 });
 
 /* -------------------- Button controls -------------------- */
-btnPlay.addEventListener('click', () => {
-  player.togglePlay();
-  updatePlayButton();
+btnPlay.addEventListener('click', async () => {
+  try {
+    await player.togglePlay();
+  } catch {
+    toast('Playback blocked by browser (user action required)', 'error');
+  }
 });
 
 btnVolumeUp.addEventListener('click', () => {
+  if (player.isMuted) player.toggleMute();
   player.volumeUp();
-  if (audioEl.muted && audioEl.volume > 0) {
-    audioEl.muted = false;
-  }
 });
 
 btnVolumeDown.addEventListener('click', () => {
@@ -418,8 +418,7 @@ btnRewind.addEventListener('click', () => {
 
 btnStop.addEventListener('click', () => {
   player.stop(false);
-  updatePlayButton();
-  setPlaybackState('stopped');
+  // Audio events will handle UI updates
 });
 
 /* -------------------- Input and list events -------------------- */
@@ -446,7 +445,7 @@ input.addEventListener('keydown', (e) => {
 });
 
 /* -------------------- Browser Back Button Handler -------------------- */
-window.addEventListener('popstate', (e) => {
+globalThis.addEventListener('popstate', (e) => {
   if (e.state && e.state.streamUrl) {
     input.value = e.state.streamUrl;
     loadAndPlayUrl(e.state.streamUrl);
@@ -458,26 +457,24 @@ window.addEventListener('popstate', (e) => {
   document.getElementById('year').textContent = new Date().getFullYear();
 
   // Restore persisted volume if any
-  const storedVol = parseFloat(localStorage.getItem(VOLUME_KEY));
-  const isIos = RPlayer.isIos();
+  const storedVol = Number.parseFloat(localStorage.getItem(VOLUME_KEY));
 
   if (Number.isFinite(storedVol) && storedVol >= 0 && storedVol <= 1) {
     audioEl.volume = storedVol;
   } else {
-    // On iOS, set volume to 1.0 by default to show 100% in badge
-    audioEl.volume = isIos ? 1.0 : 0.8;
+    // On iOS, set volume to 1 by default to show 100% in badge
+    audioEl.volume = isIos ? 1 : 0.8;
   }
   updateMuteButton();
   updateBadges(audioEl.src);
   updateVolumeBadge();
   updateTimeBadge();
   setPlaybackState(audioEl.paused ? 'stopped' : 'playing');
-  updatePlayButton(); // Call after setPlaybackState to ensure correct classes
   updateControlsEnabled();
   renderList();
 
   // Check for URL parameter in query string
-  const params = new URLSearchParams(window.location.search);
+  const params = new URLSearchParams(globalThis.location.search);
   const rawUrl = params.get('url');
   if (rawUrl) {
     const decodedUrl = decodeURIComponent(rawUrl);

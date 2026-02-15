@@ -1,16 +1,16 @@
 # RPlayer III — Minimal Audio Stream Controller
 
-Dependency‑free helper for controlling an `HTMLAudioElement` and working with streaming URLs. Built for modern apps and lightweight extensions. Mobile‑ready.
+Dependency-free controller for `HTMLAudioElement`, designed for streaming URLs. Built for modern apps, browser extensions, and lightweight UIs. Mobile-ready.
 
 [![jsDelivr](https://data.jsdelivr.com/v1/package/npm/@davland7/rplayer/badge)](https://www.jsdelivr.com/package/npm/@davland7/rplayer) [![npm version](https://img.shields.io/npm/v/@davland7/rplayer.svg)](https://www.npmjs.com/package/@davland7/rplayer) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 ---
 
 ## Overview
-- Simple API over `HTMLAudioElement`
-- Native HLS detection (no HLS.js bundled)
-- Works great in extension popups and small UIs
-- No dependencies, tiny footprint
+- Simple API wrapping `HTMLAudioElement`
+- Native HLS detection helpers (HLS.js not included)
+- Works great in browser extensions and small UIs
+- Zero dependencies, tiny footprint
 
 **🎵 [Live Demo](https://rplayer.js.org/)** | Run locally: `npm run dev`
 
@@ -72,48 +72,52 @@ playPauseBtn.addEventListener('click', () => player.togglePlay());
 ```
 
 ### Autoplay Policy (Important)
-- Browsers often require a user gesture to start audio. Calling `audio.play()` may reject with a `DOMException` if initiated without a direct click/tap.
-- Use `player.togglePlay()` for a combined play/pause button
-- Use `audio.play()` / `audio.pause()` directly if you need separate controls
-- Handle the promise from `play()` and provide a friendly message or re‑enable the play button.
+
+Browsers require user interaction before playing audio. Calling `audio.play()` without a user gesture (click/tap) will be blocked and may throw a `DOMException`.
+
+**Best practices:**
+- Always wrap `audio.play()` in a user-initiated event (click, tap)
+- Use `player.togglePlay()` for combined play/pause buttons
+- Handle the promise from `play()` to catch autoplay blocks
 
 ```js
 try {
   await audio.play();
 } catch (err) {
-  // Playback blocked by browser (user action required)
-  console.warn('Playback blocked:', err);
+  console.warn('Playback blocked by browser:', err);
+  // Show a play button or notification to user
 }
 ```
 
 ## HLS (.m3u8) Support
 
-RPlayer v3 does not bundle HLS.js. It provides detection helpers and leaves HLS.js integration to you if needed.
+RPlayer v3 does not bundle HLS.js. It provides detection helpers and leaves integration up to you.
 
-- `RPlayer.supportsHls()` — checks if the browser claims native HLS support
+- `RPlayer.supportsHls()` — detects if the browser supports native HLS playback
 - `RPlayer.isHls(url)` — detects HLS URLs by extension (`.m3u8`, `.m3u`) or path patterns (`/hls/`)
-- Safari supports HLS natively. Chrome has partial/unstable support. Firefox does not.
+- Safari supports HLS natively. Chrome has partial support. Firefox does not.
 - Browser compatibility: https://caniuse.com/?search=hls
 
 **Recommendation: Use HLS.js for production**
 
-Even when native support is available, [HLS.js](https://github.com/video-dev/hls.js/) provides more stable and consistent playback across browsers. Native HLS support can be unreliable, especially on Chrome.
+Even when native support exists, [HLS.js](https://github.com/video-dev/hls.js/) provides more reliable cross-browser playback. Native HLS support can be inconsistent, especially on Chrome.
 
-Integrate HLS.js manually in your app. See their [documentation](https://github.com/video-dev/hls.js/#getting-started) for setup and usage.
+Integrate HLS.js manually in your app. See the [HLS.js documentation](https://github.com/video-dev/hls.js/#getting-started) for setup instructions.
 
 ## iOS Considerations
 
-**iPad and iPhone** enforce volume control through physical hardware buttons only. Software volume controls don't work on iOS devices.
+**iPad and iPhone** enforce volume control through hardware buttons only. Software volume controls have no effect on iOS devices.
 
-**Recommendation:**
-- Use `RPlayer.isIos()` to detect iOS devices (iPad/iPhone/iPod)
-- Disable software volume buttons on iOS (they won't work)
-- Skip custom media session handlers on iOS (native controls work automatically)
+**Recommendations:**
+- Use `RPlayer.isIos()` to detect iOS devices (iPad, iPhone, iPod)
+- Disable software volume buttons on iOS (they will not work)
+- Native media session controls work automatically on iOS
+- iPadOS 13+ is detected correctly (reports as macOS but with touch support)
 
 ```js
 const isIos = RPlayer.isIos();
 
-// Disable volume buttons on iOS (uses physical buttons only)
+// Disable volume buttons on iOS (hardware buttons only)
 volumeUpBtn.disabled = isIos;
 volumeDownBtn.disabled = isIos;
 ```
@@ -121,20 +125,20 @@ volumeDownBtn.disabled = isIos;
 ## API Reference
 
 ### Class: `RPlayer`
-- `attachMedia(audioElement)`: Attach an `HTMLAudioElement` to control.
-- `togglePlay()`: Toggle play/pause.
-- `stop(forceClear = false)`: Pause, reset to 0; if `true`, also clear `src`.
-- `rewind(seconds = 10)`: Seek backward by `seconds` (min 0).
-- `volumeUp()`: Increase volume by step (default `0.1`).
-- `volumeDown()`: Decrease volume by step (default `0.1`).
-- `toggleMute()` / `mute()`: Toggle muted state.
-- `get isPlaying`: `true` if not paused.
-- `get isMuted`: `true` if muted.
+- `attachMedia(audioElement)`: Attach an `HTMLAudioElement` to control
+- `togglePlay()`: Toggle play/pause state. Returns the `play()` promise when resuming, so you can catch autoplay rejections
+- `stop(forceClear = false)`: Pause and reset to 0; if `forceClear` is `true`, also clears `src`
+- `rewind(seconds = 10)`: Seek backward by `seconds` (minimum 0)
+- `volumeUp()`: Increase volume by 0.1 (clamped to 1.0)
+- `volumeDown()`: Decrease volume by 0.1 (clamped to 0.0)
+- `toggleMute()` / `mute()`: Toggle muted state (`mute()` is an alias for `toggleMute()`)
+- `get isPlaying`: Returns `true` if audio is not paused
+- `get isMuted`: Returns `true` if audio is muted
 
 ### Static Helpers
-- `RPlayer.supportsHls()`: Check if browser claims native HLS support (Safari: `true`, Chrome: may be `true` but unreliable, Firefox: `false`).
-- `RPlayer.isHls(url)`: Detect HLS URLs (`.m3u8`, `.m3u`, `/hls/` path, `m3u8` in URL).
-- `RPlayer.isIos()`: iOS device detection (iPad/iPhone/iPod — disable volume buttons on these devices).
+- `RPlayer.supportsHls()`: Returns `true` if browser supports native HLS (Safari: yes, Chrome: partial, Firefox: no)
+- `RPlayer.isHls(url)`: Detects HLS URLs (`.m3u8`, `.m3u`, `/hls/` in path)
+- `RPlayer.isIos()`: Detects iOS devices (iPad, iPhone, iPod — including iPadOS 13+ which reports as macOS)
 
 ## Types
 Type definitions are published at `types/rplayer.d.ts` for TS consumers.
@@ -171,6 +175,7 @@ npm run build
 ```
 
 ## Notes for Developers
-- RPlayer focuses on controlling the native `HTMLAudioElement` and remains dependency‑free.
-- HLS.js is entirely optional in v3; integrate it manually if your app targets non‑native HLS browsers.
-- The library provides helpers (`isHls()`, `supportsHls()`, `isIos()`) but doesn't dictate your integration strategy.
+- RPlayer focuses on controlling the native `HTMLAudioElement` and remains dependency-free
+- HLS.js is optional in v3; integrate it manually if targeting browsers without native HLS support
+- Helper methods (`isHls()`, `supportsHls()`, `isIos()`) are provided as static utilities and do not enforce a specific integration strategy
+- `togglePlay()` returns the `play()` promise — always handle it to avoid uncaught `DOMException` errors

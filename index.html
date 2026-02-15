@@ -46,7 +46,7 @@
       "name": "davland7"
     },
     "url": "https://rplayer.js.org",
-    "softwareVersion": "3.0.0",
+    "softwareVersion": "3.0.2",
     "programmingLanguage": "JavaScript",
     "runtimePlatform": "Browser",
     "license": "MIT",
@@ -77,7 +77,7 @@
         </span></h1>
         <p><strong>Minimal Audio Stream Controller</strong><br>
         Lightweight, dependency-free controller for <code>HTMLAudioElement</code> — built for streaming URLs in modern apps and extensions.</p>
-        <p>See the <a href="https://github.com/davland7/rplayer" target="_blank">README</a> for installation, usage, and examples.</p>
+        <p>See the <a href="https://github.com/davland7/rplayer" target="_blank" rel="noopener noreferrer">README</a> for installation, usage, and examples.</p>
       </div>
     </header>
 
@@ -90,7 +90,7 @@
       </header>
 
       <section class="demo">
-        <div class="player" role="application" aria-label="Mini Radio player">
+        <div class="player" aria-label="Mini Radio player">
           <div class="mini-radio">
             <img class="mini-radio__image" src="images/icon64.png" srcset="images/icon64.png 1x, images/icon128.png 2x" alt="Mini Radio Icon" />
             <p class="mini-radio__title">Mini Radio</p>
@@ -102,13 +102,14 @@
             </button>
           </div>
 
-          <div class="controls" role="group" aria-label="Audio controls">
-            <button id="volumeUp" class="btn" aria-label="Increase volume">Volume +</button>
-            <button id="toggleMute" class="btn" aria-pressed="false" aria-label="Mute">Mute</button>
-            <button id="volumeDown" class="btn" aria-label="Decrease volume">Volume -</button>
-            <button id="rewind" class="btn" aria-label="Rewind 10 seconds">Rewind -10s</button>
-            <button id="stop" class="btn" aria-label="Stop playback">Stop</button>
-          </div>
+          <fieldset class="controls">
+            <legend class="sr-only">Audio controls</legend>
+            <button id="volumeUp" class="btn">Volume +</button>
+            <button id="toggleMute" class="btn" aria-pressed="false">Mute</button>
+            <button id="volumeDown" class="btn">Volume -</button>
+            <button id="rewind" class="btn">Rewind -10s</button>
+            <button id="stop" class="btn">Stop</button>
+          </fieldset>
 
           <div class="badge-group" aria-live="polite" aria-atomic="true">
             <span class="badge" id="badge-ios" title="iOS Device Detected">iOS</span>
@@ -126,7 +127,7 @@
             <label for="urlInput" class="sr-only">Stream URL</label>
             <input
               id="urlInput"
-              type="text"
+              type="url"
               placeholder="Enter stream URL (e.g., radio.example/stream.mp3)"
               autocomplete="off"
             />
@@ -140,9 +141,9 @@
     <footer>
       <h3>Resources & Distribution</h3>
       <ul>
-        <li><strong>NPM Package:</strong> <a href="https://www.npmjs.com/package/@davland7/rplayer" target="_blank">@davland7/rplayer</a></li>
-        <li><strong>CDN (jsDelivr):</strong> <a href="https://www.jsdelivr.com/package/npm/@davland7/rplayer" target="_blank">Browse files</a></li>
-        <li><strong>Source Code:</strong> <a href="https://github.com/davland7/rplayer" target="_blank">GitHub Repository</a></li>
+        <li><strong>NPM Package:</strong> <a href="https://www.npmjs.com/package/@davland7/rplayer" target="_blank" rel="noopener noreferrer">@davland7/rplayer</a></li>
+        <li><strong>CDN (jsDelivr):</strong> <a href="https://www.jsdelivr.com/package/npm/@davland7/rplayer" target="_blank" rel="noopener noreferrer">Browse files</a></li>
+        <li><strong>Source Code:</strong> <a href="https://github.com/davland7/rplayer" target="_blank" rel="noopener noreferrer">GitHub Repository</a></li>
       </ul>
       <p><small>&copy; <span id="year"></span> — RPlayer III</small></p>
     </footer>
