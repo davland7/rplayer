@@ -39,8 +39,10 @@
     "types"
   ],
   "scripts": {
-    "dev": "vite demo",
+    "dev": "vite --mode demo",
     "build": "vite build --mode lib",
+    "build:demo": "vite build --mode demo",
+    "preview:demo": "vite preview --mode demo",
     "prepublishOnly": "npm run build"
   },
   "devDependencies": {
