@@ -1,6 +1,5 @@
 # build output
 dist/
-docs/
 
 # dependencies
 node_modules/
