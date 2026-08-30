@@ -179,26 +179,6 @@ function updateVolumeBadge() {
   badgeVolume.textContent = audioEl.muted ? "Muted" : `Volume ${pct}%`;
 }
 
-function updateUrl(url) {
-  try {
-    const currentUrl = new URL(globalThis.location);
-
-    if (url) {
-      currentUrl.searchParams.set("url", url);
-      globalThis.history.pushState(
-        { streamUrl: url },
-        "",
-        currentUrl.toString(),
-      );
-    } else {
-      currentUrl.searchParams.delete("url");
-      globalThis.history.replaceState({}, "", currentUrl.toString());
-    }
-  } catch (error) {
-    console.warn("Failed to update URL:", error);
-  }
-}
-
 function formatTime(sec) {
   if (!Number.isFinite(sec) || sec < 0) return "--:--";
   const s = Math.floor(sec);
@@ -233,7 +213,6 @@ function removeUrl(urlToDelete) {
     updateControlsEnabled();
     updateBadges("");
     input.value = "";
-    updateUrl("");
   }
 
   StreamManager.removeUrl(urlToDelete);
@@ -311,7 +290,6 @@ function loadUrl(rawUrl) {
 
   updateBadges(url);
   updateMediaSession(url);
-  updateUrl(url);
   audioEl.src = url;
   audioEl.load();
   StreamManager.saveUrl(url);
@@ -432,48 +410,23 @@ input.addEventListener("keydown", (e) => {
   }
 });
 
-globalThis.addEventListener("popstate", (e) => {
-  if (e.state && e.state.streamUrl) {
-    input.value = e.state.streamUrl;
-    loadAndPlayUrl(e.state.streamUrl);
-  }
-});
-
-/* -------------------- Network Auto-Reconnect (WiFi -> LTE) -------------------- */
-let wasPlayingBeforeNetworkDrop = false;
+let shouldResumeAfterReconnect = false;
 
 globalThis.addEventListener("offline", () => {
-  wasPlayingBeforeNetworkDrop = player.isPlaying;
-  if (wasPlayingBeforeNetworkDrop) {
+  shouldResumeAfterReconnect = player.isPlaying;
+  if (shouldResumeAfterReconnect) {
     setPlaybackState("loading");
-    toast("Connexion perdue. En attente du réseau...", "error");
+    toast(
+      "Connexion perdue, reprise automatique possible au retour du réseau.",
+      "info",
+    );
   }
 });
 
 globalThis.addEventListener("online", () => {
-  if (wasPlayingBeforeNetworkDrop && input.value) {
-    toast("Réseau rétabli. Reprise de la lecture...", "info");
-    setTimeout(() => {
-      loadAndPlayUrl(input.value);
-    }, 1000);
-    wasPlayingBeforeNetworkDrop = false;
-  }
-});
-
-audioEl.addEventListener("error", () => {
-  const err = audioEl.error;
-  if (err && err.code === 2) {
-    console.warn("Erreur réseau détectée sur le flux audio.");
-    if (navigator.onLine) {
-      toast("Coupure du flux. Reconnexion en cours...", "info");
-      setPlaybackState("loading");
-      setTimeout(() => {
-        if (input.value) loadAndPlayUrl(input.value);
-      }, 2000);
-    } else {
-      wasPlayingBeforeNetworkDrop = true;
-      setPlaybackState("loading");
-    }
+  if (shouldResumeAfterReconnect && input.value) {
+    loadAndPlayUrl(input.value);
+    shouldResumeAfterReconnect = false;
   }
 });
 
@@ -497,14 +450,9 @@ audioEl.addEventListener("error", () => {
   updateControlsEnabled();
   renderList();
 
-  const params = new URLSearchParams(globalThis.location.search);
-  const rawUrl = params.get("url");
-  if (rawUrl) {
-    const decodedUrl = decodeURIComponent(rawUrl);
-    if (StreamManager.isValidUrl(decodedUrl)) {
-      input.value = StreamManager.normalizeUrl(decodedUrl);
-      setPlaybackState("loading");
-      loadUrl(decodedUrl);
-    }
+  const lastUrl = StreamManager.getUrls()[0];
+  if (lastUrl && StreamManager.isValidUrl(lastUrl)) {
+    input.value = StreamManager.normalizeUrl(lastUrl);
+    loadUrl(lastUrl);
   }
 })();
