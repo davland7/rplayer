@@ -39,11 +39,11 @@
     "types"
   ],
   "scripts": {
-    "dev": "vite",
+    "dev": "vite demo",
     "build": "vite build --mode lib",
     "prepublishOnly": "npm run build"
   },
   "devDependencies": {
-    "vite": "^8.0.16"
+    "vite": "^8.2.2"
   }
 }
