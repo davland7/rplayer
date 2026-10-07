@@ -1,4 +1,4 @@
-// docs/scripts.js - RPlayer Demo
+// docs/assets/js/app.js - RPlayer Demo
 const RPlayer = globalThis.RPlayer;
 
 class StreamManager {
@@ -21,48 +21,86 @@ class StreamManager {
     return /^https?:\/\//i.test(trimmed) ? trimmed : "https://" + trimmed;
   }
 
-  static getUrls() {
+  static getHistory() {
     try {
       const stored = localStorage.getItem(this.HISTORY_KEY);
-      const urls = stored ? JSON.parse(stored) : [];
-      return Array.isArray(urls) ? urls : [];
+      const history = stored ? JSON.parse(stored) : [];
+      if (!Array.isArray(history)) return [];
+
+      return history
+        .map((item, i) =>
+          typeof item === "string"
+            ? { title: `Stream ${i + 1}`, url: item }
+            : item,
+        )
+        .filter((item) => typeof item?.url === "string" && item.url);
     } catch {
       return [];
     }
   }
 
+  // TEMPORARY MIGRATION (to remove): legacy format = array of URL strings.
+  static migrateLegacyHistory() {
+    try {
+      const raw = JSON.parse(localStorage.getItem(this.HISTORY_KEY));
+      if (
+        !Array.isArray(raw) ||
+        !raw.some((item) => typeof item === "string")
+      ) {
+        return;
+      }
+
+      const migrated = raw
+        .map((item, i) =>
+          typeof item === "string"
+            ? { title: `Stream ${i + 1}`, url: item }
+            : item,
+        )
+        .filter((item) => typeof item?.url === "string" && item.url);
+
+      localStorage.setItem(this.HISTORY_KEY, JSON.stringify(migrated));
+    } catch (e) {
+      console.warn("Unable to migrate URL history:", e);
+    }
+  }
+  // END TEMPORARY MIGRATION
+
   static saveUrl(url) {
-    if (!this.isValidUrl(url)) return this.getUrls();
+    if (!this.isValidUrl(url)) return this.getHistory();
 
     const normalized = this.normalizeUrl(url);
-    let urls = this.getUrls();
-    urls = urls.filter((u) => u !== normalized);
-    urls.unshift(normalized);
+    let history = this.getHistory();
+    const existing = history.find((item) => item.url === normalized);
+    history = history.filter((item) => item.url !== normalized);
+    history.unshift({
+      title: existing?.title || `Stream ${history.length + 1}`,
+      url: normalized,
+    });
 
-    if (urls.length > this.MAX_HISTORY) {
-      urls.pop();
+    if (history.length > this.MAX_HISTORY) {
+      history.pop();
     }
 
     try {
-      localStorage.setItem(this.HISTORY_KEY, JSON.stringify(urls));
+      localStorage.setItem(this.HISTORY_KEY, JSON.stringify(history));
     } catch (e) {
-      console.warn("Impossible de sauvegarder l'URL dans localStorage:", e);
+      console.warn("Unable to save URL to localStorage:", e);
     }
 
-    return urls;
+    return history;
   }
 
   static removeUrl(urlToDelete) {
-    let urls = this.getUrls();
-    urls = urls.filter((u) => u !== urlToDelete);
+    let history = this.getHistory();
+    history = history.filter((item) => item.url !== urlToDelete);
 
     try {
-      localStorage.setItem(this.HISTORY_KEY, JSON.stringify(urls));
+      localStorage.setItem(this.HISTORY_KEY, JSON.stringify(history));
     } catch (e) {
-      console.warn("Impossible de mettre à jour localStorage:", e);
+      console.warn("Unable to update localStorage:", e);
     }
 
-    return urls;
+    return history;
   }
 }
 
@@ -203,8 +241,8 @@ function updateTimeBadge() {
 
 /* -------------------- History & Input Management -------------------- */
 function removeUrl(urlToDelete) {
-  const urls = StreamManager.getUrls();
-  const isFirstUrl = urls[0] === urlToDelete;
+  const history = StreamManager.getHistory();
+  const isFirstUrl = history[0]?.url === urlToDelete;
 
   if (isFirstUrl) {
     player.stop(true);
@@ -226,11 +264,11 @@ function validateInput() {
 }
 
 function renderList() {
-  const urls = StreamManager.getUrls();
+  const history = StreamManager.getHistory();
   list.innerHTML = "";
   list.classList.remove("hidden");
 
-  urls.forEach((url) => {
+  history.forEach(({ url }) => {
     const li = document.createElement("li");
 
     const btnUrl = document.createElement("button");
@@ -432,6 +470,8 @@ globalThis.addEventListener("online", () => {
 
 /* -------------------- Initialization -------------------- */
 (function init() {
+  StreamManager.migrateLegacyHistory();
+
   const yearEl = document.getElementById("year");
   if (yearEl) yearEl.textContent = new Date().getFullYear();
 
@@ -450,7 +490,7 @@ globalThis.addEventListener("online", () => {
   updateControlsEnabled();
   renderList();
 
-  const lastUrl = StreamManager.getUrls()[0];
+  const lastUrl = StreamManager.getHistory()[0]?.url;
   if (lastUrl && StreamManager.isValidUrl(lastUrl)) {
     input.value = StreamManager.normalizeUrl(lastUrl);
     loadUrl(lastUrl);
